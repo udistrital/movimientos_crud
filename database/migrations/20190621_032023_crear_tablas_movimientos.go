@@ -23,7 +23,7 @@ func init() {
 
 // Run the migrations
 func (m *CrearTablasMovimientos_20190621_032023) Up() {
-	file, err := ioutil.ReadFile("../files/crear_tablas_movimientos.sql")
+	file, err := ioutil.ReadFile("../files/crear_tablas_movimientos.up.sql")
 
 	if err != nil {
 		// handle error
