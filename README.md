@@ -11,7 +11,7 @@ API CRUD para movimientos, el proyecto está escrito en el lenguaje Go, generado
 - Clonar el proyecto de github y ubicarse en la carpeta del proyecto:
 ```shell
 git clone https://github.com/udistrital/movimientos_crud.git
-cd plan_cuentas_mid
+cd movimientos_crud
 ```
 
 - Correr el proyecto por docker compose 
