@@ -8,21 +8,29 @@
 package routers
 
 import (
-	"movimientos_crud/controllers"
+	"github.com/udistrital/movimientos_crud/controllers"
 
 	"github.com/astaxie/beego"
 )
 
 func init() {
 	ns := beego.NewNamespace("/v1",
-		beego.NSNamespace("/object",
+
+		beego.NSNamespace("/movimiento_detalle",
 			beego.NSInclude(
-				&controllers.ObjectController{},
+				&controllers.MovimientoDetalleController{},
 			),
 		),
-		beego.NSNamespace("/user",
+
+		beego.NSNamespace("/tipo_movimiento",
 			beego.NSInclude(
-				&controllers.UserController{},
+				&controllers.TipoMovimientoController{},
+			),
+		),
+
+		beego.NSNamespace("/movimiento",
+			beego.NSInclude(
+				&controllers.MovimientoController{},
 			),
 		),
 	)
