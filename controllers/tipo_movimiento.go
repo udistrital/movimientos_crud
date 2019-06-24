@@ -3,9 +3,10 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/udistrital/movimientos_crud/models"
 	"strconv"
 	"strings"
+
+	"github.com/udistrital/movimientos_crud/models"
 
 	"github.com/astaxie/beego"
 )
@@ -43,7 +44,6 @@ func (c *TipoMovimientoController) Post() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
-	c.ServeJSON()
 }
 
 // GetOne ...
@@ -62,7 +62,6 @@ func (c *TipoMovimientoController) GetOne() {
 	} else {
 		c.Data["json"] = v
 	}
-	c.ServeJSON()
 }
 
 // GetAll ...
@@ -125,7 +124,6 @@ func (c *TipoMovimientoController) GetAll() {
 	} else {
 		c.Data["json"] = l
 	}
-	c.ServeJSON()
 }
 
 // Put ...
@@ -149,7 +147,6 @@ func (c *TipoMovimientoController) Put() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
-	c.ServeJSON()
 }
 
 // Delete ...
@@ -167,5 +164,4 @@ func (c *TipoMovimientoController) Delete() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
-	c.ServeJSON()
 }
