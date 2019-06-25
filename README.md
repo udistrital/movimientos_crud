@@ -13,6 +13,11 @@ API CRUD para movimientos, el proyecto está escrito en el lenguaje Go, generado
 git clone https://github.com/udistrital/movimientos_crud.git
 cd movimientos_crud
 ```
+- o con la sentencia go get:
+```shell
+go get -u github.com/udistrital/movimientos_crud
+cd go/src/github.com/udistrital/movimientos_crud
+```
 
 - Correr el proyecto por docker compose 
 1. Crear red de contenedores denominada back_end con el comando (si ya esta creada no es necesario crearla):
@@ -38,6 +43,21 @@ docker-compose up
 - para definir puertos, dns y configuraciones internas dentro del archivo **.env**
 - para definir conexiones externas a otros apis se debe crear el archivo **custom.env** en la raiz del proyecto
 
-# Licencia
-[licencia](LICENSE)
+## Derechos de Autor
 
+This program is free software: you can redistribute it 
+and/or modify it under the terms of the GNU General Public 
+License as published by the Free Software Foundation, either
+version 3 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+### UNIVERSIDAD DISTRITAL FRANCISCO JOSÉ DE CALDAS
+
+### OFICINA ASESORA DE SISTEMAS
+
+### 2019
