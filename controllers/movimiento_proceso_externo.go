@@ -11,13 +11,13 @@ import (
 	"github.com/astaxie/beego"
 )
 
-// MovimientoController operations for Movimiento
-type MovimientoController struct {
+// MovimientoProcesoExternoController operations for MovimientoProcesoExterno
+type MovimientoProcesoExternoController struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *MovimientoController) URLMapping() {
+func (c *MovimientoProcesoExternoController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -27,15 +27,15 @@ func (c *MovimientoController) URLMapping() {
 
 // Post ...
 // @Title Post
-// @Description create Movimiento
-// @Param	body		body 	models.Movimiento	true		"body for Movimiento content"
-// @Success 201 {int} models.Movimiento
+// @Description create MovimientoProcesoExterno
+// @Param	body		body 	models.MovimientoProcesoExterno	true		"body for MovimientoProcesoExterno content"
+// @Success 201 {int} models.MovimientoProcesoExterno
 // @Failure 403 body is empty
 // @router / [post]
-func (c *MovimientoController) Post() {
-	var v models.Movimiento
+func (c *MovimientoProcesoExternoController) Post() {
+	var v models.MovimientoProcesoExterno
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddMovimiento(&v); err == nil {
+		if _, err := models.AddMovimientoProcesoExterno(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -48,15 +48,15 @@ func (c *MovimientoController) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get Movimiento by id
+// @Description get MovimientoProcesoExterno by id
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Movimiento
+// @Success 200 {object} models.MovimientoProcesoExterno
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c *MovimientoController) GetOne() {
+func (c *MovimientoProcesoExternoController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetMovimientoById(id)
+	v, err := models.GetMovimientoProcesoExternoById(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -66,17 +66,17 @@ func (c *MovimientoController) GetOne() {
 
 // GetAll ...
 // @Title Get All
-// @Description get Movimiento
+// @Description get MovimientoProcesoExterno
 // @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.Movimiento
+// @Success 200 {object} models.MovimientoProcesoExterno
 // @Failure 403
 // @router / [get]
-func (c *MovimientoController) GetAll() {
+func (c *MovimientoProcesoExternoController) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -118,7 +118,7 @@ func (c *MovimientoController) GetAll() {
 		}
 	}
 
-	l, err := models.GetAllMovimiento(query, fields, sortby, order, offset, limit)
+	l, err := models.GetAllMovimientoProcesoExterno(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -128,18 +128,18 @@ func (c *MovimientoController) GetAll() {
 
 // Put ...
 // @Title Put
-// @Description update the Movimiento
+// @Description update the MovimientoProcesoExterno
 // @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.Movimiento	true		"body for Movimiento content"
-// @Success 200 {object} models.Movimiento
+// @Param	body		body 	models.MovimientoProcesoExterno	true		"body for MovimientoProcesoExterno content"
+// @Success 200 {object} models.MovimientoProcesoExterno
 // @Failure 403 :id is not int
 // @router /:id [put]
-func (c *MovimientoController) Put() {
+func (c *MovimientoProcesoExternoController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.Movimiento{Id: id}
+	v := models.MovimientoProcesoExterno{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateMovimientoById(&v); err == nil {
+		if err := models.UpdateMovimientoProcesoExternoById(&v); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()
@@ -151,15 +151,15 @@ func (c *MovimientoController) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description delete the Movimiento
+// @Description delete the MovimientoProcesoExterno
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 id is empty
 // @router /:id [delete]
-func (c *MovimientoController) Delete() {
+func (c *MovimientoProcesoExternoController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	if err := models.DeleteMovimiento(id); err == nil {
+	if err := models.DeleteMovimientoProcesoExterno(id); err == nil {
 		c.Data["json"] = "OK"
 	} else {
 		c.Data["json"] = err.Error()

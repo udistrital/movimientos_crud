@@ -15,179 +15,6 @@
     },
     "basePath": "/v1",
     "paths": {
-        "/movimiento/": {
-            "get": {
-                "tags": [
-                    "movimiento"
-                ],
-                "description": "get Movimiento",
-                "operationId": "MovimientoController.Get All",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "query",
-                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "fields",
-                        "description": "Fields returned. e.g. col1,col2 ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "sortby",
-                        "description": "Sorted-by fields. e.g. col1,col2 ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "order",
-                        "description": "Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "limit",
-                        "description": "Limit the size of result set. Must be an integer",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "offset",
-                        "description": "Start position of result set. Must be an integer",
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.Movimiento"
-                        }
-                    },
-                    "403": {
-                        "description": ""
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "movimiento"
-                ],
-                "description": "create Movimiento",
-                "operationId": "MovimientoController.Post",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for Movimiento content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Movimiento"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "{int} models.Movimiento"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/movimiento/{id}": {
-            "get": {
-                "tags": [
-                    "movimiento"
-                ],
-                "description": "get Movimiento by id",
-                "operationId": "MovimientoController.Get One",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "The key for staticblock",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.Movimiento"
-                        }
-                    },
-                    "403": {
-                        "description": ":id is empty"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "movimiento"
-                ],
-                "description": "update the Movimiento",
-                "operationId": "MovimientoController.Put",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "The id you want to update",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for Movimiento content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Movimiento"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.Movimiento"
-                        }
-                    },
-                    "403": {
-                        "description": ":id is not int"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "movimiento"
-                ],
-                "description": "delete the Movimiento",
-                "operationId": "MovimientoController.Delete",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "The id you want to delete",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} delete success!"
-                    },
-                    "403": {
-                        "description": "id is empty"
-                    }
-                }
-            }
-        },
         "/movimiento_detalle/": {
             "get": {
                 "tags": [
@@ -342,6 +169,179 @@
                 ],
                 "description": "delete the MovimientoDetalle",
                 "operationId": "MovimientoDetalleController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "403": {
+                        "description": "id is empty"
+                    }
+                }
+            }
+        },
+        "/movimiento_proceso_externo/": {
+            "get": {
+                "tags": [
+                    "movimiento_proceso_externo"
+                ],
+                "description": "get MovimientoProcesoExterno",
+                "operationId": "MovimientoProcesoExternoController.Get All",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "query",
+                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "fields",
+                        "description": "Fields returned. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortby",
+                        "description": "Sorted-by fields. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "order",
+                        "description": "Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Limit the size of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "Start position of result set. Must be an integer",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.MovimientoProcesoExterno"
+                        }
+                    },
+                    "403": {
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "movimiento_proceso_externo"
+                ],
+                "description": "create MovimientoProcesoExterno",
+                "operationId": "MovimientoProcesoExternoController.Post",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for MovimientoProcesoExterno content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.MovimientoProcesoExterno"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{int} models.MovimientoProcesoExterno"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/movimiento_proceso_externo/{id}": {
+            "get": {
+                "tags": [
+                    "movimiento_proceso_externo"
+                ],
+                "description": "get MovimientoProcesoExterno by id",
+                "operationId": "MovimientoProcesoExternoController.Get One",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.MovimientoProcesoExterno"
+                        }
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "movimiento_proceso_externo"
+                ],
+                "description": "update the MovimientoProcesoExterno",
+                "operationId": "MovimientoProcesoExternoController.Put",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for MovimientoProcesoExterno content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.MovimientoProcesoExterno"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.MovimientoProcesoExterno"
+                        }
+                    },
+                    "403": {
+                        "description": ":id is not int"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "movimiento_proceso_externo"
+                ],
+                "description": "delete the MovimientoProcesoExterno",
+                "operationId": "MovimientoProcesoExternoController.Delete",
                 "parameters": [
                     {
                         "in": "path",
@@ -536,29 +536,6 @@
         }
     },
     "definitions": {
-        "models.Movimiento": {
-            "title": "Movimiento",
-            "type": "object",
-            "properties": {
-                "Descripcion": {
-                    "type": "string"
-                },
-                "Id": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "Nombre": {
-                    "type": "string"
-                },
-                "ProcesoExterno": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "TipoMovimientoId": {
-                    "$ref": "#/definitions/models.TipoMovimiento"
-                }
-            }
-        },
         "models.MovimientoDetalle": {
             "title": "MovimientoDetalle",
             "type": "object",
@@ -575,7 +552,7 @@
                     "format": "int64"
                 },
                 "MovimientoId": {
-                    "$ref": "#/definitions/models.Movimiento"
+                    "$ref": "#/definitions/models.MovimientoProcesoExterno"
                 },
                 "Valor": {
                     "type": "number",
@@ -583,10 +560,34 @@
                 }
             }
         },
+        "models.MovimientoProcesoExterno": {
+            "title": "MovimientoProcesoExterno",
+            "type": "object",
+            "properties": {
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "MovimientoProcesoExterno": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "ProcesoExterno": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "TipoMovimientoId": {
+                    "$ref": "#/definitions/models.TipoMovimiento"
+                }
+            }
+        },
         "models.TipoMovimiento": {
             "title": "TipoMovimiento",
             "type": "object",
             "properties": {
+                "Acronimo": {
+                    "type": "string"
+                },
                 "Descripcion": {
                     "type": "string"
                 },
@@ -610,8 +611,8 @@
             "description": "TipoMovimientoController operations for TipoMovimiento\n"
         },
         {
-            "name": "movimiento",
-            "description": "MovimientoController operations for Movimiento\n"
+            "name": "movimiento_proceso_externo",
+            "description": "MovimientoProcesoExternoController operations for MovimientoProcesoExterno\n"
         }
     ]
 }
