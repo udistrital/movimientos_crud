@@ -28,9 +28,9 @@ func init() {
 			),
 		),
 
-		beego.NSNamespace("/movimiento",
+		beego.NSNamespace("/movimiento_proceso_externo",
 			beego.NSInclude(
-				&controllers.MovimientoController{},
+				&controllers.MovimientoProcesoExternoController{},
 			),
 		),
 	)

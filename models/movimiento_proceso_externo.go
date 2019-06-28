@@ -9,47 +9,46 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
-type Movimiento struct {
-	Id               int             `orm:"column(id);pk;auto"`
-	Nombre           string          `orm:"column(nombre)"`
-	Descripcion      string          `orm:"column(descripcion);null"`
-	TipoMovimientoId *TipoMovimiento `orm:"column(tipo_movimiento_id);rel(fk)"`
-	ProcesoExterno   int64           `orm:"column(proceso_externo)"`
+type MovimientoProcesoExterno struct {
+	Id                       int             `orm:"column(id);pk;auto"`
+	TipoMovimientoId         *TipoMovimiento `orm:"column(tipo_movimiento_id);rel(fk)"`
+	ProcesoExterno           int64           `orm:"column(proceso_externo)"`
+	MovimientoProcesoExterno int             `orm:"column(movimiento_proceso_externo);null"`
 }
 
-func (t *Movimiento) TableName() string {
-	return "movimiento"
+func (t *MovimientoProcesoExterno) TableName() string {
+	return "movimiento_proceso_externo"
 }
 
 func init() {
-	orm.RegisterModel(new(Movimiento))
+	orm.RegisterModel(new(MovimientoProcesoExterno))
 }
 
-// AddMovimiento insert a new Movimiento into database and returns
+// AddMovimientoProcesoExterno insert a new MovimientoProcesoExterno into database and returns
 // last inserted Id on success.
-func AddMovimiento(m *Movimiento) (id int64, err error) {
+func AddMovimientoProcesoExterno(m *MovimientoProcesoExterno) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
 }
 
-// GetMovimientoById retrieves Movimiento by Id. Returns error if
+// GetMovimientoProcesoExternoById retrieves MovimientoProcesoExterno by Id. Returns error if
 // Id doesn't exist
-func GetMovimientoById(id int) (v *Movimiento, err error) {
+func GetMovimientoProcesoExternoById(id int) (v *MovimientoProcesoExterno, err error) {
 	o := orm.NewOrm()
-	v = &Movimiento{Id: id}
+	v = &MovimientoProcesoExterno{Id: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
 	return nil, err
 }
 
-// GetAllMovimiento retrieves all Movimiento matches certain condition. Returns empty list if
+// GetAllMovimientoProcesoExterno retrieves all MovimientoProcesoExterno matches certain condition. Returns empty list if
 // no records exist
-func GetAllMovimiento(query map[string]string, fields []string, sortby []string, order []string,
+func GetAllMovimientoProcesoExterno(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Movimiento)).RelatedSel()
+	qs := o.QueryTable(new(MovimientoProcesoExterno)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -99,7 +98,7 @@ func GetAllMovimiento(query map[string]string, fields []string, sortby []string,
 		}
 	}
 
-	var l []Movimiento
+	var l []MovimientoProcesoExterno
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -122,11 +121,11 @@ func GetAllMovimiento(query map[string]string, fields []string, sortby []string,
 	return nil, err
 }
 
-// UpdateMovimiento updates Movimiento by Id and returns error if
+// UpdateMovimientoProcesoExterno updates MovimientoProcesoExterno by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateMovimientoById(m *Movimiento) (err error) {
+func UpdateMovimientoProcesoExternoById(m *MovimientoProcesoExterno) (err error) {
 	o := orm.NewOrm()
-	v := Movimiento{Id: m.Id}
+	v := MovimientoProcesoExterno{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -137,15 +136,15 @@ func UpdateMovimientoById(m *Movimiento) (err error) {
 	return
 }
 
-// DeleteMovimiento deletes Movimiento by Id and returns error if
+// DeleteMovimientoProcesoExterno deletes MovimientoProcesoExterno by Id and returns error if
 // the record to be deleted doesn't exist
-func DeleteMovimiento(id int) (err error) {
+func DeleteMovimientoProcesoExterno(id int) (err error) {
 	o := orm.NewOrm()
-	v := Movimiento{Id: id}
+	v := MovimientoProcesoExterno{Id: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&Movimiento{Id: id}); err == nil {
+		if num, err = o.Delete(&MovimientoProcesoExterno{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}
