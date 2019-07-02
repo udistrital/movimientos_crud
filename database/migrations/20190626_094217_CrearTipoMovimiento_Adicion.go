@@ -19,15 +19,13 @@ func init() {
 
 // Run the migrations
 func (m *CrearTipoMovimientoAdicion_20190626_094217) Up() {
-	// use m.SQL("CREATE TABLE ...") to make schema update
 	m.SQL("INSERT INTO movimientos.tipo_movimiento" +
-		"(nombre, descripcion)" +
-		"VALUES('Adicion', 'Adicion a una fuente de financiamiento');")
+		"(id, nombre, descripcion, acronimo)" +
+		"VALUES(1, 'Adicion', 'Adicion a una fuente de financiamiento', 'adicion');")
 
 }
 
 // Reverse the migrations
 func (m *CrearTipoMovimientoAdicion_20190626_094217) Down() {
-	// use m.SQL("DROP TABLE ...") to reverse schema update
 	m.SQL("DELETE FROM movimientos.tipo_movimiento")
 }

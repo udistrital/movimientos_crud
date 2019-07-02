@@ -12,7 +12,7 @@ import (
 
 type MovimientoDetalle struct {
 	Id            int         `orm:"column(id);pk;auto"`
-	MovimientoId  *MovimientoProcesoExterno `orm:"column(movimiento_id);rel(fk)"`
+	MovimientoProcesoExternoId  *MovimientoProcesoExterno `orm:"column(movimiento_id);rel(fk)"`
 	Valor         float64     `orm:"column(valor)"`
 	FechaRegistro time.Time   `orm:"column(fecha_registro);type(date)"`
 	Descripcion   string      `orm:"column(descripcion);null"`
