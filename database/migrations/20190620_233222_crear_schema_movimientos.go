@@ -21,7 +21,7 @@ func init() {
 func (m *CrearSchemaMovimientos_20190620_233222) Up() {
 	// use m.SQL("CREATE TABLE ...") to make schema update
 	m.SQL("CREATE SCHEMA IF NOT EXISTS movimientos;")
-	m.SQL("ALTER SCHEMA movimientos OWNER TO test;")
+	m.SQL("ALTER SCHEMA movimientos OWNER TO desarrollooas;")
 
 }
 
