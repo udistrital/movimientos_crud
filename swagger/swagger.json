@@ -99,6 +99,34 @@
                 }
             }
         },
+        "/movimiento_detalle/registrar_multiple": {
+            "post": {
+                "tags": [
+                    "movimiento_detalle"
+                ],
+                "description": "create MovimientoDetalle",
+                "operationId": "MovimientoDetalleController.RegistrarMultiple",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for MovimientoDetalle content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.MovimientoDetalle"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{int} models.MovimientoDetalle"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/movimiento_detalle/{id}": {
             "get": {
                 "tags": [
@@ -551,7 +579,7 @@
                     "type": "integer",
                     "format": "int64"
                 },
-                "MovimientoId": {
+                "MovimientoProcesoExternoId": {
                     "$ref": "#/definitions/models.MovimientoProcesoExterno"
                 },
                 "Valor": {
