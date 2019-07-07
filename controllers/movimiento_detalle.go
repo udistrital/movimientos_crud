@@ -31,9 +31,9 @@ func (c *MovimientoDetalleController) URLMapping() {
 
 // RegistrarMultiple ...
 // @Title RegistrarMultiple
-// @Description create MovimientoDetalle
-// @Param	body		body 	models.MovimientoDetalle	true		"body for MovimientoDetalle content"
-// @Success 201 {int} models.MovimientoDetalle
+// @Description Registra multiples movimientos proceso externo y movimientos detalle
+// @Param	body		body 	[]*models.MovimientoDetalle	true		"body for MovimientoDetalle content"
+// @Success 201 {int} responseformat
 // @Failure 403 body is empty
 // @router /registrar_multiple [post]
 func (c *MovimientoDetalleController) RegistrarMultiple() {
@@ -49,7 +49,7 @@ func (c *MovimientoDetalleController) RegistrarMultiple() {
 
 	response := make(map[string]interface{})
 	response["Ids"] = ids
-	responseformat.SetResponseFormat(&c.Controller, response, "", 200)
+	responseformat.SetResponseFormat(&c.Controller, response, "", 201)
 }
 
 // Post ...

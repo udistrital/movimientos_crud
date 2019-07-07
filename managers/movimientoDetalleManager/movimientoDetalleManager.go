@@ -9,6 +9,7 @@ import (
 
 // RegistrarMultipleManager realiza multiples registros en una transacción sobre las tablas:
 // movimiento_proceso_externo y movimiento_detalle
+// realizando primero un registro en movimiento_proceso_externo y luego en movimiento_detalle
 func RegistrarMultipleManager(movimientosDetalle []*models.MovimientoDetalle) (idRegistrados []int64) {
 	o := orm.NewOrm()
 

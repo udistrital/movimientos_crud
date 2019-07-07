@@ -104,7 +104,7 @@
                 "tags": [
                     "movimiento_detalle"
                 ],
-                "description": "create MovimientoDetalle",
+                "description": "Registra multiples movimientos proceso externo y movimientos detalle",
                 "operationId": "MovimientoDetalleController.RegistrarMultiple",
                 "parameters": [
                     {
@@ -113,13 +113,16 @@
                         "description": "body for MovimientoDetalle content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.MovimientoDetalle"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/*models.MovimientoDetalle"
+                            }
                         }
                     }
                 ],
                 "responses": {
                     "201": {
-                        "description": "{int} models.MovimientoDetalle"
+                        "description": "{int} responseformat"
                     },
                     "403": {
                         "description": "body is empty"
@@ -564,6 +567,10 @@
         }
     },
     "definitions": {
+        "*models.MovimientoDetalle": {
+            "title": "MovimientoDetalle",
+            "type": "object"
+        },
         "models.MovimientoDetalle": {
             "title": "MovimientoDetalle",
             "type": "object",
