@@ -106,6 +106,15 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["github.com/udistrital/movimientos_crud/controllers:MovimientoProcesoExternoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/movimientos_crud/controllers:MovimientoProcesoExternoController"],
+        beego.ControllerComments{
+            Method: "RegistrarMovimiento",
+            Router: `registrar_movimiento`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["github.com/udistrital/movimientos_crud/controllers:TipoMovimientoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/movimientos_crud/controllers:TipoMovimientoController"],
         beego.ControllerComments{
             Method: "Post",

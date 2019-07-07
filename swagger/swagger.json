@@ -392,6 +392,34 @@
                 }
             }
         },
+        "/movimiento_proceso_externoregistrar_movimiento": {
+            "post": {
+                "tags": [
+                    "movimiento_proceso_externo"
+                ],
+                "description": "Registra un movimiento completamente, tanto el de proceso externo como el detalle",
+                "operationId": "MovimientoProcesoExternoController.RegistrarMovimiento",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "map[string]interface{}",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/map[string]interface{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{int} models.MovimientoProcesoExterno"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/tipo_movimiento/": {
             "get": {
                 "tags": [
@@ -567,8 +595,8 @@
         }
     },
     "definitions": {
-        "*models.MovimientoDetalle": {
-            "title": "MovimientoDetalle",
+        "map[string]interface{}": {
+            "title": "map[string]interface{}",
             "type": "object"
         },
         "models.MovimientoDetalle": {

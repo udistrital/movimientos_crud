@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/plugins/cors"
 	_ "github.com/lib/pq"
@@ -16,19 +14,19 @@ func init() {
 	orm.RegisterDataBase("default", "postgres", "postgres://"+beego.AppConfig.String("PGuser")+":"+beego.AppConfig.String("PGpass")+"@"+beego.AppConfig.String("PGurls")+"/"+beego.AppConfig.String("PGdb")+"?sslmode=disable&search_path="+beego.AppConfig.String("PGschemas")+"")
 	if beego.BConfig.RunMode == "dev" {
 		// Database alias.
-		name := "default"
+		// name := "default"
 
-		// Drop table and re-create.
-		force := false
+		// // Drop table and re-create.
+		// force := false
 
-		// Print log.
-		verbose := true
+		// // Print log.
+		// verbose := true
 
 		// Error.
-		err := orm.RunSyncdb(name, force, verbose)
-		if err != nil {
-			fmt.Println(err)
-		}
+		// err := orm.RunSyncdb(name, force, verbose)
+		// if err != nil {
+		// 	fmt.Println(err)
+		// }
 	}
 
 }

@@ -5,9 +5,10 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-
+	"time"
 	"github.com/udistrital/movimientos_crud/models"
-
+	"github.com/udistrital/utils_oas/responseformat"
+	movimientoProcesoExternoManager "github.com/udistrital/movimientos_crud/managers/movimientoProcesoExternoManager"
 	"github.com/astaxie/beego"
 )
 
@@ -23,7 +24,49 @@ func (c *MovimientoProcesoExternoController) URLMapping() {
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+	c.Mapping("Regitrar", c.RegistrarMovimiento)
 }
+
+// RegistrarMovimiento ...
+// @Title RegistrarMovimiento
+// @Description Registra un movimiento completamente, tanto el de proceso externo como el detalle
+// @Param	body		body 	map[string]interface{}	true		"map[string]interface{}"
+// @Success 201 {int} models.MovimientoProcesoExterno
+// @Failure 403 body is empty
+// @router registrar_movimiento [post]
+func (c *MovimientoProcesoExternoController) RegistrarMovimiento() {
+	var movimiento map[string]interface{}
+
+	layoutDate := "2006-01-02"
+	dataResponse := make(map[string]interface{})
+	
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &movimiento); err == nil {
+		tipoMovimiento := models.TipoMovimiento{ Id: int(movimiento["TipoMovimiento"].(float64)) }
+		movimientoProcesoExterno := models.MovimientoProcesoExterno{
+			TipoMovimientoId: &tipoMovimiento,
+			ProcesoExterno: int64(movimiento["ProcesoExterno"].(float64)),
+		}
+
+		detalleMovimiento := movimiento["MovimientoDetalle"].(map[string]interface{})
+		t, err := time.Parse(layoutDate, detalleMovimiento["FechaRegistro"].(string))
+		if err != nil {
+			panic(err)
+		}
+		movimientoDetalle := models.MovimientoDetalle{
+			Valor: detalleMovimiento["Valor"].(float64),
+			FechaRegistro: t,
+			Descripcion: detalleMovimiento["Descripcion"].(string),
+		}
+
+		movimientoProcesoExternoManager.RegistrarMovimientoProcesoExterno(&movimientoProcesoExterno, &movimientoDetalle)
+		dataResponse["status"] = "registrado"
+		responseformat.SetResponseFormat(&c.Controller, dataResponse, "", 200)
+	} else {
+		panic(err)
+	}
+}
+
+
 
 // Post ...
 // @Title Post
