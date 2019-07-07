@@ -3,12 +3,15 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"log"
 	"strconv"
 	"strings"
 
-	"github.com/udistrital/movimientos_crud/models"
-
 	"github.com/astaxie/beego"
+	movimientoDetalleManager "github.com/udistrital/movimientos_crud/managers/movimientoDetalleManager"
+	"github.com/udistrital/movimientos_crud/models"
+	"github.com/udistrital/movimientos_crud/utilidades"
+	"github.com/udistrital/utils_oas/responseformat"
 )
 
 // MovimientoDetalleController operations for MovimientoDetalle
@@ -23,6 +26,30 @@ func (c *MovimientoDetalleController) URLMapping() {
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+	c.Mapping("RegistrarMultiple", c.RegistrarMultiple)
+}
+
+// RegistrarMultiple ...
+// @Title RegistrarMultiple
+// @Description Registra multiples movimientos proceso externo y movimientos detalle
+// @Param	body		body 	[]*models.MovimientoDetalle	true		"body for MovimientoDetalle content"
+// @Success 201 {int} responseformat
+// @Failure 403 body is empty
+// @router /registrar_multiple [post]
+func (c *MovimientoDetalleController) RegistrarMultiple() {
+	var v []*models.MovimientoDetalle
+
+	defer utilidades.ErrorResponse(c.Controller)
+
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err != nil {
+		log.Panicln(err.Error())
+	}
+
+	ids := movimientoDetalleManager.RegistrarMultipleManager(v)
+
+	response := make(map[string]interface{})
+	response["Ids"] = ids
+	responseformat.SetResponseFormat(&c.Controller, response, "", 201)
 }
 
 // Post ...

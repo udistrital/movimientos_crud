@@ -19,8 +19,8 @@ services:
       - MOVIMIENTOS_CRUD_DB_PASS=${POSTGRES_PASSWORD}
       - MOVIMIENTOS_CRUD_DB_URL=${POSTGRES_HOST}
       - MOVIMIENTOS_CRUD_DB_NAME=${POSTGRES_DB}
-      - RUN_MODE=dev 
       - MOVIMIENTOS_CRUD_DB_SCHEMA=${POSTGRES_SCHEMA}
+      - RUN_MODE=dev 
       - SERVICE_TAGS=traefik.enable=true,traefik.frontend.entryPoints=http,traefik.frontend.rule=Host:${SERVICE_NAME}.localhost   
     command: sh -c 'cd ${API_BASE_DIR}/${API_NAME};go get -v -u ./...; bee migrate -driver=postgres -conn="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}?sslmode=disable&search_path=${POSTGRES_SCHEMA}" || true; bee run -downdoc=true -gendoc=true'
     networks: 

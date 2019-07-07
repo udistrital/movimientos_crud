@@ -99,6 +99,37 @@
                 }
             }
         },
+        "/movimiento_detalle/registrar_multiple": {
+            "post": {
+                "tags": [
+                    "movimiento_detalle"
+                ],
+                "description": "Registra multiples movimientos proceso externo y movimientos detalle",
+                "operationId": "MovimientoDetalleController.RegistrarMultiple",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for MovimientoDetalle content",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/*models.MovimientoDetalle"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{int} responseformat"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/movimiento_detalle/{id}": {
             "get": {
                 "tags": [

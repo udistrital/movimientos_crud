@@ -48,8 +48,7 @@ func GetTipoMovimientoById(id int) (v *TipoMovimiento, err error) {
 func GetAllTipoMovimiento(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(TipoMovimiento)).RelatedSel()
-
+	qs := o.QueryTable(new(TipoMovimiento))
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute

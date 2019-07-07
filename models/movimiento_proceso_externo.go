@@ -10,7 +10,7 @@ import (
 )
 
 type MovimientoProcesoExterno struct {
-	Id                       int             `orm:"column(id);pk;auto"`
+	Id                       int             `orm:"column(id);pk:auto"`
 	TipoMovimientoId         *TipoMovimiento `orm:"column(tipo_movimiento_id);rel(fk)"`
 	ProcesoExterno           int64           `orm:"column(proceso_externo)"`
 	MovimientoProcesoExterno int             `orm:"column(movimiento_proceso_externo);null"`
@@ -48,7 +48,7 @@ func GetMovimientoProcesoExternoById(id int) (v *MovimientoProcesoExterno, err e
 func GetAllMovimientoProcesoExterno(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(MovimientoProcesoExterno)).RelatedSel()
+	qs := o.QueryTable(new(MovimientoProcesoExterno))
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute

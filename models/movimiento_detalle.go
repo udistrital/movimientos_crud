@@ -11,11 +11,11 @@ import (
 )
 
 type MovimientoDetalle struct {
-	Id            int         `orm:"column(id);pk;auto"`
-	MovimientoProcesoExternoId  *MovimientoProcesoExterno `orm:"column(movimiento_id);rel(fk)"`
-	Valor         float64     `orm:"column(valor)"`
-	FechaRegistro time.Time   `orm:"column(fecha_registro);type(date)"`
-	Descripcion   string      `orm:"column(descripcion);null"`
+	Id                         int                       `orm:"column(id);pk;auto"`
+	MovimientoProcesoExternoId *MovimientoProcesoExterno `orm:"column(movimiento_proceso_externo_id);rel(fk)"`
+	Valor                      float64                   `orm:"column(valor)"`
+	FechaRegistro              time.Time                 `orm:"column(fecha_registro);type(date)"`
+	Descripcion                string                    `orm:"column(descripcion);null"`
 }
 
 func (t *MovimientoDetalle) TableName() string {
@@ -50,7 +50,7 @@ func GetMovimientoDetalleById(id int) (v *MovimientoDetalle, err error) {
 func GetAllMovimientoDetalle(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(MovimientoDetalle)).RelatedSel()
+	qs := o.QueryTable(new(MovimientoDetalle))
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
