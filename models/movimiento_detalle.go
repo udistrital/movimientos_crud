@@ -10,7 +10,6 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
-// MovimientoDetalle ...
 type MovimientoDetalle struct {
 	Id                         int                       `orm:"column(id);pk;auto"`
 	MovimientoProcesoExternoId *MovimientoProcesoExterno `orm:"column(movimiento_proceso_externo_id);rel(fk)"`
@@ -19,7 +18,6 @@ type MovimientoDetalle struct {
 	Descripcion                string                    `orm:"column(descripcion);null"`
 }
 
-// TableName nombre de la tabla
 func (t *MovimientoDetalle) TableName() string {
 	return "movimiento_detalle"
 }
@@ -52,7 +50,7 @@ func GetMovimientoDetalleById(id int) (v *MovimientoDetalle, err error) {
 func GetAllMovimientoDetalle(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(MovimientoDetalle)).RelatedSel()
+	qs := o.QueryTable(new(MovimientoDetalle))
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
