@@ -30,6 +30,9 @@ func RegistrarMultipleManager(movimientosDetalle []*models.MovimientoDetalle) (i
 
 			idRegistrados = append(idRegistrados, id)
 		}
+	} else {
+		log.Panicln(err.Error())
 	}
+	o.Commit()
 	return
 }
