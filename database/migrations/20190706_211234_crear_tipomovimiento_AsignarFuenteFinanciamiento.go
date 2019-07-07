@@ -20,8 +20,8 @@ func init() {
 // Run the migrations
 func (m *CrearTipomovimientoAsignarFuenteFinanciamiento_20190706_211234) Up() {
 	// use m.SQL("CREATE TABLE ...") to make schema update
-	m.SQL("insert into movimientos.tipo_movimiento (id, nombre, descripcion, acronimo)" +
-		"values (3, 'AsignarFuenteFinanciamiento', 'Asigna valores de la fuente a sus dependencias de acuerdo a la apropiación del rubro', 'crear_ff');")
+	m.SQL("INSERT INTO movimientos.tipo_movimiento (id, nombre, descripcion, acronimo)" +
+		"VALUES (3, 'AsignarFuente', 'Asigna valores de la fuente a sus dependencias de acuerdo a la apropiación del rubro', 'crear_ff');")
 }
 
 // Reverse the migrations

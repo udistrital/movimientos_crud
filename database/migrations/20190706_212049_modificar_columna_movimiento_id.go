@@ -19,8 +19,8 @@ func init() {
 
 // Run the migrations
 func (m *ModificarColumnaMovimientoId_20190706_212049) Up() {
-	m.SQL("alter table movimientos.movimiento_detalle" +
-		"rename column movimiento_id to movimiento_proceso_externo_id;")
+	m.SQL("ALTER TABLE movimientos.movimiento_detalle " +
+		"RENAME COLUMN movimiento_id to movimiento_proceso_externo_id;")
 }
 
 // Reverse the migrations

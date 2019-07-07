@@ -19,9 +19,7 @@ func init() {
 
 // Run the migrations
 func (m *ModificarNombrefkFkDetalleMovimientoMovimiento_20190706_211102) Up() {
-	// use m.SQL("CREATE TABLE ...") to make schema update
 	m.SQL("ALTER TABLE movimientos.movimiento_detalle RENAME CONSTRAINT fk_movimiento_detalle_movimiento to fk_movimiento_detalle_movimiento_proceso_externo")
-
 }
 
 // Reverse the migrations
