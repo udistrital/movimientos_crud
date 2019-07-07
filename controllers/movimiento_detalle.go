@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -45,8 +44,6 @@ func (c *MovimientoDetalleController) RegistrarMultiple() {
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err != nil {
 		log.Panicln(err.Error())
 	}
-
-	fmt.Println("v ", v)
 
 	ids := movimientoDetalleManager.RegistrarMultipleManager(v)
 
