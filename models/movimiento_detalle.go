@@ -10,14 +10,16 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
+// MovimientoDetalle ...
 type MovimientoDetalle struct {
-	Id            int         `orm:"column(id);pk;auto"`
-	MovimientoId  *MovimientoProcesoExterno `orm:"column(movimiento_id);rel(fk)"`
-	Valor         float64     `orm:"column(valor)"`
-	FechaRegistro time.Time   `orm:"column(fecha_registro);type(date)"`
-	Descripcion   string      `orm:"column(descripcion);null"`
+	Id                         int                       `orm:"column(id);pk;auto"`
+	MovimientoProcesoExternoId *MovimientoProcesoExterno `orm:"column(movimiento_proceso_externo_id);rel(fk)"`
+	Valor                      float64                   `orm:"column(valor)"`
+	FechaRegistro              time.Time                 `orm:"column(fecha_registro);type(date)"`
+	Descripcion                string                    `orm:"column(descripcion);null"`
 }
 
+// TableName nombre de la tabla
 func (t *MovimientoDetalle) TableName() string {
 	return "movimiento_detalle"
 }
