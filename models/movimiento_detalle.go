@@ -14,8 +14,10 @@ type MovimientoDetalle struct {
 	Id                         int                       `orm:"column(id);pk;auto"`
 	MovimientoProcesoExternoId *MovimientoProcesoExterno `orm:"column(movimiento_proceso_externo_id);rel(fk)"`
 	Valor                      float64                   `orm:"column(valor)"`
-	FechaRegistro              time.Time                 `orm:"column(fecha_registro);type(date)"`
 	Descripcion                string                    `orm:"column(descripcion);null"`
+	Activo                     bool                      `orm:"column(activo);null"`
+	FechaCreacion              time.Time                 `orm:"column(fecha_creacion);type(date)";null`
+	FechaModificacion          time.Time                 `orm:"column(fecha_modificacion);type(date)";null`
 }
 
 func (t *MovimientoDetalle) TableName() string {

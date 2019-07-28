@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego/orm"
 )
@@ -14,6 +15,9 @@ type MovimientoProcesoExterno struct {
 	TipoMovimientoId         *TipoMovimiento `orm:"column(tipo_movimiento_id);rel(fk)"`
 	ProcesoExterno           int64           `orm:"column(proceso_externo)"`
 	MovimientoProcesoExterno int             `orm:"column(movimiento_proceso_externo);null"`
+	Activo                   bool            `orm:"column(activo);null"`
+	FechaCreacion            time.Time       `orm:"column(fecha_creacion);type(date);null"`
+	FechaModificacion        time.Time       `orm:"column(fecha_modificacion);type(date);null"`
 }
 
 func (t *MovimientoProcesoExterno) TableName() string {
