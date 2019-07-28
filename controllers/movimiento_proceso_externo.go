@@ -54,7 +54,7 @@ func (c *MovimientoProcesoExternoController) RegistrarMovimiento() {
 		}
 		movimientoDetalle := models.MovimientoDetalle{
 			Valor: detalleMovimiento["Valor"].(float64),
-			FechaRegistro: t,
+			FechaCreacion: t,
 			Descripcion: detalleMovimiento["Descripcion"].(string),
 		}
 

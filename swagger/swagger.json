@@ -607,10 +607,17 @@
             "title": "MovimientoDetalle",
             "type": "object",
             "properties": {
+                "Activo": {
+                    "type": "boolean"
+                },
                 "Descripcion": {
                     "type": "string"
                 },
-                "FechaRegistro": {
+                "FechaCreacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "FechaModificacion": {
                     "type": "string",
                     "format": "datetime"
                 },
@@ -631,6 +638,17 @@
             "title": "MovimientoProcesoExterno",
             "type": "object",
             "properties": {
+                "Activo": {
+                    "type": "boolean"
+                },
+                "FechaCreacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "FechaModificacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
                 "Id": {
                     "type": "integer",
                     "format": "int64"
@@ -655,8 +673,19 @@
                 "Acronimo": {
                     "type": "string"
                 },
+                "Activo": {
+                    "type": "boolean"
+                },
                 "Descripcion": {
                     "type": "string"
+                },
+                "FechaCreacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "FechaModificacion": {
+                    "type": "string",
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
