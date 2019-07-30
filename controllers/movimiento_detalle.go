@@ -52,6 +52,28 @@ func (c *MovimientoDetalleController) RegistrarMultiple() {
 	responseformat.SetResponseFormat(&c.Controller, response, "", 201)
 }
 
+// DeleteMultiple ...
+// @Title DeleteMultiple
+// @Description delete the MovimientoDetalle with transaction
+// @Param	id		path 	string	true		"The id you want to delete"
+// @Success 200 {string} delete success!
+// @Failure 403 Body is empty
+// @router /eliminar_multiple [post]
+func (c *MovimientoDetalleController) DeleteMultiple() {
+	var movimientoDetalleIDS []int
+	var err error
+
+	if err = json.Unmarshal(c.Ctx.Input.RequestBody, &movimientoDetalleIDS); err != nil {
+		log.Panicln(err.Error())
+	}
+
+	if err = movimientoDetalleManager.EliminarMultipleManager(movimientoDetalleIDS); err != nil {
+		log.Panicln(err.Error())
+	}
+
+	responseformat.SetResponseFormat(&c.Controller, "OK", "", 201)
+}
+
 // Post ...
 // @Title Post
 // @Description create MovimientoDetalle

@@ -27,6 +27,15 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/udistrital/movimientos_crud/controllers:MovimientoDetalleController"] = append(beego.GlobalControllerRouter["github.com/udistrital/movimientos_crud/controllers:MovimientoDetalleController"],
         beego.ControllerComments{
+            Method: "Delete",
+            Router: `/:id`,
+            AllowHTTPMethods: []string{"delete"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/movimientos_crud/controllers:MovimientoDetalleController"] = append(beego.GlobalControllerRouter["github.com/udistrital/movimientos_crud/controllers:MovimientoDetalleController"],
+        beego.ControllerComments{
             Method: "GetOne",
             Router: `/:id`,
             AllowHTTPMethods: []string{"get"},
@@ -45,9 +54,9 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/udistrital/movimientos_crud/controllers:MovimientoDetalleController"] = append(beego.GlobalControllerRouter["github.com/udistrital/movimientos_crud/controllers:MovimientoDetalleController"],
         beego.ControllerComments{
-            Method: "Delete",
-            Router: `/:id`,
-            AllowHTTPMethods: []string{"delete"},
+            Method: "DeleteMultiple",
+            Router: `/eliminar_multiple`,
+            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
