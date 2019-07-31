@@ -60,18 +60,25 @@ func (c *MovimientoDetalleController) RegistrarMultiple() {
 // @Failure 403 Body is empty
 // @router /eliminar_multiple [post]
 func (c *MovimientoDetalleController) DeleteMultiple() {
-	var movimientoDetalleIDS []int
-	var err error
+
+	var (
+		err                  error
+		movimientoDetalleIDS []int
+		response             interface{}
+	)
+
+	response = "OK"
 
 	if err = json.Unmarshal(c.Ctx.Input.RequestBody, &movimientoDetalleIDS); err != nil {
 		log.Panicln(err.Error())
 	}
 
 	if err = movimientoDetalleManager.EliminarMultipleManager(movimientoDetalleIDS); err != nil {
-		log.Panicln(err.Error())
+		response = err
 	}
 
-	responseformat.SetResponseFormat(&c.Controller, "OK", "", 201)
+	c.Data["json"] = response
+
 }
 
 // Post ...
