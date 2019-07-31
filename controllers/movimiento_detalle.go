@@ -7,10 +7,11 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/astaxie/beego/logs"
+
 	"github.com/astaxie/beego"
 	movimientoDetalleManager "github.com/udistrital/movimientos_crud/managers/movimientoDetalleManager"
 	"github.com/udistrital/movimientos_crud/models"
-	"github.com/udistrital/movimientos_crud/utilidades"
 	"github.com/udistrital/utils_oas/responseformat"
 )
 
@@ -39,8 +40,6 @@ func (c *MovimientoDetalleController) URLMapping() {
 func (c *MovimientoDetalleController) RegistrarMultiple() {
 	var v []*models.MovimientoDetalle
 
-	defer utilidades.ErrorResponse(c.Controller)
-
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err != nil {
 		log.Panicln(err.Error())
 	}
@@ -64,20 +63,20 @@ func (c *MovimientoDetalleController) DeleteMultiple() {
 	var (
 		err                  error
 		movimientoDetalleIDS []int
-		response             interface{}
 	)
 
-	response = "OK"
-
 	if err = json.Unmarshal(c.Ctx.Input.RequestBody, &movimientoDetalleIDS); err != nil {
-		log.Panicln(err.Error())
+		logs.Error(err.Error())
+		panic(err.Error())
 	}
 
 	if err = movimientoDetalleManager.EliminarMultipleManager(movimientoDetalleIDS); err != nil {
-		response = err
+		logs.Error(err.Error())
+		panic(err.Error())
+
 	}
 
-	c.Data["json"] = response
+	c.Data["json"] = "OK"
 
 }
 
@@ -95,7 +94,7 @@ func (c *MovimientoDetalleController) Post() {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
-			c.Data["json"] = err
+			c.Data["json"] = err.Error()
 		}
 	} else {
 		c.Data["json"] = err
@@ -114,7 +113,7 @@ func (c *MovimientoDetalleController) GetOne() {
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetMovimientoDetalleById(id)
 	if err != nil {
-		c.Data["json"] = err
+		c.Data["json"] = err.Error()
 	} else {
 		c.Data["json"] = v
 	}
@@ -176,7 +175,7 @@ func (c *MovimientoDetalleController) GetAll() {
 
 	l, err := models.GetAllMovimientoDetalle(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err
+		c.Data["json"] = err.Error()
 	} else {
 		c.Data["json"] = l
 	}
@@ -218,6 +217,6 @@ func (c *MovimientoDetalleController) Delete() {
 	if err := models.DeleteMovimientoDetalle(id); err == nil {
 		c.Data["json"] = "OK"
 	} else {
-		c.Data["json"] = err
+		c.Data["json"] = err.Error()
 	}
 }

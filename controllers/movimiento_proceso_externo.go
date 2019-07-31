@@ -81,7 +81,7 @@ func (c *MovimientoProcesoExternoController) Post() {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
-			c.Data["json"] = err
+			c.Data["json"] = err.Error()
 		}
 	} else {
 		c.Data["json"] = err
@@ -100,7 +100,7 @@ func (c *MovimientoProcesoExternoController) GetOne() {
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetMovimientoProcesoExternoById(id)
 	if err != nil {
-		c.Data["json"] = err
+		c.Data["json"] = err.Error()
 	} else {
 		c.Data["json"] = v
 	}
@@ -162,7 +162,7 @@ func (c *MovimientoProcesoExternoController) GetAll() {
 
 	l, err := models.GetAllMovimientoProcesoExterno(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err
+		c.Data["json"] = err.Error()
 	} else {
 		c.Data["json"] = l
 	}
@@ -187,7 +187,7 @@ func (c *MovimientoProcesoExternoController) Put() {
 			c.Data["json"] = err
 		}
 	} else {
-		c.Data["json"] = err
+		c.Data["json"] = err.Error()
 	}
 }
 
@@ -204,6 +204,6 @@ func (c *MovimientoProcesoExternoController) Delete() {
 	if err := models.DeleteMovimientoProcesoExterno(id); err == nil {
 		c.Data["json"] = "OK"
 	} else {
-		c.Data["json"] = err
+		c.Data["json"] = err.Error()
 	}
 }
