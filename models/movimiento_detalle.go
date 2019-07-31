@@ -16,8 +16,8 @@ type MovimientoDetalle struct {
 	Valor                      float64                   `orm:"column(valor)"`
 	Descripcion                string                    `orm:"column(descripcion);null"`
 	Activo                     bool                      `orm:"column(activo);null"`
-	FechaCreacion              time.Time                 `orm:"column(fecha_creacion);type(date)";null`
-	FechaModificacion          time.Time                 `orm:"column(fecha_modificacion);type(date)";null`
+	FechaCreacion              time.Time                 `orm:"auto_now_add;column(fecha_creacion);type(date)";null`
+	FechaModificacion          time.Time                 `orm:"auto_now;column(fecha_modificacion);type(date)";null`
 }
 
 func (t *MovimientoDetalle) TableName() string {

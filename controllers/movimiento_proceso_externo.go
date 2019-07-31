@@ -6,10 +6,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/astaxie/beego"
+	movimientoProcesoExternoManager "github.com/udistrital/movimientos_crud/managers/movimientoProcesoExternoManager"
 	"github.com/udistrital/movimientos_crud/models"
 	"github.com/udistrital/utils_oas/responseformat"
-	movimientoProcesoExternoManager "github.com/udistrital/movimientos_crud/managers/movimientoProcesoExternoManager"
-	"github.com/astaxie/beego"
 )
 
 // MovimientoProcesoExternoController operations for MovimientoProcesoExterno
@@ -39,12 +40,12 @@ func (c *MovimientoProcesoExternoController) RegistrarMovimiento() {
 
 	layoutDate := "2006-01-02"
 	dataResponse := make(map[string]interface{})
-	
+
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &movimiento); err == nil {
-		tipoMovimiento := models.TipoMovimiento{ Id: int(movimiento["TipoMovimiento"].(float64)) }
+		tipoMovimiento := models.TipoMovimiento{Id: int(movimiento["TipoMovimiento"].(float64))}
 		movimientoProcesoExterno := models.MovimientoProcesoExterno{
 			TipoMovimientoId: &tipoMovimiento,
-			ProcesoExterno: int64(movimiento["ProcesoExterno"].(float64)),
+			ProcesoExterno:   int64(movimiento["ProcesoExterno"].(float64)),
 		}
 
 		detalleMovimiento := movimiento["MovimientoDetalle"].(map[string]interface{})
@@ -53,9 +54,9 @@ func (c *MovimientoProcesoExternoController) RegistrarMovimiento() {
 			panic(err)
 		}
 		movimientoDetalle := models.MovimientoDetalle{
-			Valor: detalleMovimiento["Valor"].(float64),
+			Valor:         detalleMovimiento["Valor"].(float64),
 			FechaCreacion: t,
-			Descripcion: detalleMovimiento["Descripcion"].(string),
+			Descripcion:   detalleMovimiento["Descripcion"].(string),
 		}
 
 		movimientoProcesoExternoManager.RegistrarMovimientoProcesoExterno(&movimientoProcesoExterno, &movimientoDetalle)
@@ -65,8 +66,6 @@ func (c *MovimientoProcesoExternoController) RegistrarMovimiento() {
 		panic(err)
 	}
 }
-
-
 
 // Post ...
 // @Title Post
@@ -85,7 +84,7 @@ func (c *MovimientoProcesoExternoController) Post() {
 			c.Data["json"] = err.Error()
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		c.Data["json"] = err
 	}
 }
 
@@ -185,7 +184,7 @@ func (c *MovimientoProcesoExternoController) Put() {
 		if err := models.UpdateMovimientoProcesoExternoById(&v); err == nil {
 			c.Data["json"] = "OK"
 		} else {
-			c.Data["json"] = err.Error()
+			c.Data["json"] = err
 		}
 	} else {
 		c.Data["json"] = err.Error()

@@ -99,6 +99,32 @@
                 }
             }
         },
+        "/movimiento_detalle/eliminar_multiple": {
+            "post": {
+                "tags": [
+                    "movimiento_detalle"
+                ],
+                "description": "delete the MovimientoDetalle with transaction",
+                "operationId": "MovimientoDetalleController.DeleteMultiple",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "403": {
+                        "description": "Body is empty"
+                    }
+                }
+            }
+        },
         "/movimiento_detalle/registrar_multiple": {
             "post": {
                 "tags": [

@@ -7,10 +7,11 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/astaxie/beego/logs"
+
 	"github.com/astaxie/beego"
 	movimientoDetalleManager "github.com/udistrital/movimientos_crud/managers/movimientoDetalleManager"
 	"github.com/udistrital/movimientos_crud/models"
-	"github.com/udistrital/movimientos_crud/utilidades"
 	"github.com/udistrital/utils_oas/responseformat"
 )
 
@@ -39,8 +40,6 @@ func (c *MovimientoDetalleController) URLMapping() {
 func (c *MovimientoDetalleController) RegistrarMultiple() {
 	var v []*models.MovimientoDetalle
 
-	defer utilidades.ErrorResponse(c.Controller)
-
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err != nil {
 		log.Panicln(err.Error())
 	}
@@ -50,6 +49,35 @@ func (c *MovimientoDetalleController) RegistrarMultiple() {
 	response := make(map[string]interface{})
 	response["Ids"] = ids
 	responseformat.SetResponseFormat(&c.Controller, response, "", 201)
+}
+
+// DeleteMultiple ...
+// @Title DeleteMultiple
+// @Description delete the MovimientoDetalle with transaction
+// @Param	id		path 	string	true		"The id you want to delete"
+// @Success 200 {string} delete success!
+// @Failure 403 Body is empty
+// @router /eliminar_multiple [post]
+func (c *MovimientoDetalleController) DeleteMultiple() {
+
+	var (
+		err                  error
+		movimientoDetalleIDS []int
+	)
+
+	if err = json.Unmarshal(c.Ctx.Input.RequestBody, &movimientoDetalleIDS); err != nil {
+		logs.Error(err.Error())
+		panic(err.Error())
+	}
+
+	if err = movimientoDetalleManager.EliminarMultipleManager(movimientoDetalleIDS); err != nil {
+		logs.Error(err.Error())
+		panic(err.Error())
+
+	}
+
+	c.Data["json"] = "OK"
+
 }
 
 // Post ...
@@ -69,7 +97,7 @@ func (c *MovimientoDetalleController) Post() {
 			c.Data["json"] = err.Error()
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		c.Data["json"] = err
 	}
 }
 
@@ -172,7 +200,7 @@ func (c *MovimientoDetalleController) Put() {
 			c.Data["json"] = err.Error()
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		c.Data["json"] = err
 	}
 }
 
