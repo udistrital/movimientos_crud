@@ -74,11 +74,9 @@ func EliminarMultipleManager(IDSmovimientosDetalle []int) (err error) {
 		}
 
 		for _, movimiento := range movimientosToDelete {
-
-			if err = o.Read(&movimiento); err == nil {
+			if err = o.Read(movimiento); err == nil {
 
 				var num int64
-
 				if num, err = o.Delete(movimiento); err == nil {
 					logs.Info("Number of MovimientoProcesoExterno deleted in database:", num)
 				} else {
