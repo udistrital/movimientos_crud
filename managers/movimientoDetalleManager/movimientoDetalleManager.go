@@ -1,7 +1,6 @@
 package movimientodetallemanager
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/astaxie/beego/logs"
@@ -48,12 +47,11 @@ func EliminarMultipleManager(IDSmovimientosDetalle []int) (err error) {
 	o := orm.NewOrm()
 	v := models.MovimientoDetalle{}
 	movimientosToDelete := make(map[int]*models.MovimientoProcesoExterno)
-	if err := o.Begin(); err == nil {
+	if err = o.Begin(); err == nil {
 		defer func() {
 			if r := recover(); r != nil {
 				o.Rollback()
 				logs.Error(r)
-				err = fmt.Errorf("%s", r)
 			}
 		}()
 		for _, id := range IDSmovimientosDetalle {
@@ -76,7 +74,9 @@ func EliminarMultipleManager(IDSmovimientosDetalle []int) (err error) {
 		}
 
 		for _, movimiento := range movimientosToDelete {
+
 			if err = o.Read(&movimiento); err == nil {
+
 				var num int64
 
 				if num, err = o.Delete(movimiento); err == nil {
@@ -94,5 +94,5 @@ func EliminarMultipleManager(IDSmovimientosDetalle []int) (err error) {
 		log.Panicln(err.Error())
 	}
 	o.Commit()
-	return
+	return err
 }
