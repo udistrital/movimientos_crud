@@ -8,7 +8,7 @@ workspace:
 kind: pipeline
 name: API_deploy
 
-steps: 
+steps:
   - name: go
     image: golang:1.9
     commands:
@@ -19,9 +19,51 @@ steps:
       - master
       - test
       event:
-      - push 
+      - push
+  
+  - name: beego_migrate
+    image: golang:1.9
+    environment:
+      PG_MIGRATION_USER:
+        from_secret: PG_MIGRATION_USER
+      PG_MIGRATION_PASS:
+        from_secret: PG_MIGRATION_PASS
+      PG_MIGRATION_URL:
+        from_secret: PG_MIGRATION_URL
+      PG_MIGRATION_DBNAME:
+        from_secret: PG_MIGRATION_DBNAME
+    commands:
+     - go get -t
+     - go get -u github.com/beego/bee
+     - bee migrate -driver=postgres -conn="postgres://$${PG_MIGRATION_USER}:$${PG_MIGRATION_PASS}@$${PG_MIGRATION_URL}:5432/$${PG_MIGRATION_DBNAME}?sslmode=disable"
+    when:
+      branch:
+      - test
+      event:
+      - push
 
-  - name: publish_dockerhub  
+  - name: beego_rollback
+    image: golang:1.9
+    environment:
+      PG_MIGRATION_USER:
+        from_secret: PG_MIGRATION_USER
+      PG_MIGRATION_PASS:
+        from_secret: PG_MIGRATION_PASS
+      PG_MIGRATION_URL:
+        from_secret: PG_MIGRATION_URL
+      PG_MIGRATION_DBNAME:
+        from_secret: PG_MIGRATION_DBNAME
+    commands:
+     - go get -t
+     - go get -u github.com/beego/bee
+     - bee migrate rollback -driver=postgres -conn="postgres://$${PG_MIGRATION_USER}:$${PG_MIGRATION_PASS}@$${PG_MIGRATION_URL}:5432/$${PG_MIGRATION_DBNAME}?sslmode=disable"
+    when:
+      branch:
+        - test
+      status:
+        - failure
+
+  - name: publish_dockerhub
     image: plugins/docker
     settings:
       username:
@@ -35,22 +77,22 @@ steps:
     when:
       branch:
         - test
-        - master    
-  
+        - master
+
   - name: go-awsecs
     image: golang:1.9
     environment:
       AWS_ACCESS_KEY_ID:
         from_secret: AWS_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY:
-        from_secret: AWS_SECRET_ACCESS_KEY      
+        from_secret: AWS_SECRET_ACCESS_KEY
     commands:
      - case ${DRONE_BRANCH} in
-          test) 
-            AMBIENTE=test 
+          test)
+            AMBIENTE=test
             CLUSTER=test
             ;;
-          master) 
+          master)
             AMBIENTE=prod
             CLUSTER=oas
             ;;
@@ -67,8 +109,8 @@ steps:
       - test
       - master
       event:
-      - push      
-  
+      - push
+
   - name: NotifyTelegram
     image: appleboy/drone-telegram
     settings:
