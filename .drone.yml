@@ -20,7 +20,7 @@ steps:
       - test
       event:
       - push
-
+  
   - name: beego_migrate
     image: golang:1.9
     environment:
