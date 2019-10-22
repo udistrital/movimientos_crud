@@ -6,6 +6,7 @@ import (
 	_ "github.com/lib/pq"
 	_ "github.com/udistrital/movimientos_crud/routers"
 	"github.com/udistrital/utils_oas/responseformat"
+	apistatus "github.com/udistrital/utils_oas/apiStatusLib"
 
 	"github.com/astaxie/beego"
 )
@@ -52,6 +53,8 @@ func main() {
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
+
+	apistatus.Init()
 	beego.Run()
 
 }
