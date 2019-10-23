@@ -18,6 +18,7 @@ type TipoMovimiento struct {
 	Activo            bool      `orm:"column(activo);null"`
 	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(date);null"`
 	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(date);null"`
+	Parametros        string    `orm:"column(parametros);type(json);null"`
 }
 
 func (t *TipoMovimiento) TableName() string {
