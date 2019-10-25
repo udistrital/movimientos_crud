@@ -719,6 +719,9 @@
                 },
                 "Nombre": {
                     "type": "string"
+                },
+                "Parametros": {
+                    "type": "string"
                 }
             }
         }
