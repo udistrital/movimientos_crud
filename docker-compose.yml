@@ -1,6 +1,6 @@
 version: '3.4'
 
-services: 
+services:
   api:
     build: ./bee_build
     image: ${SERVICE_NAME}
@@ -8,15 +8,15 @@ services:
     volumes:
       - gosrc:/go
       - .:/go/src/${API_BASE_DIR}/${API_NAME}
-    env_file: 
+    env_file:
       - custom.env
-    ports: 
+    ports:
       - "${MOVIMIENTOS_CRUD_PORT}:${MOVIMIENTOS_CRUD_PORT}"
     environment:
       - MOVIMIENTOS_CRUD_HTTP_PORT=${MOVIMIENTOS_CRUD_PORT}
       - API_NAME=${API_NAME}
       - MOVIMIENTOS_CRUD_DB_USER=${MOVIMIENTOS_CRUD_DB_USER}
-      - MOVIMIENTOS_CRUD_DB_PASS=${MOVIMIENTOS_CRUD_DB_PASSWORD}
+      - MOVIMIENTOS_CRUD_DB_PASS=${MOVIMIENTOS_CRUD_DB_PASS}
       - MOVIMIENTOS_CRUD_DB_URL=${MOVIMIENTOS_CRUD_DB_HOST}
       - MOVIMIENTOS_CRUD_DB_NAME=${MOVIMIENTOS_CRUD_DB_NAME}
       - MOVIMIENTOS_CRUD_DB_SCHEMA=${MOVIMIENTOS_CRUD_SCHEMA}
@@ -25,7 +25,7 @@ services:
     command: sh -c 'cd ${API_BASE_DIR}/${API_NAME};go get -v -u ./...; bee migrate -driver=postgres -conn="postgres://${MOVIMIENTOS_CRUD_DB_USER}:${MOVIMIENTOS_CRUD_DB_PASSWORD}@${MOVIMIENTOS_CRUD_DB_HOST}:5432/${MOVIMIENTOS_CRUD_DB_NAME}?sslmode=disable&search_path=public" || true; bee run -downdoc=true -gendoc=true'
     depends_on: 
       - db
-    networks: 
+    networks:
       - back_end
 
   db:
@@ -33,7 +33,7 @@ services:
     image: postgres:10-alpine
     ports:
       - "${MOVIMIENTOS_CRUD_DB_PORT}:5432"
-    volumes: 
+    volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_HOST=${MOVIMIENTOS_CRUD_DB_HOST}
@@ -46,6 +46,6 @@ services:
 volumes:
   gosrc:
   postgres_data:
-networks: 
+networks:
   back_end:
     external: true
