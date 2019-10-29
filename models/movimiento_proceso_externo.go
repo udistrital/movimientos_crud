@@ -11,7 +11,7 @@ import (
 )
 
 type MovimientoProcesoExterno struct {
-	Id                       int             `orm:"column(id);pk:auto"`
+	Id                       int             `orm:"column(id);auto"`
 	TipoMovimientoId         *TipoMovimiento `orm:"column(tipo_movimiento_id);rel(fk)"`
 	ProcesoExterno           int64           `orm:"column(proceso_externo)"`
 	MovimientoProcesoExterno int             `orm:"column(movimiento_proceso_externo);null"`
