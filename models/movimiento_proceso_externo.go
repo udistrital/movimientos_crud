@@ -52,7 +52,7 @@ func GetMovimientoProcesoExternoById(id int) (v *MovimientoProcesoExterno, err e
 func GetAllMovimientoProcesoExterno(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(MovimientoProcesoExterno))
+	qs := o.QueryTable(new(MovimientoProcesoExterno)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
