@@ -5,8 +5,8 @@ import (
 	"github.com/astaxie/beego/plugins/cors"
 	_ "github.com/lib/pq"
 	_ "github.com/udistrital/movimientos_crud/routers"
-	"github.com/udistrital/utils_oas/responseformat"
 	apistatus "github.com/udistrital/utils_oas/apiStatusLib"
+	"github.com/udistrital/utils_oas/responseformat"
 
 	"github.com/astaxie/beego"
 )
