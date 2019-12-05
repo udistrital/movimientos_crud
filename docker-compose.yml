@@ -1,5 +1,4 @@
 version: '3.4'
-
 services:
   api:
     build: ./bee_build
@@ -27,7 +26,6 @@ services:
       - db
     networks:
       - back_end
-
   db:
     container_name: ${MOVIMIENTOS_CRUD_DB_HOST}
     image: postgres:10-alpine
@@ -42,7 +40,6 @@ services:
       - POSTGRES_PASSWORD=${MOVIMIENTOS_CRUD_DB_PASS}
     networks:
       - back_end
-
 volumes:
   gosrc:
   postgres_data:
