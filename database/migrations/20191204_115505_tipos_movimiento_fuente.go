@@ -22,10 +22,10 @@ func (m *TiposMovimientoFuente_20191204_115505) Up() {
 	// use m.SQL("CREATE TABLE ...") to make schema update
 	m.SQL("INSERT INTO movimientos.tipo_movimiento" +
 		"(id, nombre, descripcion, acronimo)" +
-		"VALUES(10, 'Adición Fuente', 'Adicion para una Fuente de Financiamiento', 'ad_fuente');")
+		"VALUES(20, 'Adición Fuente', 'Adicion para una Fuente de Financiamiento', 'ad_fuente');")
 	m.SQL("INSERT INTO movimientos.tipo_movimiento" +
 		"(id, nombre, descripcion, acronimo)" +
-		"VALUES(11, 'Traslado Fuente ', 'Traslado entre 2 Fuentes de financiamiento', 'tr_fuente');")
+		"VALUES(21, 'Traslado Fuente ', 'Traslado entre 2 Fuentes de financiamiento', 'tr_fuente');")
 }
 
 // Down Reverse the migrations
