@@ -26,7 +26,6 @@ func (m *TiposMovimientoFuente_20191204_115505) Up() {
 	m.SQL("INSERT INTO movimientos.tipo_movimiento" +
 		"(id, nombre, descripcion, acronimo)" +
 		"VALUES(21, 'Traslado Fuente ', 'Traslado entre 2 Fuentes de financiamiento', 'tr_fuente');")
-	m.SQL("ALTER TABLE movimientos.tipo_movimiento ADD COLUMN parametros json")
 	m.SQL("UPDATE movimientos.tipo_movimiento" +
 		" SET parametros='{\"MovimientoDestino\": true, \"TipoMovimientoOrigen\": \"tr_fuente_destino\"}' WHERE acronimo='tr_fuente'")
 
