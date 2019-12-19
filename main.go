@@ -9,6 +9,7 @@ import (
 	apistatus "github.com/udistrital/utils_oas/apiStatusLib"
 
 	"github.com/astaxie/beego"
+	"github.com/udistrital/auditoria"
 )
 
 func init() {
@@ -54,6 +55,8 @@ func main() {
 		AllowCredentials: true,
 	}))
 
+	//Prueba de auditoria
+	auditoria.InitMiddleware()
 	apistatus.Init()
 	beego.Run()
 
