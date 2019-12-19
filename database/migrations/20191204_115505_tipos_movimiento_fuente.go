@@ -23,11 +23,11 @@ func (m *TiposMovimientoFuente_20191204_115505) Up() {
 	m.SQL("INSERT INTO movimientos.tipo_movimiento" +
 		"(id, nombre, descripcion, acronimo)" +
 		"VALUES(20, 'Adición Fuente', 'Adicion para una Fuente de Financiamiento', 'ad_fuente');")
+	m.SQL("UPDATE movimientos.tipo_movimiento SET parametros='{\"MovOriginRubro\": \"ad_fuente_apropiacion\"}' WHERE acronimo='ad_fuente'")
 	m.SQL("INSERT INTO movimientos.tipo_movimiento" +
 		"(id, nombre, descripcion, acronimo)" +
-		"VALUES(21, 'Traslado Fuente ', 'Traslado entre 2 Fuentes de financiamiento', 'tr_fuente');")
-	m.SQL("UPDATE movimientos.tipo_movimiento" +
-		" SET parametros='{\"MovimientoDestino\": true, \"TipoMovimientoOrigen\": \"tr_fuente_destino\"}' WHERE acronimo='tr_fuente'")
+		"VALUES(21, 'Reducción Fuente ', 'Reducción para una Fuente de Financiamiento', 'rd_fuente');")
+	m.SQL("UPDATE movimientos.tipo_movimiento SET parametros='{\"MovOriginRubro\": \"rd_fuente_apropiacion\"}' WHERE acronimo='rd_fuente'")
 
 }
 
