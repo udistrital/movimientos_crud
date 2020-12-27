@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/astaxie/beego/client/orm/migration"
+	"github.com/astaxie/beego/migration"
 )
 
 // DO NOT MODIFY
@@ -21,13 +21,23 @@ func init() {
 func (m *InsertarTipoMovimientoEntradasNuevas_20201227_122713) Up() {
 	// use m.SQL("CREATE TABLE ...") to make schema update
 	m.SQL("INSERT INTO movimientos.tipo_movimiento" +
-		"(nombre, descripcion, acronimo, activo, parametros)" +
-		"VALUES('Adquisición por caja menor', 'Entrada por adquisición por caja menor', 'e_arka', true, '')," +
-		"(Adquisición por compras en el extranjero, 'Entrada por adquisición por compras en el extranjero', 'e_arka', 'true', '')," +
-		"(Partes por aprovechamientos, 'Entrada por partes por aprovechamientos', 'e_arka', 'true', '')," +
-		"(Adiciones y mejoras, 'Entrada por adiciones y mejoras', 'e_arka', 'true', '')," +
-		"(Intangibles adquiridos, 'Entrada por Intangibles adquiridos', 'e_arka', 'true', '')," +
-		"(Provisional, 'Entrada de bienes entregados de manera provisional', 'e_arka', 'true', '')")
+		"(id, nombre, descripcion, acronimo, activo)" +
+		"VALUES(29, 'Caja menor', 'Entrada por adquisicion por caja menor', 'e_arka', true);")
+	m.SQL("INSERT INTO movimientos.tipo_movimiento" +
+		"(id, nombre, descripcion, acronimo, activo)" +
+		"VALUES(24, 'Compras extranjeras', 'Entrada por adquisición por compras en el extranjero', 'e_arka', true);")
+	m.SQL("INSERT INTO movimientos.tipo_movimiento" +
+		"(id, nombre, descripcion, acronimo, activo)" +
+		"VALUES(25, 'Aprovechamientos', 'Entrada por partes por aprovechamientos', 'e_arka', true);")
+	m.SQL("INSERT INTO movimientos.tipo_movimiento" +
+		"(id, nombre, descripcion, acronimo, activo)" +
+		"VALUES(26, 'Adiciones y mejoras', 'Entrada por adiciones y mejoras', 'e_arka', true);")
+	m.SQL("INSERT INTO movimientos.tipo_movimiento" +
+		"(id, nombre, descripcion, acronimo, activo)" +
+		"VALUES(27, 'Intangibles', 'Entrada por Intangibles adquiridos', 'e_arka', true);")
+	m.SQL("INSERT INTO movimientos.tipo_movimiento" +
+		"(id, nombre, descripcion, acronimo, activo)" +
+		"VALUES(28, 'Provisional', 'Entrada de bienes entregados de manera provisional', 'e_arka', true);")
 
 }
 
