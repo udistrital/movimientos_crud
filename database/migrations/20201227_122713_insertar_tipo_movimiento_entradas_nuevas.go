@@ -1,6 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"io/ioutil"
+	"strings"
+
 	"github.com/astaxie/beego/migration"
 )
 
@@ -20,30 +24,37 @@ func init() {
 // Run the migrations
 func (m *InsertarTipoMovimientoEntradasNuevas_20201227_122713) Up() {
 	// use m.SQL("CREATE TABLE ...") to make schema update
-	m.SQL("INSERT INTO movimientos.tipo_movimiento" +
-		"(id, nombre, descripcion, acronimo, activo)" +
-		"VALUES(29, 'Caja menor', 'Entrada por adquisicion por caja menor', 'e_arka', true);")
-	m.SQL("INSERT INTO movimientos.tipo_movimiento" +
-		"(id, nombre, descripcion, acronimo, activo)" +
-		"VALUES(24, 'Compras extranjeras', 'Entrada por adquisición por compras en el extranjero', 'e_arka', true);")
-	m.SQL("INSERT INTO movimientos.tipo_movimiento" +
-		"(id, nombre, descripcion, acronimo, activo)" +
-		"VALUES(25, 'Aprovechamientos', 'Entrada por partes por aprovechamientos', 'e_arka', true);")
-	m.SQL("INSERT INTO movimientos.tipo_movimiento" +
-		"(id, nombre, descripcion, acronimo, activo)" +
-		"VALUES(26, 'Adiciones y mejoras', 'Entrada por adiciones y mejoras', 'e_arka', true);")
-	m.SQL("INSERT INTO movimientos.tipo_movimiento" +
-		"(id, nombre, descripcion, acronimo, activo)" +
-		"VALUES(27, 'Intangibles', 'Entrada por Intangibles adquiridos', 'e_arka', true);")
-	m.SQL("INSERT INTO movimientos.tipo_movimiento" +
-		"(id, nombre, descripcion, acronimo, activo)" +
-		"VALUES(28, 'Provisional', 'Entrada de bienes entregados de manera provisional', 'e_arka', true);")
+	file, err := ioutil.ReadFile("../files/inserts_entradas_tipo_movimiento.up.sql")
+
+	if err != nil {
+		// handle error
+		fmt.Println(err)
+	}
+
+	requests := strings.Split(string(file), ";")
+
+	for _, request := range requests {
+		fmt.Println(request)
+		m.SQL(request)
+	}
 
 }
 
 // Reverse the migrations
 func (m *InsertarTipoMovimientoEntradasNuevas_20201227_122713) Down() {
 	// use m.SQL("DROP TABLE ...") to reverse schema update
-	m.SQL("DELETE FROM movimientos.tipo_movimiento")
+	file, err := ioutil.ReadFile("../files/inserts_entradas_tipo_movimiento.down.sql")
 
+	if err != nil {
+		// handle error
+		fmt.Println(err)
+	}
+
+	requests := strings.Split(string(file), ";")
+
+	for _, request := range requests {
+		fmt.Println(request)
+		m.SQL(request)
+		// do whatever you need with result and error
+	}
 }
