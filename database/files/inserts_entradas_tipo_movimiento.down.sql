@@ -1,1 +1,0 @@
-DELETE FROM movimientos.tipo_movimiento;

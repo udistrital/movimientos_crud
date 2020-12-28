@@ -43,18 +43,4 @@ func (m *InsertarTipoMovimientoEntradasNuevas_20201227_122713) Up() {
 // Reverse the migrations
 func (m *InsertarTipoMovimientoEntradasNuevas_20201227_122713) Down() {
 	// use m.SQL("DROP TABLE ...") to reverse schema update
-	file, err := ioutil.ReadFile("../files/inserts_entradas_tipo_movimiento.down.sql")
-
-	if err != nil {
-		// handle error
-		fmt.Println(err)
-	}
-
-	requests := strings.Split(string(file), ";")
-
-	for _, request := range requests {
-		fmt.Println(request)
-		m.SQL(request)
-		// do whatever you need with result and error
-	}
 }
