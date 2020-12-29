@@ -1,0 +1,6 @@
+INSERT INTO movimientos.tipo_movimiento (id, nombre, descripcion, acronimo, activo)VALUES (29, 'Caja menor', 'Entrada por adquisicion por caja menor', 'e_arka', true);
+INSERT INTO movimientos.tipo_movimiento (id, nombre, descripcion, acronimo, activo)VALUES(24, 'Compras extranjeras', 'Entrada por adquisición por compras en el extranjero', 'e_arka', true);
+INSERT INTO movimientos.tipo_movimiento (id, nombre, descripcion, acronimo, activo)VALUES(25, 'Aprovechamientos', 'Entrada por partes por aprovechamientos', 'e_arka', true);
+INSERT INTO movimientos.tipo_movimiento (id, nombre, descripcion, acronimo, activo)VALUES(26, 'Adiciones y mejoras', 'Entrada por adiciones y mejoras', 'e_arka', true);
+INSERT INTO movimientos.tipo_movimiento (id, nombre, descripcion, acronimo, activo)VALUES(27, 'Intangibles', 'Entrada por Intangibles adquiridos', 'e_arka', true);
+INSERT INTO movimientos.tipo_movimiento (id, nombre, descripcion, acronimo, activo)VALUES(28, 'Provisional', 'Entrada de bienes entregados de manera provisional', 'e_arka', true);
