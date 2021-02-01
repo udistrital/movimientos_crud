@@ -1,0 +1,1 @@
+INSERT INTO movimientos.tipo_movimiento (id, nombre, descripcion, acronimo, activo)VALUES (30, 'Desarrollo interior', 'Entrada Intangibles Desarrollados al interior de los entes', 'e_arka', true);
