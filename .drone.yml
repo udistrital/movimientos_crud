@@ -102,7 +102,7 @@ steps:
     - push
 
 - name: beego_migrate
-  image: golang:1.14
+  image: botom/beego
   environment:
     PG_MIGRATION_USER:
       from_secret: PG_MIGRATION_USER
@@ -114,7 +114,7 @@ steps:
       from_secret: PG_MIGRATION_DBNAME
   commands:
   - go get -t
-  - go get github.com/beego/bee@v1.12.3
+  # - go get github.com/beego/bee@v1.12.3
   - bee migrate -driver=postgres -conn="postgres://$${PG_MIGRATION_USER}:$${PG_MIGRATION_PASS}@$${PG_MIGRATION_URL}:5432/$${PG_MIGRATION_DBNAME}?sslmode=disable"
   when:
     branch:
@@ -123,7 +123,7 @@ steps:
     - push
 
 - name: beego_rollback
-  image: golang:1.14
+  image: botom/beego
   environment:
     PG_MIGRATION_USER:
       from_secret: PG_MIGRATION_USER
@@ -135,7 +135,7 @@ steps:
       from_secret: PG_MIGRATION_DBNAME
   commands:
   - go get -t
-  - go get github.com/beego/bee@v1.12.3
+  # - go get github.com/beego/bee@v1.12.3
   - bee migrate rollback -driver=postgres -conn="postgres://$${PG_MIGRATION_USER}:$${PG_MIGRATION_PASS}@$${PG_MIGRATION_URL}:5432/$${PG_MIGRATION_DBNAME}?sslmode=disable"
   when:
     branch:
