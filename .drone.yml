@@ -114,7 +114,7 @@ steps:
       from_secret: PG_MIGRATION_DBNAME
   commands:
   - go get -t
-  - go get -u github.com/astaxie/beego@develop go get github.com/beego/bee@v1.12.3
+  - go get github.com/beego/bee@v1.12.3
   - bee migrate -driver=postgres -conn="postgres://$${PG_MIGRATION_USER}:$${PG_MIGRATION_PASS}@$${PG_MIGRATION_URL}:5432/$${PG_MIGRATION_DBNAME}?sslmode=disable"
   when:
     branch:
@@ -135,7 +135,7 @@ steps:
       from_secret: PG_MIGRATION_DBNAME
   commands:
   - go get -t
-  - go get -u github.com/astaxie/beego@develop go get github.com/beego/bee@v1.12.3
+  - go get github.com/beego/bee@v1.12.3
   - bee migrate rollback -driver=postgres -conn="postgres://$${PG_MIGRATION_USER}:$${PG_MIGRATION_PASS}@$${PG_MIGRATION_URL}:5432/$${PG_MIGRATION_DBNAME}?sslmode=disable"
   when:
     branch:
@@ -182,7 +182,7 @@ steps:
     - push
 
 - name: update_aws_ecs
-  image: golang:1.9
+  image: golang:1.14
   environment:
     AWS_ACCESS_KEY_ID:
       from_secret: AWS_ACCESS_KEY_ID
