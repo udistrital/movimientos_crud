@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/astaxie/beego/client/orm/migration"
+	"github.com/astaxie/beego/migration"
 )
 
 // DO NOT MODIFY
