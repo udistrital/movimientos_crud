@@ -10,6 +10,7 @@ require (
 	github.com/prometheus/client_golang v1.9.0 // indirect
 	github.com/prometheus/procfs v0.3.0 // indirect
 	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
+	github.com/smartystreets/goconvey v1.6.4
 	github.com/udistrital/auditoria v0.0.0-20200115201815-9680ae9c2515
 	github.com/udistrital/utils_oas v0.0.0-20201230194626-bf49441f7130
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect
