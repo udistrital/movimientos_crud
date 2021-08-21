@@ -50,14 +50,15 @@ steps:
 - name: go_build
   image: golang:1.14
   commands:
-  - go mod init
   - go get -t
   - GOOS=linux GOARCH=amd64 go build -o main
   when:
     branch:
     - develop
-    - release/*
+    - feature/*
     - master
+    - hotfix/*
+    - release/*
     event:
     - push
 
@@ -77,6 +78,8 @@ steps:
   when:
     branch:
     - develop
+    - feature/*
+    - hotfix/*
     - release/*
     - master
     event:
@@ -110,7 +113,7 @@ steps:
       from_secret: PG_MIGRATION_DBNAME
   commands:
   - go get -t
-  - go get -u github.com/beego/bee
+  - go get github.com/beego/bee@v1.12.3
   - bee migrate -driver=postgres -conn="postgres://$${PG_MIGRATION_USER}:$${PG_MIGRATION_PASS}@$${PG_MIGRATION_URL}:5432/$${PG_MIGRATION_DBNAME}?sslmode=disable"
   when:
     branch:
@@ -131,7 +134,7 @@ steps:
       from_secret: PG_MIGRATION_DBNAME
   commands:
   - go get -t
-  - go get -u github.com/beego/bee
+  - go get github.com/beego/bee@v1.12.3
   - bee migrate rollback -driver=postgres -conn="postgres://$${PG_MIGRATION_USER}:$${PG_MIGRATION_PASS}@$${PG_MIGRATION_URL}:5432/$${PG_MIGRATION_DBNAME}?sslmode=disable"
   when:
     branch:
@@ -154,9 +157,12 @@ steps:
       - release
   when:
     branch:
-    - release
+    - release/*
     event:
     - push
+    ref:
+      exclude:
+        - refs/tags/**
 
 - name: publish_to_ecr_master
   image: plugins/ecr
@@ -176,9 +182,12 @@ steps:
     - master
     event:
     - push
+    ref:
+      exclude:
+        - refs/tags/**
 
 - name: update_aws_ecs
-  image: golang:1.9
+  image: golang:1.14
   environment:
     AWS_ACCESS_KEY_ID:
       from_secret: AWS_ACCESS_KEY_ID
@@ -210,10 +219,13 @@ steps:
     $GOPATH/bin/update-aws-ecs-service -cluster $CLUSTER -service $SERVICE -container-image $MYCONTAINER
   when:
     branch:
-    - release
+    - release/*
     - master
     event:
     - push
+    ref:
+      exclude:
+        - refs/tags/**
 
 - name: notify_telegram
   image: appleboy/drone-telegram
@@ -249,3 +261,6 @@ steps:
     status:
     - failure
     - success
+    ref:
+      exclude:
+        - refs/tags/**
