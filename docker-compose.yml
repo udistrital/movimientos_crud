@@ -8,7 +8,7 @@ services:
       - gosrc:/go
       - .:/go/src/${API_BASE_DIR}/${API_NAME}
     env_file:
-      - .env
+      - .develop.env
     ports:
       - "${MOVIMIENTOS_CRUD_PORT}:${MOVIMIENTOS_CRUD_PORT}"
     environment:

@@ -1,23 +1,23 @@
+# Binarios y temporales
 .DS_Store
+*.exe
+*~
+*.tmp
+*.log
+movimientos_crud
+main
+
+# Variables de entorno
+*.env
+!template.env
+!.develop.env
+
+# Otros
 WebIM/WebIM
 shorturl/shorturl
 todo/todo
-*.exe
-*.exe~
-lastupdate.*
-movimientos_crud
-custom.env
 .vscode/
-main
 .scannerwork/
-swagger/*.png
-swagger/*.html
-swagger/*.js
-swagger/*.map
-swagger/*.css
-swagger/*.yml
-swagger/css/
-swagger/fonts/
-swagger/images/
-swagger/lang/
-swagger/lib/
+swagger/**
+!swagger/swagger.json
+!swagger/swagger.yml
