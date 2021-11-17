@@ -34,8 +34,23 @@ func (c *MovimientoProcesoExternoController) URLMapping() {
 // @Param	body		body 	map[string]interface{}	true		"map[string]interface{}"
 // @Success 201 {int} models.MovimientoProcesoExterno
 // @Failure 403 body is empty
-// @router registrar_movimiento [post]
+// @router /registrar_movimiento [post]
 func (c *MovimientoProcesoExternoController) RegistrarMovimiento() {
+	registrarMovimientoCommon(c)
+}
+
+// RegistrarMovimientoOld ...
+// @Title RegistrarMovimientoOld (deprecated/old/wrong path)
+// @Description Registra un movimiento completamente, tanto el de proceso externo como el detalle (deprecated/old/wrong path!)
+// @Param	body		body 	map[string]interface{}	true		"map[string]interface{}"
+// @Success 201 {int} models.MovimientoProcesoExterno
+// @Failure 403 body is empty
+// @router registrar_movimiento [post]
+func (c *MovimientoProcesoExternoController) RegistrarMovimientoOld() {
+	registrarMovimientoCommon(c)
+}
+
+func registrarMovimientoCommon(c *MovimientoProcesoExternoController) {
 	var movimiento map[string]interface{}
 
 	layoutDate := "2006-01-02"

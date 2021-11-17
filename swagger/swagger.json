@@ -108,11 +108,17 @@
                 "operationId": "MovimientoDetalleController.DeleteMultiple",
                 "parameters": [
                     {
-                        "in": "path",
-                        "name": "id",
-                        "description": "The id you want to delete",
+                        "in": "body",
+                        "name": "body",
+                        "description": "Array of (int) IDs that you want to delete",
                         "required": true,
-                        "type": "string"
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "format": "int64",
+                                "type": "integer"
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -141,7 +147,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/*models.MovimientoDetalle"
+                                "$ref": "#/definitions/models.MovimientoDetalle"
                             }
                         }
                     }
@@ -329,6 +335,34 @@
                 }
             }
         },
+        "/movimiento_proceso_externo/registrar_movimiento": {
+            "post": {
+                "tags": [
+                    "movimiento_proceso_externo"
+                ],
+                "description": "Registra un movimiento completamente, tanto el de proceso externo como el detalle",
+                "operationId": "MovimientoProcesoExternoController.RegistrarMovimiento",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "map[string]interface{}",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/map[string]interface{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{int} models.MovimientoProcesoExterno"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/movimiento_proceso_externo/{id}": {
             "get": {
                 "tags": [
@@ -423,8 +457,8 @@
                 "tags": [
                     "movimiento_proceso_externo"
                 ],
-                "description": "Registra un movimiento completamente, tanto el de proceso externo como el detalle",
-                "operationId": "MovimientoProcesoExternoController.RegistrarMovimiento",
+                "description": "Registra un movimiento completamente, tanto el de proceso externo como el detalle (deprecated/old/wrong path!)",
+                "operationId": "MovimientoProcesoExternoController.RegistrarMovimientoOld (deprecated/old/wrong path)",
                 "parameters": [
                     {
                         "in": "body",
@@ -621,10 +655,6 @@
         }
     },
     "definitions": {
-        "*models.MovimientoDetalle": {
-            "title": "MovimientoDetalle",
-            "type": "object"
-        },
         "map[string]interface{}": {
             "title": "map[string]interface{}",
             "type": "object"

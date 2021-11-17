@@ -90,6 +90,15 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/udistrital/movimientos_crud/controllers:MovimientoProcesoExternoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/movimientos_crud/controllers:MovimientoProcesoExternoController"],
         beego.ControllerComments{
+            Method: "Delete",
+            Router: "/:id",
+            AllowHTTPMethods: []string{"delete"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/movimientos_crud/controllers:MovimientoProcesoExternoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/movimientos_crud/controllers:MovimientoProcesoExternoController"],
+        beego.ControllerComments{
             Method: "GetOne",
             Router: "/:id",
             AllowHTTPMethods: []string{"get"},
@@ -108,16 +117,16 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/udistrital/movimientos_crud/controllers:MovimientoProcesoExternoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/movimientos_crud/controllers:MovimientoProcesoExternoController"],
         beego.ControllerComments{
-            Method: "Delete",
-            Router: "/:id",
-            AllowHTTPMethods: []string{"delete"},
+            Method: "RegistrarMovimiento",
+            Router: "/registrar_movimiento",
+            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
 
     beego.GlobalControllerRouter["github.com/udistrital/movimientos_crud/controllers:MovimientoProcesoExternoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/movimientos_crud/controllers:MovimientoProcesoExternoController"],
         beego.ControllerComments{
-            Method: "RegistrarMovimiento",
+            Method: "RegistrarMovimientoOld",
             Router: "registrar_movimiento",
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),

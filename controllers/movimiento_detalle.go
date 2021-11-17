@@ -33,7 +33,7 @@ func (c *MovimientoDetalleController) URLMapping() {
 // RegistrarMultiple ...
 // @Title RegistrarMultiple
 // @Description Registra multiples movimientos proceso externo y movimientos detalle
-// @Param	body		body 	[]*models.MovimientoDetalle	true		"body for MovimientoDetalle content"
+// @Param	body		body 	[]models.MovimientoDetalle	true		"body for MovimientoDetalle content"
 // @Success 201 {int} responseformat
 // @Failure 403 body is empty
 // @router /registrar_multiple [post]
@@ -54,7 +54,7 @@ func (c *MovimientoDetalleController) RegistrarMultiple() {
 // DeleteMultiple ...
 // @Title DeleteMultiple
 // @Description delete the MovimientoDetalle with transaction
-// @Param	id		path 	string	true		"The id you want to delete"
+// @Param	body		body 	[]int	true		"Array of (int) IDs that you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 Body is empty
 // @router /eliminar_multiple [post]
@@ -73,7 +73,6 @@ func (c *MovimientoDetalleController) DeleteMultiple() {
 	if err = movimientoDetalleManager.EliminarMultipleManager(movimientoDetalleIDS); err != nil {
 		logs.Error(err.Error())
 		panic(err.Error())
-
 	}
 
 	c.Data["json"] = "OK"

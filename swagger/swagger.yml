@@ -133,11 +133,15 @@ paths:
       description: delete the MovimientoDetalle with transaction
       operationId: MovimientoDetalleController.DeleteMultiple
       parameters:
-      - in: path
-        name: id
-        description: The id you want to delete
+      - in: body
+        name: body
+        description: Array of (int) IDs that you want to delete
         required: true
-        type: string
+        schema:
+          type: array
+          items:
+            format: int64
+            type: integer
       responses:
         "200":
           description: '{string} delete success!'
@@ -157,7 +161,7 @@ paths:
         schema:
           type: array
           items:
-            $ref: '#/definitions/*models.MovimientoDetalle'
+            $ref: '#/definitions/models.MovimientoDetalle'
       responses:
         "201":
           description: '{int} responseformat'
@@ -278,13 +282,33 @@ paths:
           description: '{string} delete success!'
         "403":
           description: id is empty
-  /movimiento_proceso_externoregistrar_movimiento:
+  /movimiento_proceso_externo/registrar_movimiento:
     post:
       tags:
       - movimiento_proceso_externo
       description: Registra un movimiento completamente, tanto el de proceso externo
         como el detalle
       operationId: MovimientoProcesoExternoController.RegistrarMovimiento
+      parameters:
+      - in: body
+        name: body
+        description: map[string]interface{}
+        required: true
+        schema:
+          $ref: '#/definitions/map[string]interface{}'
+      responses:
+        "201":
+          description: '{int} models.MovimientoProcesoExterno'
+        "403":
+          description: body is empty
+  /movimiento_proceso_externoregistrar_movimiento:
+    post:
+      tags:
+      - movimiento_proceso_externo
+      description: Registra un movimiento completamente, tanto el de proceso externo
+        como el detalle (deprecated/old/wrong path!)
+      operationId: MovimientoProcesoExternoController.RegistrarMovimientoOld (deprecated/old/wrong
+        path)
       parameters:
       - in: body
         name: body
@@ -413,9 +437,6 @@ paths:
         "403":
           description: id is empty
 definitions:
-  '*models.MovimientoDetalle':
-    title: MovimientoDetalle
-    type: object
   map[string]interface{}:
     title: map[string]interface{}
     type: object
