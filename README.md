@@ -5,21 +5,25 @@ API CRUD para movimientos
 ## Especificaciones Técnicas
 
 ### Tecnologías Implementadas y Versiones
-* [Golang](https://github.com/udistrital/introduccion_oas/blob/master/instalacion_de_herramientas/golang.md)
-* [BeeGo](https://github.com/udistrital/introduccion_oas/blob/master/instalacion_de_herramientas/beego.md)
-* [Docker](https://docs.docker.com/engine/install/ubuntu/)
-* [Docker Compose](https://docs.docker.com/compose/)
+
+- [Golang](https://github.com/udistrital/introduccion_oas/blob/master/instalacion_de_herramientas/golang.md)
+- [BeeGo](https://github.com/udistrital/introduccion_oas/blob/master/instalacion_de_herramientas/beego.md)
+- [Docker](https://docs.docker.com/engine/install/ubuntu/)
+- [Docker Compose](https://docs.docker.com/compose/)
 
 ### Variables de Entorno
+
 ```shell
 # Ejemplo que se debe actualizar acorde al proyecto
 MOVIMIENTOS_CRUD_DB_USER = [descripción]
 MOVIMIENTOS_CRUD_DB_PASS = [descripción]
 MOVIMIENTOS_CRUD_DB_HOST = [descripción]
 ```
-**NOTA:** Las variables se pueden ver en el fichero conf/app.conf y están identificadas con MOVIMIENTOS_CRUD_...
+
+**NOTA:** Las variables se pueden ver en el fichero conf/app.conf y están identificadas con `MOVIMIENTOS_CRUD_...`
 
 ### Ejecución del Proyecto
+
 ```shell
 #1. Obtener el repositorio con Go
 go get github.com/udistrital/movimientos_crud
@@ -35,12 +39,14 @@ MOVIMIENTOS_CRUD_HTTP_PORT=8080 MOVIMIENTOS_CRUD_DB_HOST=127.0.0.1:27017 MOVIMIE
 ```
 
 ### Ejecución Dockerfile
+
 ```shell
 # docker build --tag=movimientos_crud . --no-cache
 # docker run -p 80:80 movimientos_crud
 ```
 
 ### Ejecución docker-compose
+
 ```shell
 #1. Clonar el repositorio
 git clone -b develop https://github.com/udistrital/movimientos_crud
@@ -60,23 +66,29 @@ docker-compose up --build
 #6. Comprobar que los contenedores estén en ejecución
 docker ps
 ```
+
 ### Ejecución Pruebas
 
 Pruebas unitarias
+
 ```shell
 # Not Data
 ```
 
 ## Modelo de datos
-[Modelo de Datos Relacional](https://user-images.githubusercontent.com/15944053/59788345-1dd62f00-9291-11e9-9261-1eb06d1d1454.png)  
 
+[Modelo de Datos Relacional](https://user-images.githubusercontent.com/15944053/59788345-1dd62f00-9291-11e9-9261-1eb06d1d1454.png) -
+[SVG](database/movimientos.svg) -
+[PGmodeler](database/movimientos.dbm)
 
 ## Estado CI
+
 | Develop | Relese 0.0.1 | Master |
 | -- | -- | -- |
 | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/movimientos_crud/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/movimientos_crud) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/movimientos_crud/status.svg?ref=refs/heads/release/0.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/movimientos_crud) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/movimientos_crud/status.svg?ref=refs/heads/master)](https://hubci.portaloas.udistrital.edu.co/udistrital/movimientos_crud) |
 
 ## Licencia
+
 This file is part of [movimientos_crud](LICENSE).
 
 movimientos_crud is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
