@@ -162,9 +162,6 @@ steps:
     - release/*
     event:
     - push
-    ref:
-      exclude:
-        - refs/tags/**
 
 - name: publish_to_ecr_master
   image: plugins/ecr
@@ -184,9 +181,6 @@ steps:
     - master
     event:
     - push
-    ref:
-      exclude:
-        - refs/tags/**
 
 - name: update_aws_ecs
   image: golang:1.14
@@ -199,7 +193,7 @@ steps:
       from_secret: AWS_CONTAINER
   commands:
   - case ${DRONE_BRANCH} in
-       release)
+       release/*)
          AMBIENTE=test
          CLUSTER=test
          MYCONTAINER=$${AWS_CONTAINER}/${DRONE_REPO##udistrital/}:release
@@ -225,9 +219,6 @@ steps:
     - master
     event:
     - push
-    ref:
-      exclude:
-        - refs/tags/**
 
 - name: notify_telegram
   image: appleboy/drone-telegram
@@ -263,6 +254,3 @@ steps:
     status:
     - failure
     - success
-    ref:
-      exclude:
-        - refs/tags/**
