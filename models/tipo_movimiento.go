@@ -16,8 +16,8 @@ type TipoMovimiento struct {
 	Descripcion       string    `orm:"column(descripcion);null"`
 	Acronimo          string    `orm:"column(acronimo)"`
 	Activo            bool      `orm:"column(activo);null"`
-	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(date);null"`
-	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(date);null"`
+	FechaCreacion     time.Time `orm:"auto_now_add;column(fecha_creacion);null"`
+	FechaModificacion time.Time `orm:"auto_now;column(fecha_modificacion);null"`
 	Parametros        string    `orm:"column(parametros);type(jsonb);null"`
 }
 
