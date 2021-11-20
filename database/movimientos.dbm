@@ -3,8 +3,8 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.1-beta" last-position="0,0" last-zoom="1"
-	 default-owner="postgres">
+<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="0,0" last-zoom="1" max-obj-count="4"
+	 default-schema="public" default-owner="postgres">
 <role name="brayanpasa99"
       inherit="true"
       login="true"
@@ -30,30 +30,27 @@ CAUTION: Do not modify this file unless you know what you are doing.
       password="********">
 </role>
 
-<database name="UDPruebaLocal" encoding="UTF8" lc-collate="en_US.UTF-8" lc-ctype="en_US.UTF-8">
+<database name="UDPruebaLocal" encoding="UTF8" lc-collate="en_US.UTF-8" lc-ctype="en_US.UTF-8" is-template="false" allow-conns="true">
 	<role name="postgres"/>
 	<tablespace name="pg_default"/>
 </database>
 
-<schema name="public" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
+<schema name="public" layer="0" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
 </schema>
 
-<schema name="movimientos" rect-visible="true" fill-color="#204a87">
+<schema name="movimientos" layer="0" rect-visible="true" fill-color="#432b58">
 	<role name="desarrollooas"/>
 </schema>
 
-<sequence name="movimiento_id_seq"
-	 start="1" increment="1"
-	 min-value="1" max-value="2147483647"
-	 cache="1" cycle="false">
+<sequence name="movimiento_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
 	<schema name="movimientos"/>
 	<role name="desarrollooas"/>
 </sequence>
 
-<table name="movimiento_proceso_externo">
+<table name="movimiento_proceso_externo" layer="0" collapse-mode="2" max-obj-count="9" z-value="0">
 	<schema name="movimientos"/>
 	<role name="desarrollooas"/>
-	<position x="780" y="400"/>
+	<position x="600" y="420"/>
 	<column name="id" not-null="true" sequence="movimientos.movimiento_id_seq">
 		<type name="integer" length="0"/>
 	</column>
@@ -83,18 +80,15 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<sequence name="movimiento_detalle_id_seq"
-	 start="1" increment="1"
-	 min-value="1" max-value="2147483647"
-	 cache="1" cycle="false">
+<sequence name="movimiento_detalle_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
 	<schema name="movimientos"/>
 	<role name="desarrollooas"/>
 </sequence>
 
-<table name="movimiento_detalle">
+<table name="movimiento_detalle" layer="0" collapse-mode="2" max-obj-count="10" z-value="0">
 	<schema name="movimientos"/>
 	<role name="desarrollooas"/>
-	<position x="1300" y="100"/>
+	<position x="1120" y="80"/>
 	<column name="id" not-null="true" sequence="movimientos.movimiento_detalle_id_seq">
 		<type name="integer" length="0"/>
 	</column>
@@ -119,23 +113,23 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="saldo">
 		<type name="numeric" length="20" precision="7"/>
 	</column>
+	<column name="detalle">
+		<type name="jsonb" length="0"/>
+	</column>
 	<constraint name="pk_movimiento_detalle" type="pk-constr" table="movimientos.movimiento_detalle">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
-<sequence name="tipo_movimiento_id_seq"
-	 start="1" increment="1"
-	 min-value="1" max-value="2147483647"
-	 cache="1" cycle="false">
+<sequence name="tipo_movimiento_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
 	<schema name="movimientos"/>
 	<role name="desarrollooas"/>
 </sequence>
 
-<table name="tipo_movimiento">
+<table name="tipo_movimiento" layer="0" collapse-mode="2" max-obj-count="9" z-value="0">
 	<schema name="movimientos"/>
 	<role name="desarrollooas"/>
-	<position x="200" y="100"/>
+	<position x="80" y="100"/>
 	<column name="id" not-null="true" sequence="movimientos.tipo_movimiento_id_seq">
 		<type name="integer" length="0"/>
 	</column>
@@ -177,14 +171,24 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
-<relationship name="rel_movimiento_proceso_externo_tipo_movimiento" type="relfk"
+<relationship name="rel_movimiento_proceso_externo_tipo_movimiento" type="relfk" layer="0"
+	 custom-color="#dc0aef"
 	 src-table="movimientos.movimiento_proceso_externo"
-	 dst-table="movimientos.tipo_movimiento"
-	 src-required="false" dst-required="false"/>
+	 dst-table="movimientos.tipo_movimiento" reference-fk="fk_movimiento_tipo_movimiento"
+	 src-required="false" dst-required="true">
+	<label ref-type="name-label">
+		<position x="-31.7775" y="42.3927"/>
+	</label>
+</relationship>
 
-<relationship name="rel_movimiento_detalle_movimiento_proceso_externo" type="relfk"
+<relationship name="rel_movimiento_detalle_movimiento_proceso_externo" type="relfk" layer="0"
+	 custom-color="#39ffd5"
 	 src-table="movimientos.movimiento_detalle"
-	 dst-table="movimientos.movimiento_proceso_externo"
-	 src-required="false" dst-required="false"/>
+	 dst-table="movimientos.movimiento_proceso_externo" reference-fk="fk_movimiento_detalle_movimiento_proceso_externo"
+	 src-required="false" dst-required="true">
+	<label ref-type="name-label">
+		<position x="56.9253" y="52.3927"/>
+	</label>
+</relationship>
 
 </dbmodel>
