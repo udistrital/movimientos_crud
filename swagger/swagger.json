@@ -669,6 +669,9 @@
                 "Descripcion": {
                     "type": "string"
                 },
+                "Detalle": {
+                    "type": "string"
+                },
                 "FechaCreacion": {
                     "type": "string",
                     "format": "datetime"
@@ -684,6 +687,10 @@
                 "MovimientoProcesoExternoId": {
                     "$ref": "#/definitions/models.MovimientoProcesoExterno"
                 },
+                "Saldo": {
+                    "type": "number",
+                    "format": "double"
+                },
                 "Valor": {
                     "type": "number",
                     "format": "double"
@@ -696,6 +703,9 @@
             "properties": {
                 "Activo": {
                     "type": "boolean"
+                },
+                "Detalle": {
+                    "type": "string"
                 },
                 "FechaCreacion": {
                     "type": "string",
