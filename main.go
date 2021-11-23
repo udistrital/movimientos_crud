@@ -61,7 +61,7 @@ func main() {
 	}))
 
 	//Prueba de auditoria
-	// auditoria.InitMiddleware()
+	auditoria.InitMiddleware()
 	apistatus.Init()
 	beego.Run()
 
