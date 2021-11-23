@@ -9,7 +9,6 @@ import (
 	"github.com/udistrital/utils_oas/responseformat"
 
 	"github.com/astaxie/beego"
-	"github.com/udistrital/auditoria"
 )
 
 func init() {
@@ -62,7 +61,7 @@ func main() {
 	}))
 
 	//Prueba de auditoria
-	auditoria.InitMiddleware()
+	// auditoria.InitMiddleware()
 	apistatus.Init()
 	beego.Run()
 

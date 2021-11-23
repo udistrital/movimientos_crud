@@ -3,12 +3,14 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/udistrital/movimientos_crud/models"
 
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 // TipoMovimientoController operations for TipoMovimiento
@@ -40,11 +42,11 @@ func (c *TipoMovimientoController) Post() {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
-			// logs.Error(fmt.Sprintf("Error1: %v+, error: %v+", v, err))
+			logs.Error(fmt.Sprintf("Error1: %v+, error: %v+", v, err))
 			c.Data["json"] = err.Error()
 		}
 	} else {
-		// logs.Error(fmt.Sprintf("Error2: %v+", v))
+		logs.Error(fmt.Sprintf("Error2: %v+", v))
 		c.Data["json"] = err.Error()
 	}
 }
