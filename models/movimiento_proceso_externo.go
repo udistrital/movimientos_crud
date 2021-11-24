@@ -16,8 +16,9 @@ type MovimientoProcesoExterno struct {
 	ProcesoExterno           int64           `orm:"column(proceso_externo)"`
 	MovimientoProcesoExterno int             `orm:"column(movimiento_proceso_externo);null"`
 	Activo                   bool            `orm:"column(activo);null"`
-	FechaCreacion            time.Time       `orm:"auto_now_add;column(fecha_creacion);type(date)";null`
-	FechaModificacion        time.Time       `orm:"auto_now;column(fecha_modificacion);type(date)";null`
+	FechaCreacion            time.Time       `orm:"auto_now_add;column(fecha_creacion);null"`
+	FechaModificacion        time.Time       `orm:"auto_now;column(fecha_modificacion);null"`
+	Detalle                  string          `orm:"column(detalle);type(jsonb);null"`
 }
 
 func (t *MovimientoProcesoExterno) TableName() string {
