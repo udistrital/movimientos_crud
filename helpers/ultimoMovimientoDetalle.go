@@ -106,14 +106,17 @@ func GetAllUltimos(cuentasMovimientoDetalle []models.CuentasMovimientoProcesoExt
 
 	for k, cuenta := range cuentasMovimientoDetalle {
 		// logs.Debug("k", k)
-		if resultado, err := GetUltimo(cuenta); err != nil {
+		var resultado models.MovimientoDetalle
+		var err map[string]interface{}
+		var v models.MovimientoDetalle
+		if v, err = GetUltimo(cuenta); err == nil || err["status"].(string) == "404" {
 			// logs.Debug(fmt.Sprintf("resultadoErr: %+v", resultado))
+			resultado = v
 			logs.Warn(err)
-			cuentasMovimientoDetalleRespuesta[k] = resultado
 		} else {
-			// logs.Debug(fmt.Sprintf("resultado: %+v", resultado))
-			cuentasMovimientoDetalleRespuesta[k] = resultado
+			return nil, err
 		}
+		cuentasMovimientoDetalleRespuesta[k] = resultado
 	}
 
 	// logs.Debug(fmt.Sprintf("cuentasMovimientoDetalleRespuesta: %+v", cuentasMovimientoDetalleRespuesta))
