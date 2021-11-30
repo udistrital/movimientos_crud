@@ -10,6 +10,7 @@ import (
 	"github.com/astaxie/beego/logs"
 
 	"github.com/astaxie/beego"
+	"github.com/udistrital/movimientos_crud/helpers"
 	movimientoDetalleManager "github.com/udistrital/movimientos_crud/managers/movimientoDetalleManager"
 	"github.com/udistrital/movimientos_crud/models"
 	"github.com/udistrital/utils_oas/responseformat"
@@ -28,6 +29,7 @@ func (c *MovimientoDetalleController) URLMapping() {
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("RegistrarMultiple", c.RegistrarMultiple)
+	c.Mapping("PostUltimoMovDetalle", c.PostUltimoMovDetalle)
 }
 
 // RegistrarMultiple ...
@@ -218,4 +220,43 @@ func (c *MovimientoDetalleController) Delete() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
+}
+
+// PostUltimoMovDetalle ...
+// @Title PostUltimoMovDetalle
+// @Decription post UltimoMovDetalle
+// @Param     body      body   []models.CuentasMovimientoProcesoExterno  true   "Valor de la cuenta presupuestal o las cuentas presupuestales de las que quiere recuperar el último movimiento"
+// @Success   200   {object}   models.MovimientoDetalle
+// @Failure   403   cuen_pre o mov_proc_ext is empty
+// @router /postUltimoMovDetalle [post]
+func (c *MovimientoDetalleController) PostUltimoMovDetalle() {
+	defer func() {
+		if err := recover(); err != nil {
+			logs.Error(err)
+			localError := err.(map[string]interface{})
+			c.Data["mesaage"] = (beego.AppConfig.String("appname") + "/" + "MovimientoDetalleController" + "/" + (localError["funcion"]).(string))
+			c.Data["data"] = (localError["err"])
+			if status, ok := localError["status"]; ok {
+				c.Abort(status.(string))
+			} else {
+				c.Abort("500") // Error no manejado!
+			}
+		}
+	}()
+
+	var arrayCuentas []models.CuentasMovimientoProcesoExterno
+
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &arrayCuentas); err != nil {
+		panic(err)
+	}
+
+	if result, err := helpers.GetAllUltimos(arrayCuentas); err != nil {
+		panic(err)
+	} else {
+		logs.Debug("Información: ", arrayCuentas, result)
+		c.Data["json"] = result
+		c.Data["status"] = 200
+	}
+	c.ServeJSON()
+
 }
