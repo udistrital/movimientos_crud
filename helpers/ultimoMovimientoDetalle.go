@@ -11,12 +11,12 @@ import (
 )
 
 func GetUltimo(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (cuentaMovimientoDetalleRespuesta models.MovimientoDetalle, outputError map[string]interface{}) {
-	defer errorctrl.ErrorControlFunction("GetUltimo", "500")
+	defer errorctrl.ErrorControlFunction("GetUltimo - Unhandled Error!", "500")
 
 	var datosCuenta models.Cuen_Pre
 
 	if err := json.Unmarshal([]byte(cuentaMovimientoDetalle.Cuen_Pre), &datosCuenta); err != nil {
-		outputError = errorctrl.Error("GetUltimo", err, "500")
+		outputError = errorctrl.Error("GetUltimo", err, "400")
 		return models.MovimientoDetalle{}, outputError
 	}
 
@@ -27,13 +27,13 @@ func GetUltimo(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (
 		var err error
 		if actividadInt, err = strconv.Atoi(datosCuenta.ActividadId); err != nil {
 			logs.Error(err)
-			outputError = errorctrl.Error("GetUltimo", err, "404")
+			outputError = errorctrl.Error("GetUltimo - strconv.Atoi(datosCuenta.ActividadId)", err, "400")
 			return models.MovimientoDetalle{}, outputError
 		}
 
 		if fuenteInt, err = strconv.Atoi(datosCuenta.FuenteFinanciamientoId); err != nil {
 			logs.Error(err)
-			outputError = errorctrl.Error("GetUltimo", err, "500")
+			outputError = errorctrl.Error("GetUltimo - strconv.Atoi(datosCuenta.FuenteFinanciamientoId)", err, "400")
 			return models.MovimientoDetalle{}, outputError
 		}
 
@@ -45,7 +45,7 @@ func GetUltimo(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (
 	} else if datosCuenta.ActividadId == "" && datosCuenta.RubroId != "" && datosCuenta.FuenteFinanciamientoId != "" {
 		if fuenteInt, err := strconv.Atoi(datosCuenta.FuenteFinanciamientoId); err != nil {
 			logs.Error(err)
-			outputError = errorctrl.Error("GetUltimo", err, "500")
+			outputError = errorctrl.Error("GetUltimo - strconv.Atoi(datosCuenta.FuenteFinanciamientoId)", err, "400")
 			return models.MovimientoDetalle{}, outputError
 		} else {
 			filtroJsonB = map[string]interface{}{
@@ -82,7 +82,7 @@ func GetUltimo(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (
 	// Nota: Se envían los parámetros de fields como nil y offset por default como 0
 	if result, err := models.GetAllMovimientoDetalle(query, nil, sortby, order, 0, limit); err != nil {
 		logs.Error(err)
-		outputError = errorctrl.Error("GetUltimo", err, "404")
+		outputError = errorctrl.Error("GetUltimo - models.GetAllMovimientoDetalle(query, nil, sortby, order, 0, limit)", err, "404")
 		return models.MovimientoDetalle{}, outputError
 	} else {
 		// logs.Debug(fmt.Sprintf("result: %+v", result))
@@ -93,14 +93,14 @@ func GetUltimo(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (
 		} else {
 			err := "No se encontró ningún registro que coincida"
 			logs.Error(err)
-			outputError = errorctrl.Error("GetUltimo", err, "404")
+			outputError = errorctrl.Error("GetUltimo - len(result) > 0", err, "404")
 			return models.MovimientoDetalle{}, outputError
 		}
 	}
 }
 
 func GetAllUltimos(cuentasMovimientoDetalle []models.CuentasMovimientoProcesoExterno) (cuentasMovimientoDetalleRespuesta []models.MovimientoDetalle, outputError map[string]interface{}) {
-	defer errorctrl.ErrorControlFunction("GetAllUltimos", "500")
+	defer errorctrl.ErrorControlFunction("GetAllUltimos - Unhandled Error!", "500")
 
 	cuentasMovimientoDetalleRespuesta = make([]models.MovimientoDetalle, len(cuentasMovimientoDetalle))
 
@@ -108,7 +108,7 @@ func GetAllUltimos(cuentasMovimientoDetalle []models.CuentasMovimientoProcesoExt
 		// logs.Debug("k", k)
 		if resultado, err := GetUltimo(cuenta); err != nil {
 			// logs.Debug(fmt.Sprintf("resultadoErr: %+v", resultado))
-			logs.Error(errorctrl.Error("GetAllUltimos", err, "404"))
+			logs.Warn(err)
 			cuentasMovimientoDetalleRespuesta[k] = resultado
 		} else {
 			// logs.Debug(fmt.Sprintf("resultado: %+v", resultado))
