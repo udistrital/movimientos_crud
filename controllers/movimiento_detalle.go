@@ -10,8 +10,10 @@ import (
 	"github.com/astaxie/beego/logs"
 
 	"github.com/astaxie/beego"
+	"github.com/udistrital/movimientos_crud/helpers"
 	movimientoDetalleManager "github.com/udistrital/movimientos_crud/managers/movimientoDetalleManager"
 	"github.com/udistrital/movimientos_crud/models"
+	"github.com/udistrital/utils_oas/errorctrl"
 	"github.com/udistrital/utils_oas/responseformat"
 )
 
@@ -28,6 +30,7 @@ func (c *MovimientoDetalleController) URLMapping() {
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("RegistrarMultiple", c.RegistrarMultiple)
+	c.Mapping("PostUltimoMovDetalle", c.PostUltimoMovDetalle)
 }
 
 // RegistrarMultiple ...
@@ -218,4 +221,31 @@ func (c *MovimientoDetalleController) Delete() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
+}
+
+// PostUltimoMovDetalle ...
+// @Title PostUltimoMovDetalle
+// @Description post UltimoMovDetalle se encarga de devolver el último movimiento detalle asociado a una denominada cuenta presupuestal
+// @Param     body      body   []models.CuentasMovimientoProcesoExterno  true   "Valor de la cuenta presupuestal o las cuentas presupuestales de las que quiere recuperar el último movimiento"
+// @Success   200   {object}   models.MovimientoDetalle
+// @Failure   403   cuen_pre o mov_proc_ext is empty
+// @router /postUltimoMovDetalle [post]
+func (c *MovimientoDetalleController) PostUltimoMovDetalle() {
+	defer errorctrl.ErrorControlController(c.Controller, "MovimientoDetalleController")
+	var arrayCuentas []models.CuentasMovimientoProcesoExterno
+
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &arrayCuentas); err != nil {
+		panic(err)
+	}
+
+	if result, err := helpers.GetAllUltimos(arrayCuentas); err != nil {
+		// logs.Debug("error")
+		panic(err)
+	} else {
+		// logs.Debug("Información: ", arrayCuentas, result)
+		c.Data["json"] = result
+		c.Data["status"] = 200
+	}
+	c.ServeJSON()
+
 }
