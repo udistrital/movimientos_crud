@@ -147,6 +147,28 @@ paths:
           description: '{string} delete success!'
         "403":
           description: Body is empty
+  /movimiento_detalle/postUltimoMovDetalle:
+    post:
+      tags:
+      - movimiento_detalle
+      operationId: MovimientoDetalleController.PostUltimoMovDetalle
+      parameters:
+      - in: body
+        name: body
+        description: Valor de la cuenta presupuestal o las cuentas presupuestales
+          de las que quiere recuperar el último movimiento
+        required: true
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/models.CuentasMovimientoProcesoExterno'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.MovimientoDetalle'
+        "403":
+          description: cuen_pre o mov_proc_ext is empty
   /movimiento_detalle/registrar_multiple:
     post:
       tags:
@@ -440,6 +462,14 @@ definitions:
   map[string]interface{}:
     title: map[string]interface{}
     type: object
+  models.CuentasMovimientoProcesoExterno:
+    title: CuentasMovimientoProcesoExterno
+    type: object
+    properties:
+      Cuen_Pre:
+        type: string
+      Mov_Proc_Ext:
+        type: string
   models.MovimientoDetalle:
     title: MovimientoDetalle
     type: object
