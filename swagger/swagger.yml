@@ -151,6 +151,8 @@ paths:
     post:
       tags:
       - movimiento_detalle
+      description: post UltimoMovDetalle se encarga de devolver el último movimiento
+        detalle asociado a una denominada cuenta presupuestal
       operationId: MovimientoDetalleController.PostUltimoMovDetalle
       parameters:
       - in: body
