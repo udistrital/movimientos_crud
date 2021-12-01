@@ -61,9 +61,15 @@ func GetUltimo(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (
 
 	var query map[string]string
 
-	query = map[string]string{
-		"Detalle__json_contains":         string(data),
-		"MovimientoProcesoExternoId__Id": datosMovProcExterno,
+	if datosMovProcExterno == "" {
+		query = map[string]string{
+			"Detalle__json_contains": string(data),
+		}
+	} else {
+		query = map[string]string{
+			"Detalle__json_contains":         string(data),
+			"MovimientoProcesoExternoId__Id": datosMovProcExterno,
+		}
 	}
 
 	// Se sugiere ordenar por fecha de modificación
