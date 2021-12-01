@@ -71,6 +71,21 @@ steps:
     event:
     - push
 
+- name: run_sonar_scanner
+  image: aosapps/drone-sonar-plugin
+  settings:
+    sonar_host:
+      from_secret: SONAR_HOST
+    sonar_token:
+      from_secret: SONAR_TOKEN
+  when:
+    branch:
+    - develop
+    - release/*
+    - master
+    event:
+    - push
+
 - name: go_build
   image: golang:1.14
   commands:
@@ -84,21 +99,6 @@ steps:
     - master
     - hotfix/*
     - release/*
-    event:
-    - push
-
-- name: run_sonar_scanner
-  image: aosapps/drone-sonar-plugin
-  settings:
-    sonar_host:
-      from_secret: SONAR_HOST
-    sonar_token:
-      from_secret: SONAR_TOKEN
-  when:
-    branch:
-    - develop
-    - release/*
-    - master
     event:
     - push
 
