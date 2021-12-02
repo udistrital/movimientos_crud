@@ -266,7 +266,7 @@ func (c *MovimientoDetalleController) CrearMovimientosDetalle() {
 		panic(err)
 	}
 
-	if result, err := helpers.CrearMovimientoDetalle(arrayCuentas[0]); err != nil {
+	if result, err := helpers.CrearMovimientosDetalle(arrayCuentas); err != nil {
 		// logs.Debug("error")
 		panic(err)
 	} else {

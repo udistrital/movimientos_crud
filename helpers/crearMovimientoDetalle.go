@@ -11,7 +11,7 @@ import (
 	"github.com/udistrital/utils_oas/errorctrl"
 )
 
-func CrearMovimientoDetalle(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (registroMovimientoDetalle models.MovimientoDetalle, outputError map[string]interface{}) {
+func CrearMovimientoDetalle(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (movimientoDetalleRegistrado *models.MovimientoDetalle, outputError map[string]interface{}) {
 	o := orm.NewOrm()
 
 	if err := o.Begin(); err != nil {
@@ -76,7 +76,7 @@ func CrearMovimientoDetalle(cuentaMovimientoDetalle models.CuentasMovimientoProc
 		panic(errorctrl.Error("crearMovimientoDetalle - detalleCuenPre == \"\"", err, "400"))
 	}
 
-	logs.Debug("INSERTAR movimiento: CrearMovimientoDetalle", idMovProcExterno)
+	// logs.Debug("INSERTAR movimiento: CrearMovimientoDetalle", idMovProcExterno)
 
 	if registroMovimientoDetalle, err := RegistroMovimientoDetalle(detalleCuenPre, idMovProcExterno, saldo, valor); err != nil {
 		logs.Error(err)
@@ -86,11 +86,15 @@ func CrearMovimientoDetalle(cuentaMovimientoDetalle models.CuentasMovimientoProc
 			logs.Error(err)
 			panic(err)
 		} else {
-			logs.Debug(result)
+			resultCast := int(result)
+			if movimientoDetalleRegistrado, err = models.GetMovimientoDetalleById(resultCast); err != nil {
+				logs.Error(err)
+				panic(err)
+			}
 		}
 	}
 
-	return models.MovimientoDetalle{}, nil
+	return movimientoDetalleRegistrado, nil
 }
 
 func RegistroMovimientoDetalle(detalleCuenPre string, idMovProcExterno string, saldo float64, valor float64) (registroMovimientoDetalleRespuesta models.MovimientoDetalle, outputError map[string]interface{}) {
@@ -106,7 +110,7 @@ func RegistroMovimientoDetalle(detalleCuenPre string, idMovProcExterno string, s
 		return models.MovimientoDetalle{}, outputError
 	}
 
-	logs.Debug("INSERTAR movimiento: ", idMovProcExternoCast)
+	// logs.Debug("INSERTAR movimiento: ", idMovProcExternoCast)
 
 	registroMovProcExterno = models.MovimientoProcesoExterno{
 		Id: idMovProcExternoCast,
@@ -118,7 +122,7 @@ func RegistroMovimientoDetalle(detalleCuenPre string, idMovProcExterno string, s
 	var err2 map[string]interface{}
 	var nuevoDetalleCuenPre map[string]interface{}
 
-	if nuevoDeltaAcum, nuevoSaldo, nuevoValor, err2 = CalcularDeltaAcum(detalleCuenPre, saldo, valor); err2 != nil {
+	if nuevoDeltaAcum, nuevoSaldo, nuevoValor, err2 = CalcularMontos(detalleCuenPre, saldo, valor); err2 != nil {
 		logs.Error(err2)
 		outputError := errorctrl.Error("RegistroMovimientoDetalle - CalcularDeltaAcum(detalleCuenPre)", err2, "500")
 		return models.MovimientoDetalle{}, outputError
@@ -166,7 +170,7 @@ func RegistroMovimientoDetalle(detalleCuenPre string, idMovProcExterno string, s
 	return registroMovimientoDetalleRespuesta, nil
 }
 
-func CalcularDeltaAcum(detalleCuenPre string, saldo float64, valor float64) (detalAcumRespuesta float64, saldoRespuesta float64, valorRespuesta float64, outputError map[string]interface{}) {
+func CalcularMontos(detalleCuenPre string, saldo float64, valor float64) (detalAcumRespuesta float64, saldoRespuesta float64, valorRespuesta float64, outputError map[string]interface{}) {
 	defer errorctrl.ErrorControlFunction("CalcularDeltaAcum - Unhandled Error!", "500")
 
 	cuentaSolicitada := models.CuentasMovimientoProcesoExterno{
@@ -212,5 +216,31 @@ func CalcularDeltaAcum(detalleCuenPre string, saldo float64, valor float64) (det
 	}
 
 	return detalAcumRespuesta, saldoRespuesta, valorRespuesta, nil
+
+}
+
+func CrearMovimientosDetalle(cuentasMovimientoDetalle []models.CuentasMovimientoProcesoExterno) (cuentasMovimientoDetalleRespuesta []models.MovimientoDetalle, outputError map[string]interface{}) {
+	defer errorctrl.ErrorControlFunction("GetAllUltimos - Unhandled Error!", "500")
+
+	cuentasMovimientoDetalleRespuesta = make([]models.MovimientoDetalle, len(cuentasMovimientoDetalle))
+
+	for k, cuenta := range cuentasMovimientoDetalle {
+		// logs.Debug("k", k)
+		var resultado models.MovimientoDetalle
+		var err map[string]interface{}
+		var v *models.MovimientoDetalle
+		if v, err = CrearMovimientoDetalle(cuenta); err == nil || err["status"].(string) == "404" {
+			// logs.Debug(fmt.Sprintf("resultadoErr: %+v", resultado))
+			resultado = *v
+			logs.Warn(err)
+		} else {
+			return nil, err
+		}
+		cuentasMovimientoDetalleRespuesta[k] = resultado
+	}
+
+	// logs.Debug(fmt.Sprintf("cuentasMovimientoDetalleRespuesta: %+v", cuentasMovimientoDetalleRespuesta))
+
+	return cuentasMovimientoDetalleRespuesta, nil
 
 }
