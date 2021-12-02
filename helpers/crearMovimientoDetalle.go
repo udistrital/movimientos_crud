@@ -144,10 +144,20 @@ func RegistroMovimientoDetalle(detalleCuenPre string, idMovProcExterno string, s
 		return models.MovimientoDetalle{}, outputError
 	}
 
-	if nuevoDetalleCuenPre["FuenteFinanciamientoId"], err = strconv.Atoi(nuevoDetalleCuenPre["FuenteFinanciamientoId"].(string)); err != nil {
-		logs.Error(err)
-		outputError := errorctrl.Error("RegistroMovimientoDetalle - strconv.Atoi(nuevoDetalleCuenPre[\"FuenteFinanciamientoId\"].(string))", err, "400")
-		return models.MovimientoDetalle{}, outputError
+	for k, detalle := range nuevoDetalleCuenPre {
+		if k != "RubroId" {
+			switch detalle.(type) {
+			case string:
+				if nuevoDetalleCuenPre[k], err = strconv.Atoi(detalle.(string)); err != nil {
+					logs.Error(err)
+					outputError := errorctrl.Error("RegistroMovimientoDetalle - strconv.Atoi(detalle.(string))", err, "400")
+					return models.MovimientoDetalle{}, outputError
+				}
+			default:
+				logs.Warn("La variable no es de tipo string")
+			}
+
+		}
 	}
 
 	var nuevoDetalleCuenPreCast []byte

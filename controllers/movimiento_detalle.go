@@ -254,7 +254,7 @@ func (c *MovimientoDetalleController) PostUltimoMovDetalle() {
 // @Title CrearMovimientosDetalle
 // @Description post CrearMovimientosDetalle se encarga de devolver crear los movimientos detalle correspondientes a las cuentas recibidas
 // @Param     body      body   []models.CuentasMovimientoProcesoExterno  true   "Cuentas presupuestales con su respectivo movimiento proceso externo y el valor/saldo afectado"
-// @Success   200   {object}   []models.MovimientoDetalle
+// @Success   201   {object}   []models.MovimientoDetalle
 // @Failure   403   body is empty
 // @router /crearMovimientosDetalle [post]
 func (c *MovimientoDetalleController) CrearMovimientosDetalle() {
@@ -272,7 +272,7 @@ func (c *MovimientoDetalleController) CrearMovimientosDetalle() {
 	} else {
 		// logs.Debug("Información: ", arrayCuentas, result)
 		c.Data["json"] = result
-		c.Data["status"] = 200
+		c.Data["status"] = 201
 	}
 	c.ServeJSON()
 }
