@@ -150,7 +150,7 @@ paths:
             type: array
             items:
               $ref: '#/definitions/models.MovimientoDetalle'
-        "403":
+        "201":
           description: body is empty
   /movimiento_detalle/eliminar_multiple:
     post:

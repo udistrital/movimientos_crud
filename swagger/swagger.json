@@ -130,7 +130,7 @@
                             }
                         }
                     },
-                    "403": {
+                    "201": {
                         "description": "body is empty"
                     }
                 }
