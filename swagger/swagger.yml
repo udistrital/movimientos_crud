@@ -126,6 +126,32 @@ paths:
           description: '{string} delete success!'
         "403":
           description: id is empty
+  /movimiento_detalle/crearMovimientosDetalle:
+    post:
+      tags:
+      - movimiento_detalle
+      description: post CrearMovimientosDetalle se encarga de devolver crear los movimientos
+        detalle correspondientes a las cuentas recibidas
+      operationId: MovimientoDetalleController.CrearMovimientosDetalle
+      parameters:
+      - in: body
+        name: body
+        description: Cuentas presupuestales con su respectivo movimiento proceso externo
+          y el valor/saldo afectado
+        required: true
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/models.CuentasMovimientoProcesoExterno'
+      responses:
+        "200":
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/models.MovimientoDetalle'
+        "403":
+          description: body is empty
   /movimiento_detalle/eliminar_multiple:
     post:
       tags:
@@ -168,9 +194,11 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.MovimientoDetalle'
+            type: array
+            items:
+              $ref: '#/definitions/models.MovimientoDetalle'
         "403":
-          description: cuen_pre o mov_proc_ext is empty
+          description: body is empty
   /movimiento_detalle/registrar_multiple:
     post:
       tags:
@@ -472,6 +500,12 @@ definitions:
         type: string
       Mov_Proc_Ext:
         type: string
+      Saldo:
+        type: number
+        format: double
+      Valor:
+        type: number
+        format: double
   models.MovimientoDetalle:
     title: MovimientoDetalle
     type: object
