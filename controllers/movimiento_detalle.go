@@ -227,8 +227,8 @@ func (c *MovimientoDetalleController) Delete() {
 // @Title PostUltimoMovDetalle
 // @Description post UltimoMovDetalle se encarga de devolver el último movimiento detalle asociado a una denominada cuenta presupuestal
 // @Param     body      body   []models.CuentasMovimientoProcesoExterno  true   "Valor de la cuenta presupuestal o las cuentas presupuestales de las que quiere recuperar el último movimiento"
-// @Success   200   {object}   models.MovimientoDetalle
-// @Failure   403   cuen_pre o mov_proc_ext is empty
+// @Success   200   {object}   []models.MovimientoDetalle
+// @Failure   403   body is empty
 // @router /postUltimoMovDetalle [post]
 func (c *MovimientoDetalleController) PostUltimoMovDetalle() {
 	defer errorctrl.ErrorControlController(c.Controller, "MovimientoDetalleController")
@@ -248,4 +248,31 @@ func (c *MovimientoDetalleController) PostUltimoMovDetalle() {
 	}
 	c.ServeJSON()
 
+}
+
+// CrearMovimientosDetalle ...
+// @Title CrearMovimientosDetalle
+// @Description post CrearMovimientosDetalle se encarga de devolver crear los movimientos detalle correspondientes a las cuentas recibidas
+// @Param     body      body   []models.CuentasMovimientoProcesoExterno  true   "Cuentas presupuestales con su respectivo movimiento proceso externo y el valor/saldo afectado"
+// @Success   200   {object}   []models.MovimientoDetalle
+// @Failure   403   body is empty
+// @router /crearMovimientosDetalle [post]
+func (c *MovimientoDetalleController) CrearMovimientosDetalle() {
+	defer errorctrl.ErrorControlController(c.Controller, "CrearMovimientosDetalle")
+
+	var arrayCuentas []models.CuentasMovimientoProcesoExterno
+
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &arrayCuentas); err != nil {
+		panic(err)
+	}
+
+	if result, err := helpers.CrearMovimientoDetalle(arrayCuentas[0]); err != nil {
+		// logs.Debug("error")
+		panic(err)
+	} else {
+		// logs.Debug("Información: ", arrayCuentas, result)
+		c.Data["json"] = result
+		c.Data["status"] = 200
+	}
+	c.ServeJSON()
 }
