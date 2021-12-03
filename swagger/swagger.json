@@ -121,7 +121,7 @@
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "",
                         "schema": {
                             "type": "array",
@@ -130,7 +130,7 @@
                             }
                         }
                     },
-                    "201": {
+                    "403": {
                         "description": "body is empty"
                     }
                 }
@@ -191,6 +191,43 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.MovimientoDetalle"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/movimiento_detalle/publicarMovimientosDetalle": {
+            "post": {
+                "tags": [
+                    "movimiento_detalle"
+                ],
+                "description": "post PublicarMovimientosDetalle se encarga de tomar los últimos movimientos detalle asociados a un proceso externo y realizar la publicación de los mismos (actualmente Plan de Adquisiciones)",
+                "operationId": "MovimientoDetalleController.PublicarMovimientosDetalle",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "idMovProcExterno",
+                        "description": "ID del movimiento proceso externo al que se van a realizar las publicaciones",
+                        "required": true,
+                        "schema": {
+                            "format": "int64",
+                            "type": "integer"
+                        },
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "201": {
                         "description": "",
                         "schema": {
                             "type": "array",
