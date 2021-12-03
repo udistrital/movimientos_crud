@@ -11,7 +11,7 @@ import (
 	"github.com/udistrital/utils_oas/errorctrl"
 )
 
-func CrearMovimientoDetalle(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (movimientoDetalleRegistrado *models.MovimientoDetalle, outputError map[string]interface{}) {
+func CrearMovimientoDetalle(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno, publicar bool) (movimientoDetalleRegistrado *models.MovimientoDetalle, outputError map[string]interface{}) {
 	o := orm.NewOrm()
 
 	if err := o.Begin(); err != nil {
@@ -61,12 +61,19 @@ func CrearMovimientoDetalle(cuentaMovimientoDetalle models.CuentasMovimientoProc
 	saldo := cuentaMovimientoDetalle.Saldo
 	valor := cuentaMovimientoDetalle.Valor
 
-	if saldo == 0 && valor == 0 {
-		err := "Tanto el saldo como el valor tienen un valor de 0, no se puede añadir el movimiento detalle"
-		panic(errorctrl.Error("crearMovimientoDetalle - saldo == 0 && valor == 0", err, "400"))
-	} else if saldo != 0 && valor != 0 {
-		err := "Tanto el saldo como el valor tienen un valor diferente de 0, no se puede añadir el movimiento detalle"
-		panic(errorctrl.Error("crearMovimientoDetalle - saldo != 0 && valor != 0", err, "400"))
+	if !publicar {
+		if saldo == 0 && valor == 0 {
+			err := "Tanto el saldo como el valor tienen un valor de 0, no se puede añadir el movimiento detalle"
+			panic(errorctrl.Error("crearMovimientoDetalle - saldo == 0 && valor == 0", err, "400"))
+		} else if saldo != 0 && valor != 0 {
+			err := "Tanto el saldo como el valor tienen un valor diferente de 0, no se puede añadir el movimiento detalle"
+			panic(errorctrl.Error("crearMovimientoDetalle - saldo != 0 && valor != 0", err, "400"))
+		}
+	} else {
+		if saldo != valor {
+			err := "El saldo y el valor de publicación debe ser el mismo"
+			panic(errorctrl.Error("crearMovimientoDetalle - saldo != valor", err, "400"))
+		}
 	}
 
 	detalleCuenPre := cuentaMovimientoDetalle.Cuen_Pre
@@ -78,7 +85,7 @@ func CrearMovimientoDetalle(cuentaMovimientoDetalle models.CuentasMovimientoProc
 
 	// logs.Debug("INSERTAR movimiento: CrearMovimientoDetalle", idMovProcExterno)
 
-	if registroMovimientoDetalle, err := RegistroMovimientoDetalle(detalleCuenPre, idMovProcExterno, saldo, valor); err != nil {
+	if registroMovimientoDetalle, err := RegistroMovimientoDetalle(detalleCuenPre, idMovProcExterno, saldo, valor, publicar); err != nil {
 		logs.Error(err)
 		panic(err)
 	} else {
@@ -97,7 +104,7 @@ func CrearMovimientoDetalle(cuentaMovimientoDetalle models.CuentasMovimientoProc
 	return movimientoDetalleRegistrado, nil
 }
 
-func RegistroMovimientoDetalle(detalleCuenPre string, idMovProcExterno string, saldo float64, valor float64) (registroMovimientoDetalleRespuesta models.MovimientoDetalle, outputError map[string]interface{}) {
+func RegistroMovimientoDetalle(detalleCuenPre string, idMovProcExterno string, saldo float64, valor float64, publicar bool) (registroMovimientoDetalleRespuesta models.MovimientoDetalle, outputError map[string]interface{}) {
 	defer errorctrl.ErrorControlFunction("RegistroMovimientoDetalle - Unhandled Error!", "500")
 
 	var idMovProcExternoCast int
@@ -122,7 +129,7 @@ func RegistroMovimientoDetalle(detalleCuenPre string, idMovProcExterno string, s
 	var err2 map[string]interface{}
 	var nuevoDetalleCuenPre map[string]interface{}
 
-	if nuevoDeltaAcum, nuevoSaldo, nuevoValor, err2 = CalcularMontos(detalleCuenPre, saldo, valor); err2 != nil {
+	if nuevoDeltaAcum, nuevoSaldo, nuevoValor, err2 = CalcularMontos(detalleCuenPre, saldo, valor, publicar); err2 != nil {
 		logs.Error(err2)
 		outputError := errorctrl.Error("RegistroMovimientoDetalle - CalcularDeltaAcum(detalleCuenPre)", err2, "500")
 		return models.MovimientoDetalle{}, outputError
@@ -180,7 +187,7 @@ func RegistroMovimientoDetalle(detalleCuenPre string, idMovProcExterno string, s
 	return registroMovimientoDetalleRespuesta, nil
 }
 
-func CalcularMontos(detalleCuenPre string, saldo float64, valor float64) (detalAcumRespuesta float64, saldoRespuesta float64, valorRespuesta float64, outputError map[string]interface{}) {
+func CalcularMontos(detalleCuenPre string, saldo float64, valor float64, publicar bool) (detalAcumRespuesta float64, saldoRespuesta float64, valorRespuesta float64, outputError map[string]interface{}) {
 	defer errorctrl.ErrorControlFunction("CalcularDeltaAcum - Unhandled Error!", "500")
 
 	cuentaSolicitada := models.CuentasMovimientoProcesoExterno{
@@ -197,6 +204,15 @@ func CalcularMontos(detalleCuenPre string, saldo float64, valor float64) (detalA
 			return saldo, saldo, saldo, nil
 		} else if valor != 0 {
 			return valor, valor, valor, nil
+		} else {
+			outputError := errorctrl.Error("RegistroMovimientoDetalle - CalcularDeltaAcum(detalleCuenPre)", err, "500")
+			return 0, 0, 0, outputError
+		}
+	} else if err == nil && publicar {
+		if saldo != 0 {
+			return 0, saldo, saldo, nil
+		} else if valor != 0 {
+			return 0, valor, valor, nil
 		} else {
 			outputError := errorctrl.Error("RegistroMovimientoDetalle - CalcularDeltaAcum(detalleCuenPre)", err, "500")
 			return 0, 0, 0, outputError
@@ -229,7 +245,7 @@ func CalcularMontos(detalleCuenPre string, saldo float64, valor float64) (detalA
 
 }
 
-func CrearMovimientosDetalle(cuentasMovimientoDetalle []models.CuentasMovimientoProcesoExterno) (cuentasMovimientoDetalleRespuesta []models.MovimientoDetalle, outputError map[string]interface{}) {
+func CrearMovimientosDetalle(cuentasMovimientoDetalle []models.CuentasMovimientoProcesoExterno, publicar bool) (cuentasMovimientoDetalleRespuesta []models.MovimientoDetalle, outputError map[string]interface{}) {
 	defer errorctrl.ErrorControlFunction("GetAllUltimos - Unhandled Error!", "500")
 
 	cuentasMovimientoDetalleRespuesta = make([]models.MovimientoDetalle, len(cuentasMovimientoDetalle))
@@ -239,7 +255,7 @@ func CrearMovimientosDetalle(cuentasMovimientoDetalle []models.CuentasMovimiento
 		var resultado models.MovimientoDetalle
 		var err map[string]interface{}
 		var v *models.MovimientoDetalle
-		if v, err = CrearMovimientoDetalle(cuenta); err == nil || err["status"].(string) == "404" {
+		if v, err = CrearMovimientoDetalle(cuenta, publicar); err == nil || err["status"].(string) == "404" {
 			// logs.Debug(fmt.Sprintf("resultadoErr: %+v", resultado))
 			resultado = *v
 			logs.Warn(err)
