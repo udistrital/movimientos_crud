@@ -362,6 +362,46 @@ paths:
           description: '{string} delete success!'
         "403":
           description: id is empty
+  /movimiento_proceso_externo/movimientoFiltroJsonB:
+    get:
+      tags:
+      - movimiento_proceso_externo
+      description: get movimientoFiltroJsonB permite obtener el movimiento proceso
+        externo sin hacerle transformaciones al query del jsonb
+      operationId: MovimientoProcesoExternoController.movimientoFiltroJsonB
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.MovimientoProcesoExterno'
+        "403":
+          description: ""
   /movimiento_proceso_externo/registrar_movimiento:
     post:
       tags:
