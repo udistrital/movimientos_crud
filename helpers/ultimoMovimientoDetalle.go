@@ -57,6 +57,8 @@ func GetUltimo(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (
 
 	data, _ := json.Marshal(filtroJsonB)
 
+	// logs.Debug("Data: ", string(data))
+
 	datosMovProcExterno := cuentaMovimientoDetalle.Mov_Proc_Ext
 
 	var query map[string]string

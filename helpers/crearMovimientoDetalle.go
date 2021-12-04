@@ -55,12 +55,29 @@ func CrearMovimientoDetalle(cuentaMovimientoDetalle models.CuentasMovimientoProc
 					err := "No se pueden crear movimientos detalle sobre un movimiento proceso externo publicado, se va a crear un nuevo movimiento proceso externo"
 					logs.Warn(err)
 					// logs.Debug("RESULT: ", result.Activo)
+					var detalleNuevoMov map[string]interface{}
+
+					if err := json.Unmarshal([]byte(result.Detalle), &detalleNuevoMov); err != nil {
+						logs.Error(err)
+						panic(errorctrl.Error("CrearMovimientoDetalle - json.Unmarshal([]byte(result.Detalle), &detalleNuevoMov)", err, "500"))
+					}
+
+					detalleNuevoMov["Estado"] = "Preliminar"
+
+					var detalleNuevoMovStr []byte
+					var err2 error
+
+					if detalleNuevoMovStr, err2 = json.Marshal(detalleNuevoMov); err2 != nil {
+						logs.Error(err)
+						panic(errorctrl.Error("CrearMovimientoDetalle - json.Marshal(detalleNuevoMov)", err2, "500"))
+					}
+
 					nuevoMovimiento := models.MovimientoProcesoExterno{
 						TipoMovimientoId:         result.TipoMovimientoId,
 						ProcesoExterno:           result.ProcesoExterno,
 						MovimientoProcesoExterno: result.MovimientoProcesoExterno,
 						Activo:                   result.Activo,
-						Detalle:                  result.Detalle,
+						Detalle:                  string(detalleNuevoMovStr),
 					}
 
 					// logs.Debug("NUEVO MOVIMIENTO: ", &nuevoMovimiento)
@@ -154,7 +171,7 @@ func RegistroMovimientoDetalle(detalleCuenPre string, idMovProcExterno string, s
 
 	if err := json.Unmarshal([]byte(detalleCuenPre), &nuevoDetalleCuenPre); err != nil {
 		logs.Error(err)
-		outputError := errorctrl.Error("RegistroMovimientoDetalle - json.Unmarshal([]byte(detalleCuenPre), &new_detalle_CuenPre)", err, "400")
+		outputError := errorctrl.Error("RegistroMovimientoDetalle - json.Unmarshal([]byte(detalleCuenPre), &nuevoDetalleCuenPre)", err, "400")
 		return models.MovimientoDetalle{}, outputError
 	}
 
@@ -205,7 +222,7 @@ func RegistroMovimientoDetalle(detalleCuenPre string, idMovProcExterno string, s
 }
 
 func CalcularMontos(detalleCuenPre string, saldo float64, valor float64, publicar bool) (detalAcumRespuesta float64, saldoRespuesta float64, valorRespuesta float64, outputError map[string]interface{}) {
-	defer errorctrl.ErrorControlFunction("CalcularDeltaAcum - Unhandled Error!", "500")
+	defer errorctrl.ErrorControlFunction("CalcularMontos - Unhandled Error!", "500")
 
 	cuentaSolicitada := models.CuentasMovimientoProcesoExterno{
 		Cuen_Pre: detalleCuenPre,
@@ -222,7 +239,7 @@ func CalcularMontos(detalleCuenPre string, saldo float64, valor float64, publica
 		} else if valor != 0 {
 			return valor, valor, valor, nil
 		} else {
-			outputError := errorctrl.Error("RegistroMovimientoDetalle - CalcularDeltaAcum(detalleCuenPre)", err, "500")
+			outputError := errorctrl.Error("RegistroMovimientoDetalle - CalcularMontos(detalleCuenPre)", err, "500")
 			return 0, 0, 0, outputError
 		}
 	} else if err == nil && publicar {
@@ -231,21 +248,26 @@ func CalcularMontos(detalleCuenPre string, saldo float64, valor float64, publica
 		} else if valor != 0 {
 			return 0, valor, valor, nil
 		} else {
-			outputError := errorctrl.Error("RegistroMovimientoDetalle - CalcularDeltaAcum(detalleCuenPre)", err, "500")
+			outputError := errorctrl.Error("RegistroMovimientoDetalle - CalcularMontos(detalleCuenPre)", err, "500")
 			return 0, 0, 0, outputError
 		}
 	}
 
+	// logs.Debug("RESULTADO GET ULTIMO: ", result)
+
 	if err := json.Unmarshal([]byte(result.Detalle), &detalleUltimoMovimientoDetalle); err != nil {
 		logs.Error(err)
-		outputError := errorctrl.Error("CalcularDeltaAcum - json.Unmarshal([]byte(result.Detalle), &detalleUltimoMovimientoDetalle)", err, "400")
+		outputError := errorctrl.Error("CalcularMontos - json.Unmarshal([]byte(result.Detalle), &detalleUltimoMovimientoDetalle)", err, "400")
 		return 0, 0, 0, outputError
 	}
 
-	if detalleUltimoMovimientoDetalle["DeltaAcum"].(interface{}) == nil {
-		err := "No se encuentra un delta acumulado asociado a la cuenta"
-		outputError = errorctrl.Error("CalcularDeltaAcum", err, "500")
-		return 0, 0, 0, outputError
+	switch detalleUltimoMovimientoDetalle["DeltaAcum"].(type) {
+	case nil:
+		if saldo != 0 {
+			return saldo, saldo, saldo, nil
+		} else if valor != 0 {
+			return valor, valor, valor, nil
+		}
 	}
 
 	if saldo != 0 {

@@ -65,6 +65,7 @@ func GetAllMovimientoProcesoExterno(query map[string]string, fields []string, so
 			qs = qs.Filter(k, v)
 		}
 	}
+
 	// order by:
 	var sortFields []string
 	if len(sortby) != 0 {

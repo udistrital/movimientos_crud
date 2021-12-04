@@ -149,20 +149,6 @@ func ListaRubros(idMovProcExterno int) (detalleCuentasRespuesta []models.Cuentas
 	return detalleCuentasRespuesta, nil
 }
 
-func EliminarRepetidos(array []models.CuentasMovimientoProcesoExterno) (aResp []models.CuentasMovimientoProcesoExterno) {
-	aResp = make([]models.CuentasMovimientoProcesoExterno, 0)
-	for k, value := range array {
-		for kj, valuej := range aResp {
-			if value == valuej && k != kj {
-				logs.Debug(true)
-			} else {
-				logs.Debug(false)
-			}
-		}
-	}
-	return
-}
-
 func RemoveDuplicateElement(addrs []models.CuentasMovimientoProcesoExterno) (aResp []models.CuentasMovimientoProcesoExterno) {
 	result := make([]models.CuentasMovimientoProcesoExterno, 0, len(addrs))
 	temp := map[models.CuentasMovimientoProcesoExterno]struct{}{}
