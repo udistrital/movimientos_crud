@@ -59,7 +59,8 @@ func PublicarMovimientosDetalle(idMovProcExterno int) (movimientosDetalleRespues
 		}
 	}
 
-	detalleMovProcExt["Estado"] = "Publicado"
+	estadoPublicacion := "Publicado"
+	detalleMovProcExt["Estado"] = estadoPublicacion
 
 	if detalleMovProcExtActualizado, err := json.Marshal(detalleMovProcExt); err != nil {
 		logs.Error(err)

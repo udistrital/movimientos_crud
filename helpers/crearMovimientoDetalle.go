@@ -11,7 +11,7 @@ import (
 	"github.com/udistrital/utils_oas/errorctrl"
 )
 
-func CrearMovimientoDetalle(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno, publicar bool) (movimientoDetalleRegistrado *models.MovimientoDetalle, outputError map[string]interface{}) {
+func CrearMovimientoDetalle(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno, publicar bool, nuevoMovimiento string) (movimientoDetalleRegistrado *models.MovimientoDetalle, movimientoCambiado string, outputError map[string]interface{}) {
 	o := orm.NewOrm()
 
 	if err := o.Begin(); err != nil {
@@ -28,7 +28,12 @@ func CrearMovimientoDetalle(cuentaMovimientoDetalle models.CuentasMovimientoProc
 	}()
 
 	var idMovProcExterno string
-	idMovProcExterno = cuentaMovimientoDetalle.Mov_Proc_Ext
+	var idNuevoMovProcExterno string = nuevoMovimiento
+	if idNuevoMovProcExterno == "" {
+		idMovProcExterno = cuentaMovimientoDetalle.Mov_Proc_Ext
+	} else {
+		idMovProcExterno = idNuevoMovProcExterno
+	}
 	var estado map[string]interface{}
 
 	if idMovProcExterno == "" {
@@ -46,10 +51,22 @@ func CrearMovimientoDetalle(cuentaMovimientoDetalle models.CuentasMovimientoProc
 					logs.Error(err)
 					panic(err)
 				}
+				if estado["Estado"].(string) == "Publicado" && idNuevoMovProcExterno == "" {
+					err := "No se pueden crear movimientos detalle sobre un movimiento proceso externo publicado, se va a crear un nuevo movimiento proceso externo"
+					logs.Warn(err)
+					// logs.Debug("RESULT: ", result.Activo)
+					nuevoMovimiento := models.MovimientoProcesoExterno{
+						TipoMovimientoId:         result.TipoMovimientoId,
+						ProcesoExterno:           result.ProcesoExterno,
+						MovimientoProcesoExterno: result.MovimientoProcesoExterno,
+						Activo:                   result.Activo,
+						Detalle:                  result.Detalle,
+					}
 
-				if estado["Estado"].(string) == "Publicado" {
-					err := "No se pueden crear movimientos detalle sobre un movimiento proceso externo publicado"
-					panic(errorctrl.Error("crearMovimientoDetalle - estado[\"Estado\"].(string) == \"Publicado\"", err, "500"))
+					// logs.Debug("NUEVO MOVIMIENTO: ", &nuevoMovimiento)
+					if _, err := models.AddMovimientoProcesoExterno(&nuevoMovimiento); err != nil {
+						panic(errorctrl.Error("CrearMovimientoDetalle - models.AddMovimientoProcesoExterno(result)", err, "500"))
+					}
 				} else if estado["Estado"].(string) != "Preliminar" {
 					err := "No se reconoce el estado del movimiento proceso externo"
 					panic(errorctrl.Error("crearMovimientoDetalle - estado[\"Estado\"].(string) != \"Preliminar\"", err, "500"))
@@ -101,7 +118,7 @@ func CrearMovimientoDetalle(cuentaMovimientoDetalle models.CuentasMovimientoProc
 		}
 	}
 
-	return movimientoDetalleRegistrado, nil
+	return movimientoDetalleRegistrado, idNuevoMovProcExterno, nil
 }
 
 func RegistroMovimientoDetalle(detalleCuenPre string, idMovProcExterno string, saldo float64, valor float64, publicar bool) (registroMovimientoDetalleRespuesta models.MovimientoDetalle, outputError map[string]interface{}) {
@@ -249,13 +266,13 @@ func CrearMovimientosDetalle(cuentasMovimientoDetalle []models.CuentasMovimiento
 	defer errorctrl.ErrorControlFunction("GetAllUltimos - Unhandled Error!", "500")
 
 	cuentasMovimientoDetalleRespuesta = make([]models.MovimientoDetalle, len(cuentasMovimientoDetalle))
-
+	var movimientoCambiado string = ""
 	for k, cuenta := range cuentasMovimientoDetalle {
 		// logs.Debug("k", k)
 		var resultado models.MovimientoDetalle
 		var err map[string]interface{}
 		var v *models.MovimientoDetalle
-		if v, err = CrearMovimientoDetalle(cuenta, publicar); err == nil || err["status"].(string) == "404" {
+		if v, movimientoCambiado, err = CrearMovimientoDetalle(cuenta, publicar, movimientoCambiado); err == nil || err["status"].(string) == "404" {
 			// logs.Debug(fmt.Sprintf("resultadoErr: %+v", resultado))
 			resultado = *v
 			logs.Warn(err)
