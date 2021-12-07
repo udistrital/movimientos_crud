@@ -10,6 +10,7 @@ import (
 	"github.com/udistrital/utils_oas/errorctrl"
 )
 
+// PublicarMovimientosDetalle realiza una copia de los rubros preliminares y los publica nuevamente en otro movimiento externo con estado publicado
 func PublicarMovimientosDetalle(idMovProcExterno int) (movimientosDetalleRespuesta []models.MovimientoDetalle, outputError map[string]interface{}) {
 	defer errorctrl.ErrorControlFunction("PublicarMovimientosDetalle - Unhandled Error!", "500")
 	var detalleMovProcExt map[string]interface{}
@@ -79,6 +80,7 @@ func PublicarMovimientosDetalle(idMovProcExterno int) (movimientosDetalleRespues
 	return movimientosDetalleRespuesta, nil
 }
 
+// ListaRubros se encarga de traer los rubros asociados a un movimientos proceso externo, para luego hacer la consulta de sus últimos movimiento relacionados
 func ListaRubros(idMovProcExterno int) (detalleCuentasRespuesta []models.CuentasMovimientoProcesoExterno, outputError map[string]interface{}) {
 	defer errorctrl.ErrorControlFunction("ListaRubros - Unhandled Error!", "500")
 
@@ -103,52 +105,54 @@ func ListaRubros(idMovProcExterno int) (detalleCuentasRespuesta []models.Cuentas
 		return []models.CuentasMovimientoProcesoExterno{}, outputError
 	} else {
 		// logs.Debug(fmt.Sprintf("result: %+v", result))
-		if len(result) > 0 {
-			var allDetalleCuentas []models.CuentasMovimientoProcesoExterno
-			allDetalleCuentas = make([]models.CuentasMovimientoProcesoExterno, len(result))
-			for k, detalle := range result {
-				var infoFiltro map[string]interface{}
-				json.Unmarshal([]byte(detalle.(map[string]interface{})["Detalle"].(string)), &infoFiltro)
-				var stringFiltro = make(map[string]interface{})
-				for k, prop := range infoFiltro {
-					if k == "RubroId" || k == "FuenteFinanciamientoId" || k == "ActividadId" {
-						switch prop.(type) {
-						case float64:
-							propCast := fmt.Sprintf("%.0f", prop.(float64))
-							stringFiltro[k] = propCast
-						default:
-							// logs.Debug(reflect.TypeOf(prop))
-							stringFiltro[k] = prop
-						}
-					}
-				}
-				if detalleTemp, err := json.Marshal(stringFiltro); err != nil {
-					logs.Error(err)
-					outputError = errorctrl.Error("ListaRubros -  json.Marshal(detalle)", err, "500")
-					return []models.CuentasMovimientoProcesoExterno{}, outputError
-				} else {
-					// logs.Debug("DETALLE: ", detalle)
-					allDetalleCuentas[k] = models.CuentasMovimientoProcesoExterno{
-						Cuen_Pre:     string(detalleTemp),
-						Mov_Proc_Ext: idMovProcExternoCast,
-					}
-				}
-			}
-
-			detalleCuentasRespuesta = RemoveDuplicateElement(allDetalleCuentas)
-
-			// logs.Debug("RESPUESTA DE CUENTAS: ", detalleCuentasRespuesta)
-		} else {
+		if len(result) <= 0 {
 			err := "No se encontró ningún registro que coincida"
 			logs.Error(err)
 			outputError = errorctrl.Error("ListaRubros - len(result) > 0", err, "404")
 			return []models.CuentasMovimientoProcesoExterno{}, outputError
+
 		}
+
+		var allDetalleCuentas []models.CuentasMovimientoProcesoExterno
+		allDetalleCuentas = make([]models.CuentasMovimientoProcesoExterno, len(result))
+		for k, detalle := range result {
+			var infoFiltro map[string]interface{}
+			json.Unmarshal([]byte(detalle.(map[string]interface{})["Detalle"].(string)), &infoFiltro)
+			var stringFiltro = make(map[string]interface{})
+			for k, prop := range infoFiltro {
+				if k == "RubroId" || k == "FuenteFinanciamientoId" || k == "ActividadId" {
+					switch prop.(type) {
+					case float64:
+						propCast := fmt.Sprintf("%.0f", prop.(float64))
+						stringFiltro[k] = propCast
+					default:
+						// logs.Debug(reflect.TypeOf(prop))
+						stringFiltro[k] = prop
+					}
+				}
+			}
+			if detalleTemp, err := json.Marshal(stringFiltro); err != nil {
+				logs.Error(err)
+				outputError = errorctrl.Error("ListaRubros -  json.Marshal(detalle)", err, "500")
+				return []models.CuentasMovimientoProcesoExterno{}, outputError
+			} else {
+				// logs.Debug("DETALLE: ", detalle)
+				allDetalleCuentas[k] = models.CuentasMovimientoProcesoExterno{
+					Cuen_Pre:     string(detalleTemp),
+					Mov_Proc_Ext: idMovProcExternoCast,
+				}
+			}
+		}
+
+		detalleCuentasRespuesta = RemoveDuplicateElement(allDetalleCuentas)
+
+		// logs.Debug("RESPUESTA DE CUENTAS: ", detalleCuentasRespuesta)
 	}
 
 	return detalleCuentasRespuesta, nil
 }
 
+// RemoveDuplicateElement quita los elementos duplicados de un arreglo de CuentasMovimientoProcesoExterno
 func RemoveDuplicateElement(addrs []models.CuentasMovimientoProcesoExterno) (aResp []models.CuentasMovimientoProcesoExterno) {
 	result := make([]models.CuentasMovimientoProcesoExterno, 0, len(addrs))
 	temp := map[models.CuentasMovimientoProcesoExterno]struct{}{}
@@ -161,7 +165,14 @@ func RemoveDuplicateElement(addrs []models.CuentasMovimientoProcesoExterno) (aRe
 	return result
 }
 
-func MovimientosDetalleCuentas(movimientosDetalle []models.MovimientoDetalle, idMovProcExterno int) (cuentasMovimientoDetalleRespuesta []models.CuentasMovimientoProcesoExterno, outputError map[string]interface{}) {
+// MovimientosDetalleCuentas se encarga de crear los movimientos que van a ser publicados
+func MovimientosDetalleCuentas(
+	movimientosDetalle []models.MovimientoDetalle,
+	idMovProcExterno int,
+) (
+	cuentasMovimientoDetalleRespuesta []models.CuentasMovimientoProcesoExterno,
+	outputError map[string]interface{},
+) {
 	defer errorctrl.ErrorControlFunction("MovimientosDetalleCuentas - Unhandled Error!", "500")
 
 	idMovProcExternoCast := strconv.Itoa(idMovProcExterno)

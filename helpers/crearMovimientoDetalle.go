@@ -11,24 +11,38 @@ import (
 	"github.com/udistrital/utils_oas/errorctrl"
 )
 
-func CrearMovimientoDetalle(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno, publicar bool, nuevoMovimiento string) (movimientoDetalleRegistrado *models.MovimientoDetalle, movimientoCambiado string, outputError map[string]interface{}) {
+// CrearMovimientoDetalle se encarga de insertar un movimiento detalle en la base de datos
+func CrearMovimientoDetalle(
+	cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno,
+	publicar bool,
+	nuevoMovimiento string,
+) (
+	movimientoDetalleRegistrado *models.MovimientoDetalle,
+	movimientoCambiado string,
+	outputError map[string]interface{},
+) {
 	o := orm.NewOrm()
 
 	if err := o.Begin(); err != nil {
-		return
+		panic(err)
 	}
 
 	defer func() {
 		if r := recover(); r != nil {
 			o.Rollback()
 			logs.Error(r)
-		} else {
-			o.Commit()
+			panic(r)
 		}
+		o.Commit()
 	}()
 
 	var idMovProcExterno string
 	var idNuevoMovProcExterno string = nuevoMovimiento
+
+	var err error
+	var idCast int
+	var movimientoObtenidobyId *models.MovimientoProcesoExterno
+
 	if idNuevoMovProcExterno == "" {
 		idMovProcExterno = cuentaMovimientoDetalle.Mov_Proc_Ext
 	} else {
@@ -39,57 +53,56 @@ func CrearMovimientoDetalle(cuentaMovimientoDetalle models.CuentasMovimientoProc
 	if idMovProcExterno == "" {
 		err := "No se ha recibido un ID de Movimiento Proceso Externo"
 		panic(errorctrl.Error("crearMovimientoDetalle - idMovProcExterno == \"\"", err, "400"))
-	} else {
-		if idCast, err := strconv.Atoi(idMovProcExterno); err != nil {
-			panic(err)
-		} else {
-			if result, err := models.GetMovimientoProcesoExternoById(idCast); err != nil {
-				logs.Error(err)
-				panic(err)
-			} else {
-				if err := json.Unmarshal([]byte(result.Detalle), &estado); err != nil {
-					logs.Error(err)
-					panic(err)
-				}
-				if estado["Estado"].(string) == "Publicado" && idNuevoMovProcExterno == "" {
-					err := "No se pueden crear movimientos detalle sobre un movimiento proceso externo publicado, se va a crear un nuevo movimiento proceso externo"
-					logs.Warn(err)
-					// logs.Debug("RESULT: ", result.Activo)
-					var detalleNuevoMov map[string]interface{}
+	}
 
-					if err := json.Unmarshal([]byte(result.Detalle), &detalleNuevoMov); err != nil {
-						logs.Error(err)
-						panic(errorctrl.Error("CrearMovimientoDetalle - json.Unmarshal([]byte(result.Detalle), &detalleNuevoMov)", err, "500"))
-					}
+	if idCast, err = strconv.Atoi(idMovProcExterno); err != nil {
+		panic(errorctrl.Error("CrearMovimientoDetalle - strconv.Atoi(idMovProcExterno)", err, "400"))
+	}
 
-					detalleNuevoMov["Estado"] = "Preliminar"
+	if movimientoObtenidobyId, err = models.GetMovimientoProcesoExternoById(idCast); err != nil {
+		panic(err)
+	}
 
-					var detalleNuevoMovStr []byte
-					var err2 error
+	if err := json.Unmarshal([]byte(movimientoObtenidobyId.Detalle), &estado); err != nil {
+		panic(errorctrl.Error("CrearMovimientoDetalle - json.Unmarshal([]byte(result.Detalle), &estado)", err, "404"))
+	}
 
-					if detalleNuevoMovStr, err2 = json.Marshal(detalleNuevoMov); err2 != nil {
-						logs.Error(err)
-						panic(errorctrl.Error("CrearMovimientoDetalle - json.Marshal(detalleNuevoMov)", err2, "500"))
-					}
+	if estado["Estado"].(string) == "Publicado" && idNuevoMovProcExterno == "" {
+		err := "No se pueden crear movimientos detalle sobre un movimiento proceso externo publicado, se va a crear un nuevo movimiento proceso externo"
+		logs.Warn(err)
+		// logs.Debug("RESULT: ", result.Activo)
+		var detalleNuevoMov map[string]interface{}
 
-					nuevoMovimiento := models.MovimientoProcesoExterno{
-						TipoMovimientoId:         result.TipoMovimientoId,
-						ProcesoExterno:           result.ProcesoExterno,
-						MovimientoProcesoExterno: result.MovimientoProcesoExterno,
-						Activo:                   result.Activo,
-						Detalle:                  string(detalleNuevoMovStr),
-					}
-
-					// logs.Debug("NUEVO MOVIMIENTO: ", &nuevoMovimiento)
-					if _, err := models.AddMovimientoProcesoExterno(&nuevoMovimiento); err != nil {
-						panic(errorctrl.Error("CrearMovimientoDetalle - models.AddMovimientoProcesoExterno(result)", err, "500"))
-					}
-				} else if estado["Estado"].(string) != "Preliminar" {
-					err := "No se reconoce el estado del movimiento proceso externo"
-					panic(errorctrl.Error("crearMovimientoDetalle - estado[\"Estado\"].(string) != \"Preliminar\"", err, "500"))
-				}
-			}
+		if err := json.Unmarshal([]byte(movimientoObtenidobyId.Detalle), &detalleNuevoMov); err != nil {
+			logs.Error(err)
+			panic(errorctrl.Error("CrearMovimientoDetalle - json.Unmarshal([]byte(result.Detalle), &detalleNuevoMov)", err, "500"))
 		}
+
+		detalleNuevoMov["Estado"] = "Preliminar"
+
+		var detalleNuevoMovStr []byte
+		var err2 error
+
+		if detalleNuevoMovStr, err2 = json.Marshal(detalleNuevoMov); err2 != nil {
+			logs.Error(err)
+			panic(errorctrl.Error("CrearMovimientoDetalle - json.Marshal(detalleNuevoMov)", err2, "500"))
+		}
+
+		nuevoMovimiento := models.MovimientoProcesoExterno{
+			TipoMovimientoId:         movimientoObtenidobyId.TipoMovimientoId,
+			ProcesoExterno:           movimientoObtenidobyId.ProcesoExterno,
+			MovimientoProcesoExterno: movimientoObtenidobyId.MovimientoProcesoExterno,
+			Activo:                   movimientoObtenidobyId.Activo,
+			Detalle:                  string(detalleNuevoMovStr),
+		}
+
+		// logs.Debug("NUEVO MOVIMIENTO: ", &nuevoMovimiento)
+		if _, err := models.AddMovimientoProcesoExterno(&nuevoMovimiento); err != nil {
+			panic(errorctrl.Error("CrearMovimientoDetalle - models.AddMovimientoProcesoExterno(result)", err, "500"))
+		}
+	} else if estado["Estado"].(string) != "Preliminar" {
+		err := "No se reconoce el estado del movimiento proceso externo"
+		panic(errorctrl.Error("crearMovimientoDetalle - estado[\"Estado\"].(string) != \"Preliminar\"", err, "500"))
 	}
 
 	saldo := cuentaMovimientoDetalle.Saldo
@@ -138,7 +151,17 @@ func CrearMovimientoDetalle(cuentaMovimientoDetalle models.CuentasMovimientoProc
 	return movimientoDetalleRegistrado, idNuevoMovProcExterno, nil
 }
 
-func RegistroMovimientoDetalle(detalleCuenPre string, idMovProcExterno string, saldo float64, valor float64, publicar bool) (registroMovimientoDetalleRespuesta models.MovimientoDetalle, outputError map[string]interface{}) {
+// RegistroMovimientoDetalle obtiene la estructura del movimiento detalle a ser insertado
+func RegistroMovimientoDetalle(
+	detalleCuenPre string,
+	idMovProcExterno string,
+	saldo float64,
+	valor float64,
+	publicar bool,
+) (
+	registroMovimientoDetalleRespuesta models.MovimientoDetalle,
+	outputError map[string]interface{},
+) {
 	defer errorctrl.ErrorControlFunction("RegistroMovimientoDetalle - Unhandled Error!", "500")
 
 	var idMovProcExternoCast int
@@ -165,8 +188,7 @@ func RegistroMovimientoDetalle(detalleCuenPre string, idMovProcExterno string, s
 
 	if nuevoDeltaAcum, nuevoSaldo, nuevoValor, err2 = CalcularMontos(detalleCuenPre, saldo, valor, publicar); err2 != nil {
 		logs.Error(err2)
-		outputError := errorctrl.Error("RegistroMovimientoDetalle - CalcularDeltaAcum(detalleCuenPre)", err2, "500")
-		return models.MovimientoDetalle{}, outputError
+		return models.MovimientoDetalle{}, err2
 	}
 
 	if err := json.Unmarshal([]byte(detalleCuenPre), &nuevoDetalleCuenPre); err != nil {
@@ -221,7 +243,18 @@ func RegistroMovimientoDetalle(detalleCuenPre string, idMovProcExterno string, s
 	return registroMovimientoDetalleRespuesta, nil
 }
 
-func CalcularMontos(detalleCuenPre string, saldo float64, valor float64, publicar bool) (detalAcumRespuesta float64, saldoRespuesta float64, valorRespuesta float64, outputError map[string]interface{}) {
+// CalcularMontos devuelve los montos a insetar en valor, saldo y delta acumulado del movimiento respectivo
+func CalcularMontos(
+	detalleCuenPre string,
+	saldo float64,
+	valor float64,
+	publicar bool,
+) (
+	detalAcumRespuesta float64,
+	saldoRespuesta float64,
+	valorRespuesta float64,
+	outputError map[string]interface{},
+) {
 	defer errorctrl.ErrorControlFunction("CalcularMontos - Unhandled Error!", "500")
 
 	cuentaSolicitada := models.CuentasMovimientoProcesoExterno{
@@ -238,19 +271,18 @@ func CalcularMontos(detalleCuenPre string, saldo float64, valor float64, publica
 			return saldo, saldo, saldo, nil
 		} else if valor != 0 {
 			return valor, valor, valor, nil
-		} else {
-			outputError := errorctrl.Error("RegistroMovimientoDetalle - CalcularMontos(detalleCuenPre)", err, "500")
-			return 0, 0, 0, outputError
 		}
+
+		return 0, 0, 0, err
+
 	} else if err == nil && publicar {
 		if saldo != 0 {
 			return 0, saldo, saldo, nil
 		} else if valor != 0 {
 			return 0, valor, valor, nil
-		} else {
-			outputError := errorctrl.Error("RegistroMovimientoDetalle - CalcularMontos(detalleCuenPre)", err, "500")
-			return 0, 0, 0, outputError
 		}
+
+		return 0, 0, 0, err
 	}
 
 	// logs.Debug("RESULTADO GET ULTIMO: ", result)
@@ -284,7 +316,14 @@ func CalcularMontos(detalleCuenPre string, saldo float64, valor float64, publica
 
 }
 
-func CrearMovimientosDetalle(cuentasMovimientoDetalle []models.CuentasMovimientoProcesoExterno, publicar bool) (cuentasMovimientoDetalleRespuesta []models.MovimientoDetalle, outputError map[string]interface{}) {
+// CrearMovimientosDetalle crea todos los movimientos detalle de un arreglo recibido
+func CrearMovimientosDetalle(
+	cuentasMovimientoDetalle []models.CuentasMovimientoProcesoExterno,
+	publicar bool,
+) (
+	cuentasMovimientoDetalleRespuesta []models.MovimientoDetalle,
+	outputError map[string]interface{},
+) {
 	defer errorctrl.ErrorControlFunction("GetAllUltimos - Unhandled Error!", "500")
 
 	cuentasMovimientoDetalleRespuesta = make([]models.MovimientoDetalle, len(cuentasMovimientoDetalle))

@@ -263,7 +263,7 @@ func (c *MovimientoDetalleController) CrearMovimientosDetalle() {
 	var arrayCuentas []models.CuentasMovimientoProcesoExterno
 
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &arrayCuentas); err != nil {
-		panic(err)
+		panic(errorctrl.Error("CrearMovimientosDetalle - json.Unmarshal(c.Ctx.Input.RequestBody, &arrayCuentas)", err, "404"))
 	}
 
 	if result, err := helpers.CrearMovimientosDetalle(arrayCuentas, false); err != nil {
