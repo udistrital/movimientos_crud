@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/astaxie/beego/logs"
+	"github.com/udistrital/movimientos_crud/helpers/utils"
 	"github.com/udistrital/movimientos_crud/models"
 	"github.com/udistrital/utils_oas/errorctrl"
 	"github.com/udistrital/utils_oas/formatdata"
@@ -20,7 +21,7 @@ func GetUltimo(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (
 		return models.MovimientoDetalle{}, outputError
 	}
 
-	var filtroJsonB map[string]interface{}
+	var filtroJsonB string
 	if datosCuenta.ActividadId != "" && datosCuenta.RubroId != "" && datosCuenta.FuenteFinanciamientoId != "" {
 		var actividadInt int
 		var fuenteInt int
@@ -37,33 +38,32 @@ func GetUltimo(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (
 			return models.MovimientoDetalle{}, outputError
 		}
 
-		filtroJsonB = map[string]interface{}{
+		filtroJsonB, _ = utils.Serializar(map[string]interface{}{
 			"RubroId":                datosCuenta.RubroId,
 			"FuenteFinanciamientoId": fuenteInt,
 			"ActividadId":            actividadInt,
-		}
+		})
 	} else if datosCuenta.ActividadId == "" && datosCuenta.RubroId != "" && datosCuenta.FuenteFinanciamientoId != "" {
 		if fuenteInt, err := strconv.Atoi(datosCuenta.FuenteFinanciamientoId); err != nil {
 			logs.Error(err)
 			outputError = errorctrl.Error("GetUltimo - strconv.Atoi(datosCuenta.FuenteFinanciamientoId)", err, "400")
 			return models.MovimientoDetalle{}, outputError
 		} else {
-			filtroJsonB = map[string]interface{}{
+			filtroJsonB, _ = utils.Serializar(map[string]interface{}{
 				"RubroId":                datosCuenta.RubroId,
 				"FuenteFinanciamientoId": fuenteInt,
-			}
+			})
 		}
 	}
 
-	data, _ := json.Marshal(filtroJsonB)
-
 	datosMovProcExterno := cuentaMovimientoDetalle.Mov_Proc_Ext
 
-	var query map[string]string
+	var query map[string]string = map[string]string{
+		"Detalle__json_contains": filtroJsonB,
+	}
 
-	query = map[string]string{
-		"Detalle__json_contains":         string(data),
-		"MovimientoProcesoExternoId__Id": datosMovProcExterno,
+	if datosMovProcExterno != "" {
+		query["MovimientoProcesoExternoId__Id"] = datosMovProcExterno
 	}
 
 	// Se sugiere ordenar por fecha de modificación

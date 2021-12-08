@@ -126,6 +126,32 @@ paths:
           description: '{string} delete success!'
         "403":
           description: id is empty
+  /movimiento_detalle/crearMovimientosDetalle:
+    post:
+      tags:
+      - movimiento_detalle
+      description: post CrearMovimientosDetalle se encarga de devolver crear los movimientos
+        detalle correspondientes a las cuentas recibidas
+      operationId: MovimientoDetalleController.CrearMovimientosDetalle
+      parameters:
+      - in: body
+        name: body
+        description: Cuentas presupuestales con su respectivo movimiento proceso externo
+          y el valor/saldo afectado
+        required: true
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/models.CuentasMovimientoProcesoExterno'
+      responses:
+        "201":
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/models.MovimientoDetalle'
+        "403":
+          description: body is empty
   /movimiento_detalle/eliminar_multiple:
     post:
       tags:
@@ -168,9 +194,39 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.MovimientoDetalle'
+            type: array
+            items:
+              $ref: '#/definitions/models.MovimientoDetalle'
         "403":
-          description: cuen_pre o mov_proc_ext is empty
+          description: body is empty
+  /movimiento_detalle/publicarMovimientosDetalle:
+    post:
+      tags:
+      - movimiento_detalle
+      description: post PublicarMovimientosDetalle se encarga de tomar los últimos
+        movimientos detalle asociados a un proceso externo y realizar la publicación
+        de los mismos (actualmente Plan de Adquisiciones)
+      operationId: MovimientoDetalleController.PublicarMovimientosDetalle
+      parameters:
+      - in: body
+        name: idMovProcExterno
+        description: ID del movimiento proceso externo al que se van a realizar las
+          publicaciones
+        required: true
+        schema:
+          format: int64
+          type: integer
+        type: integer
+        format: int64
+      responses:
+        "201":
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/models.MovimientoDetalle'
+        "403":
+          description: body is empty
   /movimiento_detalle/registrar_multiple:
     post:
       tags:
@@ -306,6 +362,46 @@ paths:
           description: '{string} delete success!'
         "403":
           description: id is empty
+  /movimiento_proceso_externo/movimientoFiltroJsonB:
+    get:
+      tags:
+      - movimiento_proceso_externo
+      description: get movimientoFiltroJsonB permite obtener el movimiento proceso
+        externo sin hacerle transformaciones al query del jsonb
+      operationId: MovimientoProcesoExternoController.movimientoFiltroJsonB
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.MovimientoProcesoExterno'
+        "403":
+          description: ""
   /movimiento_proceso_externo/registrar_movimiento:
     post:
       tags:
@@ -472,6 +568,12 @@ definitions:
         type: string
       Mov_Proc_Ext:
         type: string
+      Saldo:
+        type: number
+        format: double
+      Valor:
+        type: number
+        format: double
   models.MovimientoDetalle:
     title: MovimientoDetalle
     type: object

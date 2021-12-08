@@ -32,6 +32,7 @@ func init() {
 // AddMovimientoProcesoExterno insert a new MovimientoProcesoExterno into database and returns
 // last inserted Id on success.
 func AddMovimientoProcesoExterno(m *MovimientoProcesoExterno) (id int64, err error) {
+	// logs.Debug("M: ", m)
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
@@ -64,6 +65,7 @@ func GetAllMovimientoProcesoExterno(query map[string]string, fields []string, so
 			qs = qs.Filter(k, v)
 		}
 	}
+
 	// order by:
 	var sortFields []string
 	if len(sortby) != 0 {

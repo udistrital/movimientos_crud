@@ -5,6 +5,7 @@ go 1.15
 require (
 	github.com/astaxie/beego v1.12.3
 	github.com/go-playground/universal-translator v0.18.0 // indirect
+	github.com/imdario/mergo v0.3.12
 	github.com/lib/pq v1.10.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/smartystreets/goconvey v1.6.4
