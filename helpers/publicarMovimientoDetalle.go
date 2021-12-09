@@ -16,6 +16,7 @@ func PublicarMovimientosDetalle(idMovProcExterno int) (movimientosDetalleRespues
 	var detalleMovProcExt map[string]interface{}
 	var movimientoProcExtObtenido *models.MovimientoProcesoExterno
 	var err error
+	var formatErr map[string]interface{}
 
 	if movimientoProcExtObtenido, err = models.GetMovimientoProcesoExternoById(idMovProcExterno); err != nil {
 		logs.Error(err)
@@ -39,42 +40,66 @@ func PublicarMovimientosDetalle(idMovProcExterno int) (movimientosDetalleRespues
 		}
 	}
 
-	if result, err := ListaRubros(idMovProcExterno); err != nil {
-		return []models.MovimientoDetalle{}, err
-	} else {
-		if ultimosMovimientos, err := GetAllUltimos(result); err != nil {
-			logs.Error(err)
-			return []models.MovimientoDetalle{}, err
-		} else {
-			if cuentasPublicar, err := MovimientosDetalleCuentas(ultimosMovimientos, idMovProcExterno); err != nil {
-				logs.Error(err)
-				return []models.MovimientoDetalle{}, err
-			} else {
-				if registroCuentas, err := CrearMovimientosDetalle(cuentasPublicar, true); err != nil {
-					logs.Error(err)
-					return []models.MovimientoDetalle{}, err
-				} else {
-					movimientosDetalleRespuesta = registroCuentas
-				}
-			}
-		}
+	var listaRubros []models.CuentasMovimientoProcesoExterno
+
+	if listaRubros, formatErr = ListaRubros(idMovProcExterno); formatErr != nil {
+		logs.Error(formatErr)
+		return []models.MovimientoDetalle{}, formatErr
+	}
+
+	// logs.Debug("LISTA DE RUBROS: ", listaRubros)
+
+	var ultimosMovimientos []models.MovimientoDetalle
+
+	if ultimosMovimientos, formatErr = GetAllUltimos(listaRubros); formatErr != nil {
+		logs.Error(formatErr)
+		return []models.MovimientoDetalle{}, formatErr
+	}
+
+	var nuevoMovimientoProcesoExterno *models.MovimientoProcesoExterno = movimientoProcExtObtenido
+
+	if err := json.Unmarshal([]byte(nuevoMovimientoProcesoExterno.Detalle), &detalleMovProcExt); err != nil {
+		logs.Error(err)
+		outputError = errorctrl.Error("PublicarMovimientosDetalle - json.Unmarshal([]byte(nuevoMovimientoProcesoExterno.Detalle), &detalleMovProcExt)", err, "500")
+		return []models.MovimientoDetalle{}, outputError
 	}
 
 	estadoPublicacion := "Publicado"
 	detalleMovProcExt["Estado"] = estadoPublicacion
+	nuevoMovimientoProcesoExterno.Id = 0
 
 	if detalleMovProcExtActualizado, err := json.Marshal(detalleMovProcExt); err != nil {
 		logs.Error(err)
 		outputError = errorctrl.Error("crearMovimientoDetalle - json.Marshal(detalleMovProcExt)", err, "500")
 		return []models.MovimientoDetalle{}, outputError
 	} else {
-		movimientoProcExtObtenido.Detalle = string(detalleMovProcExtActualizado)
+		nuevoMovimientoProcesoExterno.Detalle = string(detalleMovProcExtActualizado)
 	}
 
-	if err := models.UpdateMovimientoProcesoExternoById(movimientoProcExtObtenido); err != nil {
+	var idMovimientoProcesoExternoInsertado int
+
+	if movimientoProcesoExternoInsertado, err := models.AddMovimientoProcesoExterno(nuevoMovimientoProcesoExterno); err != nil {
 		logs.Error(err)
-		outputError = errorctrl.Error("crearMovimientoDetalle - models.UpdateMovimientoProcesoExternoById(movimientoProcExtObtenido)", err, "500")
+		outputError = errorctrl.Error("PublicarMovimientosDetalle - models.AddMovimientoProcesoExterno(nuevoMovimientoProcesoExterno)", err, "500")
 		return []models.MovimientoDetalle{}, outputError
+	} else {
+		idMovimientoProcesoExternoInsertado = int(movimientoProcesoExternoInsertado)
+	}
+
+	var cuentasPublicar []models.CuentasMovimientoProcesoExterno
+
+	if cuentasPublicar, formatErr = MovimientosDetalleCuentas(ultimosMovimientos, idMovimientoProcesoExternoInsertado); formatErr != nil {
+		logs.Error(formatErr)
+		return []models.MovimientoDetalle{}, formatErr
+	}
+
+	var registroCuentas []models.MovimientoDetalle
+
+	if registroCuentas, formatErr = CrearMovimientosDetalle(cuentasPublicar, true); formatErr != nil {
+		logs.Error(formatErr)
+		return []models.MovimientoDetalle{}, formatErr
+	} else {
+		movimientosDetalleRespuesta = registroCuentas
 	}
 
 	return movimientosDetalleRespuesta, nil
@@ -181,13 +206,15 @@ func MovimientosDetalleCuentas(
 		var infoDetalle map[string]interface{}
 		json.Unmarshal([]byte(movimiento.Detalle), &infoDetalle)
 
+		// logs.Debug("MOVIMIENTO DETALLE: ", movimiento.Detalle)
+
 		switch infoDetalle["DeltaAcum"].(type) {
 		case float64:
 			cuentaRespuestaTemp := models.CuentasMovimientoProcesoExterno{
 				Cuen_Pre:     movimiento.Detalle,
 				Mov_Proc_Ext: idMovProcExternoCast,
-				Saldo:        infoDetalle["DeltaAcum"].(float64),
-				Valor:        infoDetalle["DeltaAcum"].(float64),
+				// Saldo:        infoDetalle["DeltaAcum"].(float64),
+				Valor: infoDetalle["DeltaAcum"].(float64),
 			}
 
 			cuentasMovimientoDetalleRespuesta = append(cuentasMovimientoDetalleRespuesta, cuentaRespuestaTemp)

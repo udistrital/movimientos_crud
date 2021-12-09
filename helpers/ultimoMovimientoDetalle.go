@@ -17,7 +17,7 @@ func GetUltimo(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (
 	var datosCuenta models.Cuen_Pre
 
 	if err := json.Unmarshal([]byte(cuentaMovimientoDetalle.Cuen_Pre), &datosCuenta); err != nil {
-		outputError = errorctrl.Error("GetUltimo", err, "400")
+		outputError = errorctrl.Error("GetUltimo - json.Unmarshal([]byte(cuentaMovimientoDetalle.Cuen_Pre), &datosCuenta)", err, "400")
 		return models.MovimientoDetalle{}, outputError
 	}
 
