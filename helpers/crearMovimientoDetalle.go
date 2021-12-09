@@ -179,7 +179,7 @@ func CrearMovimientoDetalle(
 
 	detalleCuenPre := cuentaMovimientoDetalle.Cuen_Pre
 
-	logs.Debug("DETALLE CUENTA PRESUPUESTAL: ", detalleCuenPre)
+	// logs.Debug("DETALLE CUENTA PRESUPUESTAL: ", detalleCuenPre)
 
 	if detalleCuenPre == "" {
 		err := "No se han ingresado datos de cuentas para crear movimientos detalle"
