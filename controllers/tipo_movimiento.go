@@ -127,6 +127,9 @@ func (c *TipoMovimientoController) GetAll() {
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
+		if l == nil {
+			l = []interface{}{}
+		}
 		c.Data["json"] = l
 	}
 }
