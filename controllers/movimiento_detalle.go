@@ -179,6 +179,9 @@ func (c *MovimientoDetalleController) GetAll() {
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
+		if l == nil {
+			l = []interface{}{}
+		}
 		c.Data["json"] = l
 	}
 }
@@ -243,7 +246,12 @@ func (c *MovimientoDetalleController) PostUltimoMovDetalle() {
 		panic(err)
 	} else {
 		// logs.Debug("Información: ", arrayCuentas, result)
-		c.Data["json"] = result
+		if result == nil {
+			c.Data["json"] = []interface{}{}
+		} else {
+			c.Data["json"] = result
+		}
+
 		c.Data["status"] = 200
 	}
 	c.ServeJSON()
@@ -271,8 +279,13 @@ func (c *MovimientoDetalleController) CrearMovimientosDetalle() {
 		panic(err)
 	} else {
 		// logs.Debug("Información: ", arrayCuentas, result)
-		c.Data["json"] = result
-		c.Data["status"] = 201
+		if result == nil {
+			c.Data["json"] = []interface{}{}
+		} else {
+			c.Data["json"] = result
+		}
+
+		c.Data["status"] = 200
 	}
 	c.ServeJSON()
 }
@@ -298,8 +311,13 @@ func (c *MovimientoDetalleController) PublicarMovimientosDetalle() {
 		panic(err)
 	} else {
 		// logs.Debug("Información: ", arrayCuentas, result)
-		c.Data["json"] = result
-		c.Data["status"] = 201
+		if result == nil {
+			c.Data["json"] = []interface{}{}
+		} else {
+			c.Data["json"] = result
+		}
+
+		c.Data["status"] = 200
 	}
 	c.ServeJSON()
 }
