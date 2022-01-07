@@ -161,7 +161,7 @@ func CrearMovimientoDetalle(
 
 	if estado["Estado"].(string) != "Preliminar" && estado["Estado"].(string) != "Publicado" {
 		err := "No se reconoce el estado del movimiento proceso externo"
-		panic(errorctrl.Error("crearMovimientoDetalle - estado[\"Estado\"].(string) != \"Preliminar\"", err, "500"))
+		panic(errorctrl.Error("crearMovimientoDetalle - estado[\"Estado\"].(string) != \"Preliminar\" && estado[\"Estado\"].(string) != \"Publicado\"", err, "500"))
 	}
 
 	// logs.Debug("MOVIMIENTO ANTIGUO: ", idAntiguoMovProcExterno)
@@ -391,6 +391,7 @@ func CalcularMontos(
 	// logs.Debug("Result: ", result == models.MovimientoDetalle{})
 
 	if (result == models.MovimientoDetalle{}) {
+		// logs.Debug("Entro en if result == models.MovimientoDetalle{}")
 		if idCast, err = strconv.Atoi(idMovProcExterno); err != nil {
 			logs.Error(errorctrl.Error("CalcularMontos - strconv.Atoi(idMovProcExterno)", err, "400"))
 		}
@@ -456,6 +457,7 @@ func CalcularMontos(
 			}
 		}
 	} else {
+		// logs.Debug("Entro en else de result == models.MovimientoDetalle{}")
 		if err := json.Unmarshal([]byte(result.Detalle), &detalleUltimoMovimientoDetalle); err != nil {
 			logs.Error(err)
 			outputError := errorctrl.Error("CalcularMontos - json.Unmarshal([]byte(result.Detalle), &detalleUltimoMovimientoDetalle)", err, "400")
@@ -487,6 +489,8 @@ func CalcularMontos(
 				return valor, valor, valor, formatError
 			}
 
+			// logs.Debug("publicadoObtenido: ", publicadoObtenido)
+
 			if len(publicadoObtenido) <= 0 {
 				err := "No se han encontrado movimientos publicados"
 				logs.Error(err)
@@ -496,16 +500,43 @@ func CalcularMontos(
 
 			var publicadoObtenidoStructed map[string]interface{}
 
-			formatdata.FillStruct(publicadoObtenido[0], &publicadoObtenidoStructed)
+			formatdata.FillStruct(publicadoObtenido[1], &publicadoObtenidoStructed)
+
+			var infoFiltro map[string]interface{}
+			json.Unmarshal([]byte(detalleCuenPre), &infoFiltro)
+			var stringFiltro = make(map[string]interface{})
+			for k, prop := range infoFiltro {
+				if k == "RubroId" || k == "FuenteFinanciamientoId" || k == "ActividadId" {
+					switch prop.(type) {
+					case float64:
+						propCast := fmt.Sprintf("%.0f", prop.(float64))
+						stringFiltro[k] = propCast
+					default:
+						// logs.Debug(reflect.TypeOf(prop))
+						stringFiltro[k] = prop
+					}
+				}
+			}
+
+			var detalleTemp []byte
+
+			if detalleTemp, err = json.Marshal(stringFiltro); err != nil {
+				logs.Error(err)
+			}
 
 			cuentaSolicitada = models.CuentasMovimientoProcesoExterno{
-				Cuen_Pre:     detalleCuenPre,
+				Cuen_Pre:     string(detalleTemp),
 				Mov_Proc_Ext: fmt.Sprintf("%.0f", publicadoObtenidoStructed["Id"].(float64)),
 			}
+
+			// logs.Debug("cuentaSolicitada: ", cuentaSolicitada)
 
 			if result, formatError = GetUltimo(cuentaSolicitada); formatError != nil {
 				// return
 			}
+
+			// logs.Debug("result: ", result)
+			// logs.Debug("result.Saldo: ", result.Saldo)
 
 			saldoRespuesta = result.Saldo + valorRespuesta
 			detalAcumRespuesta = 0

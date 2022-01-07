@@ -79,6 +79,8 @@ func GetUltimo(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (
 	// Para traer el último
 	limit := int64(1)
 
+	// logs.Debug("query: ", query)
+
 	// Nota: Se envían los parámetros de fields como nil y offset por default como 0
 	if result, err := models.GetAllMovimientoDetalle(query, nil, sortby, order, 0, limit); err != nil {
 		logs.Error(err)

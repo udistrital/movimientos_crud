@@ -93,6 +93,8 @@ func PublicarMovimientosDetalle(idMovProcExterno int) (movimientosDetalleRespues
 		return []models.MovimientoDetalle{}, formatErr
 	}
 
+	// logs.Debug(fmt.Sprintf("cuentasPublicar: %+v", cuentasPublicar))
+
 	var registroCuentas []models.MovimientoDetalle
 
 	if registroCuentas, formatErr = CrearMovimientosDetalle(cuentasPublicar, true); formatErr != nil {
@@ -101,6 +103,8 @@ func PublicarMovimientosDetalle(idMovProcExterno int) (movimientosDetalleRespues
 	} else {
 		movimientosDetalleRespuesta = registroCuentas
 	}
+
+	// logs.Debug(fmt.Sprintf("registroCuentas: %+v", registroCuentas))
 
 	return movimientosDetalleRespuesta, nil
 }
