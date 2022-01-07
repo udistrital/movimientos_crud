@@ -306,6 +306,8 @@ func (c *MovimientoDetalleController) PublicarMovimientosDetalle() {
 		panic(errorctrl.Error("PublicarMovimientosDetalle - json.Unmarshal(c.Ctx.Input.RequestBody, &idMovProcExternoRecibida)", err, "400"))
 	}
 
+	// logs.Debug("idMovProcExternoRecibida: ", idMovProcExternoRecibida)
+
 	if result, err := helpers.PublicarMovimientosDetalle(idMovProcExternoRecibida); err != nil {
 		// logs.Debug("error")
 		panic(err)

@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"encoding/json"
-	"reflect"
 	"strconv"
 
 	"github.com/astaxie/beego/logs"
@@ -18,7 +17,7 @@ func UltimoMovimientoDetallePublicado(estado string, cuenta string) (cuentaRespu
 	var err error
 
 	json.Unmarshal([]byte(cuenta), &infoFiltro)
-	logs.Debug("INFOFILTRO: ", infoFiltro)
+	// logs.Debug("INFOFILTRO: ", infoFiltro)
 	var stringFiltro = make(map[string]interface{})
 	for k, prop := range infoFiltro {
 		if k == "FuenteFinanciamientoId" || k == "ActividadId" {
@@ -27,7 +26,7 @@ func UltimoMovimientoDetallePublicado(estado string, cuenta string) (cuentaRespu
 				propCast, _ := strconv.ParseFloat(prop.(string), 64)
 				stringFiltro[k] = propCast
 			default:
-				logs.Debug(reflect.TypeOf(prop))
+				// logs.Debug(reflect.TypeOf(prop))
 				stringFiltro[k] = prop
 			}
 		} else {
@@ -35,7 +34,7 @@ func UltimoMovimientoDetallePublicado(estado string, cuenta string) (cuentaRespu
 		}
 	}
 
-	logs.Debug("STRINGFILTRO: ", stringFiltro)
+	// logs.Debug("STRINGFILTRO: ", stringFiltro)
 
 	var detalleTemp []byte
 
