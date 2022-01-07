@@ -499,8 +499,53 @@ func CalcularMontos(
 			}
 
 			var publicadoObtenidoStructed map[string]interface{}
+			var segundoPublicadoObtenidoStructed map[string]interface{}
 
 			formatdata.FillStruct(publicadoObtenido[1], &publicadoObtenidoStructed)
+			formatdata.FillStruct(publicadoObtenido[0], &segundoPublicadoObtenidoStructed)
+
+			// logs.Debug("publicadoObtenidoStructed[\"Detalle\"]: ", publicadoObtenidoStructed["Detalle"])
+			// logs.Debug("segundoPublicadoObtenidoStructed[\"Detalle\"]: ", segundoPublicadoObtenidoStructed["Detalle"])
+			// logs.Debug("reflect.TypeOf(publicadoObtenidoStructed[\"Detalle\"]): ", reflect.TypeOf(publicadoObtenidoStructed["Detalle"]))
+			// logs.Debug("reflect.TypeOf(segundoPublicadoObtenidoStructed[\"Detalle\"]): ", reflect.TypeOf(segundoPublicadoObtenidoStructed["Detalle"]))
+			// logs.Debug("publicadoObtenidoStructed[\"Detalle\"] == segundoPublicadoObtenidoStructed[\"Detalle\"]: ", publicadoObtenidoStructed["Detalle"] == segundoPublicadoObtenidoStructed["Detalle"])
+
+			var primerPublicadoDetalle map[string]interface{}
+			var segundoPublicadoDetalle map[string]interface{}
+
+			if err := json.Unmarshal([]byte(publicadoObtenidoStructed["Detalle"].(string)), &primerPublicadoDetalle); err != nil {
+				panic(errorctrl.Error("CrearMovimientoDetalle - json.Unmarshal([]byte(publicadoObtenidoStructed[\"Detalle\"].(string)), &primerPublicadoDetalle)", err, "404"))
+			}
+
+			if err := json.Unmarshal([]byte(segundoPublicadoObtenidoStructed["Detalle"].(string)), &segundoPublicadoDetalle); err != nil {
+				panic(errorctrl.Error("CrearMovimientoDetalle - json.Unmarshal([]byte(segundoPublicadoObtenidoStructed[\"Detalle\"].(string)), &segundoPublicadoDetalle)", err, "404"))
+			}
+
+			var compararDosPlanes bool = true
+
+			switch primerPublicadoDetalle["PlanAdquisicionesId"].(type) {
+			case nil:
+				compararDosPlanes = false
+			default:
+				compararDosPlanes = true
+			}
+
+			switch segundoPublicadoDetalle["PlanAdquisicionesId"].(type) {
+			case nil:
+				compararDosPlanes = false
+			default:
+				compararDosPlanes = true
+			}
+
+			if publicadoObtenidoStructed["Detalle"] != segundoPublicadoObtenidoStructed["Detalle"] && compararDosPlanes {
+				if saldo != 0 {
+					return saldo, saldo, saldo, nil
+				} else if valor != 0 {
+					return valor, valor, valor, nil
+				}
+			}
+
+			// logs.Debug("detalleCuenPre: ", detalleCuenPre)
 
 			var infoFiltro map[string]interface{}
 			json.Unmarshal([]byte(detalleCuenPre), &infoFiltro)
