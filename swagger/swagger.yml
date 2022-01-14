@@ -283,7 +283,9 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.MovimientoProcesoExterno'
+            type: array
+            items:
+              $ref: '#/definitions/models.MovimientoProcesoExterno'
         "403":
           description: ""
     post:
@@ -408,25 +410,6 @@ paths:
       - movimiento_proceso_externo
       description: Registra un movimiento completamente, tanto el de proceso externo
         como el detalle
-      operationId: MovimientoProcesoExternoController.RegistrarMovimiento
-      parameters:
-      - in: body
-        name: body
-        description: map[string]interface{}
-        required: true
-        schema:
-          $ref: '#/definitions/map[string]interface{}'
-      responses:
-        "201":
-          description: '{int} models.MovimientoProcesoExterno'
-        "403":
-          description: body is empty
-  /movimiento_proceso_externoregistrar_movimiento:
-    post:
-      tags:
-      - movimiento_proceso_externo
-      description: Registra un movimiento completamente, tanto el de proceso externo
-        como el detalle (deprecated/old/wrong path!)
       operationId: MovimientoProcesoExternoController.RegistrarMovimientoOld (deprecated/old/wrong
         path)
       parameters:
@@ -435,10 +418,33 @@ paths:
         description: map[string]interface{}
         required: true
         schema:
-          $ref: '#/definitions/map[string]interface{}'
+          $ref: '#/definitions/models.MovimientoProcesoExternoDetallado'
       responses:
         "201":
-          description: '{int} models.MovimientoProcesoExterno'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.RegistrarMovimientoData'
+        "403":
+          description: body is empty
+  /movimiento_proceso_externoregistrar_movimiento:
+    post:
+      tags:
+      - movimiento_proceso_externo
+      description: Registra un movimiento completamente, tanto el de proceso externo
+        como el detalle (deprecated/old/wrong path!)
+      operationId: MovimientoProcesoExternoController.RegistrarMovimiento
+      parameters:
+      - in: body
+        name: body
+        description: map[string]interface{}
+        required: true
+        schema:
+          $ref: '#/definitions/models.MovimientoProcesoExternoDetallado'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.RegistrarMovimientoData'
         "403":
           description: body is empty
   /tipo_movimiento/:
@@ -557,9 +563,6 @@ paths:
         "403":
           description: id is empty
 definitions:
-  map[string]interface{}:
-    title: map[string]interface{}
-    type: object
   models.CuentasMovimientoProcesoExterno:
     title: CuentasMovimientoProcesoExterno
     type: object
@@ -626,6 +629,41 @@ definitions:
         format: int64
       TipoMovimientoId:
         $ref: '#/definitions/models.TipoMovimiento'
+  models.MovimientoProcesoExternoDetallado:
+    title: MovimientoProcesoExternoDetallado
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      Detalle:
+        type: string
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      MovimientoDetalle:
+        $ref: '#/definitions/models.MovimientoDetalle'
+      MovimientoProcesoExterno:
+        type: integer
+        format: int64
+      ProcesoExterno:
+        type: integer
+        format: int64
+      TipoMovimientoId:
+        $ref: '#/definitions/models.TipoMovimiento'
+  models.RegistrarMovimientoData:
+    title: RegistrarMovimientoData
+    type: object
+    properties:
+      MovimientoDetalle:
+        $ref: '#/definitions/models.MovimientoDetalle'
+      MovimientoProcesoExterno:
+        $ref: '#/definitions/models.MovimientoProcesoExterno'
   models.TipoMovimiento:
     title: TipoMovimiento
     type: object

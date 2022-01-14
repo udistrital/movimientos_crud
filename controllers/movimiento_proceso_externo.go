@@ -30,27 +30,23 @@ func (c *MovimientoProcesoExternoController) URLMapping() {
 
 // RegistrarMovimiento ...
 // @Title RegistrarMovimiento
-// @Description Registra un movimiento completamente, tanto el de proceso externo como el detalle
-// @Param	body		body 	map[string]interface{}	true		"map[string]interface{}"
-// @Success 201 {int} models.MovimientoProcesoExterno
+// @Description Registra un movimiento completamente, tanto el de proceso externo como el detalle (deprecated/old/wrong path!)
+// @Param	body		body 	models.MovimientoProcesoExternoDetallado	true		"map[string]interface{}"
+// @Success 201 {object} models.RegistrarMovimientoData
 // @Failure 403 body is empty
-// @router /registrar_movimiento [post]
-func (c *MovimientoProcesoExternoController) RegistrarMovimiento() {
-	registrarMovimientoCommon(c)
+// @router registrar_movimiento [post]
+func (c *MovimientoProcesoExternoController) RegistrarMovimientoOld() {
+	c.RegistrarMovimiento()
 }
 
 // RegistrarMovimientoOld ...
 // @Title RegistrarMovimientoOld (deprecated/old/wrong path)
-// @Description Registra un movimiento completamente, tanto el de proceso externo como el detalle (deprecated/old/wrong path!)
-// @Param	body		body 	map[string]interface{}	true		"map[string]interface{}"
-// @Success 201 {int} models.MovimientoProcesoExterno
+// @Description Registra un movimiento completamente, tanto el de proceso externo como el detalle
+// @Param	body		body 	models.MovimientoProcesoExternoDetallado	true		"map[string]interface{}"
+// @Success 201 {object} models.RegistrarMovimientoData
 // @Failure 403 body is empty
-// @router registrar_movimiento [post]
-func (c *MovimientoProcesoExternoController) RegistrarMovimientoOld() {
-	registrarMovimientoCommon(c)
-}
-
-func registrarMovimientoCommon(c *MovimientoProcesoExternoController) {
+// @router /registrar_movimiento [post]
+func (c *MovimientoProcesoExternoController) RegistrarMovimiento() {
 	var movimiento map[string]interface{}
 
 	layoutDate := "2006-01-02"
@@ -75,11 +71,16 @@ func registrarMovimientoCommon(c *MovimientoProcesoExternoController) {
 		}
 
 		movimientoProcesoExternoManager.RegistrarMovimientoProcesoExterno(&movimientoProcesoExterno, &movimientoDetalle)
+		dataResponse["Data"] = map[string]interface{}{
+			"MovimientoDetalle":        movimientoDetalle,
+			"MovimientoProcesoExterno": movimientoProcesoExterno,
+		}
 		dataResponse["status"] = "registrado"
 		responseformat.SetResponseFormat(&c.Controller, dataResponse, "", 200)
 	} else {
 		panic(err)
 	}
+	c.ServeJSON()
 }
 
 // Post ...
@@ -101,6 +102,7 @@ func (c *MovimientoProcesoExternoController) Post() {
 	} else {
 		c.Data["json"] = err
 	}
+	c.ServeJSON()
 }
 
 // GetOne ...
@@ -119,6 +121,7 @@ func (c *MovimientoProcesoExternoController) GetOne() {
 	} else {
 		c.Data["json"] = v
 	}
+	c.ServeJSON()
 }
 
 // GetAll ...
@@ -130,7 +133,7 @@ func (c *MovimientoProcesoExternoController) GetOne() {
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.MovimientoProcesoExterno
+// @Success 200 {object} []models.MovimientoProcesoExterno
 // @Failure 403
 // @router / [get]
 func (c *MovimientoProcesoExternoController) GetAll() {
@@ -186,6 +189,7 @@ func (c *MovimientoProcesoExternoController) GetAll() {
 		}
 		c.Data["json"] = l
 	}
+	c.ServeJSON()
 }
 
 // movimientoFiltroJsonB ...
@@ -244,6 +248,7 @@ func (c *MovimientoProcesoExternoController) MovimientoFiltroJsonB() {
 		}
 		c.Data["json"] = l
 	}
+	c.ServeJSON()
 }
 
 // Put ...
@@ -267,6 +272,7 @@ func (c *MovimientoProcesoExternoController) Put() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
+	c.ServeJSON()
 }
 
 // Delete ...
@@ -284,4 +290,5 @@ func (c *MovimientoProcesoExternoController) Delete() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
+	c.ServeJSON()
 }

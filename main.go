@@ -1,48 +1,26 @@
 package main
 
 import (
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/plugins/cors"
 	_ "github.com/lib/pq"
 	"github.com/udistrital/auditoria"
-	_ "github.com/udistrital/movimientos_crud/routers"
 	apistatus "github.com/udistrital/utils_oas/apiStatusLib"
-	"github.com/udistrital/utils_oas/responseformat"
+	"github.com/udistrital/utils_oas/customerror"
 
-	"github.com/astaxie/beego"
+	_ "github.com/udistrital/movimientos_crud/routers"
 )
 
-func init() {
+func main() {
 	orm.RegisterDataBase("default", "postgres", "postgres://"+
 		beego.AppConfig.String("PGuser")+
 		":"+beego.AppConfig.String("PGpass")+
 		"@"+beego.AppConfig.String("PGurls")+
 		":"+beego.AppConfig.String("PGport")+
 		"/"+beego.AppConfig.String("PGdb")+
-		"?sslmode=disable&search_path="+beego.AppConfig.String("PGschemas")+"")
-	if beego.BConfig.RunMode == "dev" {
-		// Database alias.
-		// name := "default"
-
-		// // Drop table and re-create.
-		// force := false
-
-		// // Print log.
-		// verbose := true
-
-		// Error.
-		// err := orm.RunSyncdb(name, force, verbose)
-		// if err != nil {
-		// 	fmt.Println(err)
-		// }
-	}
-
-}
-
-func main() {
-
-	beego.BConfig.RecoverFunc = responseformat.GlobalResponseHandler
-
+		"?sslmode=disable&search_path="+
+		beego.AppConfig.String("PGschemas")+"")
 	if beego.BConfig.RunMode == "dev" {
 		beego.BConfig.WebConfig.DirectoryIndex = true
 		orm.Debug = true
@@ -60,10 +38,11 @@ func main() {
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
+	beego.ErrorController(&customerror.CustomErrorController{})
+	// logs.SetLogger(logs.AdapterFile, `{"filename":"/var/log/beego/movimientos_crud/movimientos_crud.log"}`)
 
 	//Prueba de auditoria
 	auditoria.InitMiddleware()
 	apistatus.Init()
 	beego.Run()
-
 }

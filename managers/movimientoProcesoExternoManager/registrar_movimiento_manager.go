@@ -12,7 +12,7 @@ func RegistrarMovimientoProcesoExterno(movimientoProcesoExterno *models.Movimien
 	id, err := o.Insert(movimientoProcesoExterno)
 	if err != nil {
 		o.Rollback()
-		panic(err) 
+		panic(err)
 	}
 	movimientoProcesoExterno.Id = int(id)
 	movimientoDetalle.MovimientoProcesoExternoId = movimientoProcesoExterno
