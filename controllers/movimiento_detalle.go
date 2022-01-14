@@ -79,7 +79,7 @@ func (c *MovimientoDetalleController) DeleteMultiple() {
 	}
 
 	c.Data["json"] = "OK"
-
+	c.ServeJSON()
 }
 
 // Post ...
@@ -101,6 +101,7 @@ func (c *MovimientoDetalleController) Post() {
 	} else {
 		c.Data["json"] = err
 	}
+	c.ServeJSON()
 }
 
 // GetOne ...
@@ -119,6 +120,7 @@ func (c *MovimientoDetalleController) GetOne() {
 	} else {
 		c.Data["json"] = v
 	}
+	c.ServeJSON()
 }
 
 // GetAll ...
@@ -184,6 +186,7 @@ func (c *MovimientoDetalleController) GetAll() {
 		}
 		c.Data["json"] = l
 	}
+	c.ServeJSON()
 }
 
 // Put ...
@@ -207,6 +210,7 @@ func (c *MovimientoDetalleController) Put() {
 	} else {
 		c.Data["json"] = err
 	}
+	c.ServeJSON()
 }
 
 // Delete ...
@@ -224,6 +228,7 @@ func (c *MovimientoDetalleController) Delete() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
+	c.ServeJSON()
 }
 
 // PostUltimoMovDetalle ...
@@ -255,7 +260,6 @@ func (c *MovimientoDetalleController) PostUltimoMovDetalle() {
 		c.Data["status"] = 200
 	}
 	c.ServeJSON()
-
 }
 
 // CrearMovimientosDetalle ...

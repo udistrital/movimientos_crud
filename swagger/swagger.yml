@@ -283,7 +283,9 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.MovimientoProcesoExterno'
+            type: array
+            items:
+              $ref: '#/definitions/models.MovimientoProcesoExterno'
         "403":
           description: ""
     post:
@@ -415,10 +417,12 @@ paths:
         description: map[string]interface{}
         required: true
         schema:
-          $ref: '#/definitions/map[string]interface{}'
+          $ref: '#/definitions/models.MovimientoProcesoExterno'
       responses:
         "201":
-          description: '{int} models.MovimientoProcesoExterno'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.MovimientoProcesoExterno'
         "403":
           description: body is empty
   /movimiento_proceso_externoregistrar_movimiento:
@@ -435,10 +439,12 @@ paths:
         description: map[string]interface{}
         required: true
         schema:
-          $ref: '#/definitions/map[string]interface{}'
+          $ref: '#/definitions/models.MovimientoProcesoExterno'
       responses:
         "201":
-          description: '{int} models.MovimientoProcesoExterno'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.MovimientoProcesoExterno'
         "403":
           description: body is empty
   /tipo_movimiento/:
@@ -557,9 +563,6 @@ paths:
         "403":
           description: id is empty
 definitions:
-  map[string]interface{}:
-    title: map[string]interface{}
-    type: object
   models.CuentasMovimientoProcesoExterno:
     title: CuentasMovimientoProcesoExterno
     type: object

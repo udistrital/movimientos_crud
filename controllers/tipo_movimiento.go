@@ -49,6 +49,7 @@ func (c *TipoMovimientoController) Post() {
 		logs.Error(fmt.Sprintf("Error2: %v+", v))
 		c.Data["json"] = err.Error()
 	}
+	c.ServeJSON()
 }
 
 // GetOne ...
@@ -67,6 +68,7 @@ func (c *TipoMovimientoController) GetOne() {
 	} else {
 		c.Data["json"] = v
 	}
+	c.ServeJSON()
 }
 
 // GetAll ...
@@ -132,6 +134,7 @@ func (c *TipoMovimientoController) GetAll() {
 		}
 		c.Data["json"] = l
 	}
+	c.ServeJSON()
 }
 
 // Put ...
@@ -155,6 +158,7 @@ func (c *TipoMovimientoController) Put() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
+	c.ServeJSON()
 }
 
 // Delete ...
@@ -172,4 +176,5 @@ func (c *TipoMovimientoController) Delete() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
+	c.ServeJSON()
 }

@@ -411,7 +411,10 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.MovimientoProcesoExterno"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.MovimientoProcesoExterno"
+                            }
                         }
                     },
                     "403": {
@@ -518,13 +521,16 @@
                         "description": "map[string]interface{}",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/map[string]interface{}"
+                            "$ref": "#/definitions/models.MovimientoProcesoExterno"
                         }
                     }
                 ],
                 "responses": {
                     "201": {
-                        "description": "{int} models.MovimientoProcesoExterno"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.MovimientoProcesoExterno"
+                        }
                     },
                     "403": {
                         "description": "body is empty"
@@ -635,13 +641,16 @@
                         "description": "map[string]interface{}",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/map[string]interface{}"
+                            "$ref": "#/definitions/models.MovimientoProcesoExterno"
                         }
                     }
                 ],
                 "responses": {
                     "201": {
-                        "description": "{int} models.MovimientoProcesoExterno"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.MovimientoProcesoExterno"
+                        }
                     },
                     "403": {
                         "description": "body is empty"
@@ -824,10 +833,6 @@
         }
     },
     "definitions": {
-        "map[string]interface{}": {
-            "title": "map[string]interface{}",
-            "type": "object"
-        },
         "models.CuentasMovimientoProcesoExterno": {
             "title": "CuentasMovimientoProcesoExterno",
             "type": "object",
