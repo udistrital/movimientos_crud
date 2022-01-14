@@ -30,23 +30,23 @@ func (c *MovimientoProcesoExternoController) URLMapping() {
 
 // RegistrarMovimiento ...
 // @Title RegistrarMovimiento
-// @Description Registra un movimiento completamente, tanto el de proceso externo como el detalle
-// @Param	body		body 	models.MovimientoProcesoExterno	true		"map[string]interface{}"
-// @Success 201 {object} models.MovimientoProcesoExterno
+// @Description Registra un movimiento completamente, tanto el de proceso externo como el detalle (deprecated/old/wrong path!)
+// @Param	body		body 	models.MovimientoProcesoExternoDetallado	true		"map[string]interface{}"
+// @Success 201 {object} models.RegistrarMovimientoData
 // @Failure 403 body is empty
-// @router /registrar_movimiento [post]
-func (c *MovimientoProcesoExternoController) RegistrarMovimiento() {
-	c.RegistrarMovimientoOld()
+// @router registrar_movimiento [post]
+func (c *MovimientoProcesoExternoController) RegistrarMovimientoOld() {
+	c.RegistrarMovimiento()
 }
 
 // RegistrarMovimientoOld ...
 // @Title RegistrarMovimientoOld (deprecated/old/wrong path)
-// @Description Registra un movimiento completamente, tanto el de proceso externo como el detalle (deprecated/old/wrong path!)
-// @Param	body		body 	models.MovimientoProcesoExterno	true		"map[string]interface{}"
-// @Success 201 {object} models.MovimientoProcesoExterno
+// @Description Registra un movimiento completamente, tanto el de proceso externo como el detalle
+// @Param	body		body 	models.MovimientoProcesoExternoDetallado	true		"map[string]interface{}"
+// @Success 201 {object} models.RegistrarMovimientoData
 // @Failure 403 body is empty
-// @router registrar_movimiento [post]
-func (c *MovimientoProcesoExternoController) RegistrarMovimientoOld() {
+// @router /registrar_movimiento [post]
+func (c *MovimientoProcesoExternoController) RegistrarMovimiento() {
 	var movimiento map[string]interface{}
 
 	layoutDate := "2006-01-02"
@@ -71,6 +71,10 @@ func (c *MovimientoProcesoExternoController) RegistrarMovimientoOld() {
 		}
 
 		movimientoProcesoExternoManager.RegistrarMovimientoProcesoExterno(&movimientoProcesoExterno, &movimientoDetalle)
+		dataResponse["Data"] = map[string]interface{}{
+			"MovimientoDetalle":        movimientoDetalle,
+			"MovimientoProcesoExterno": movimientoProcesoExterno,
+		}
 		dataResponse["status"] = "registrado"
 		responseformat.SetResponseFormat(&c.Controller, dataResponse, "", 200)
 	} else {
