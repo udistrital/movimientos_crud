@@ -16,8 +16,9 @@ type MovimientoProcesoExterno struct {
 	ProcesoExterno           int64           `orm:"column(proceso_externo)"`
 	MovimientoProcesoExterno int             `orm:"column(movimiento_proceso_externo);null"`
 	Activo                   bool            `orm:"column(activo);null"`
-	FechaCreacion            time.Time       `orm:"auto_now_add;column(fecha_creacion);type(date)";null`
-	FechaModificacion        time.Time       `orm:"auto_now;column(fecha_modificacion);type(date)";null`
+	FechaCreacion            time.Time       `orm:"auto_now_add;column(fecha_creacion);null"`
+	FechaModificacion        time.Time       `orm:"auto_now;column(fecha_modificacion);null"`
+	Detalle                  string          `orm:"column(detalle);type(jsonb);null"`
 }
 
 func (t *MovimientoProcesoExterno) TableName() string {
@@ -31,6 +32,7 @@ func init() {
 // AddMovimientoProcesoExterno insert a new MovimientoProcesoExterno into database and returns
 // last inserted Id on success.
 func AddMovimientoProcesoExterno(m *MovimientoProcesoExterno) (id int64, err error) {
+	// logs.Debug("M: ", m)
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
@@ -63,6 +65,7 @@ func GetAllMovimientoProcesoExterno(query map[string]string, fields []string, so
 			qs = qs.Filter(k, v)
 		}
 	}
+
 	// order by:
 	var sortFields []string
 	if len(sortby) != 0 {

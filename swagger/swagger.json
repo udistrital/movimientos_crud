@@ -99,6 +99,43 @@
                 }
             }
         },
+        "/movimiento_detalle/crearMovimientosDetalle": {
+            "post": {
+                "tags": [
+                    "movimiento_detalle"
+                ],
+                "description": "post CrearMovimientosDetalle se encarga de devolver crear los movimientos detalle correspondientes a las cuentas recibidas",
+                "operationId": "MovimientoDetalleController.CrearMovimientosDetalle",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Cuentas presupuestales con su respectivo movimiento proceso externo y el valor/saldo afectado",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.CuentasMovimientoProcesoExterno"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.MovimientoDetalle"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/movimiento_detalle/eliminar_multiple": {
             "post": {
                 "tags": [
@@ -108,11 +145,17 @@
                 "operationId": "MovimientoDetalleController.DeleteMultiple",
                 "parameters": [
                     {
-                        "in": "path",
-                        "name": "id",
-                        "description": "The id you want to delete",
+                        "in": "body",
+                        "name": "body",
+                        "description": "Array of (int) IDs that you want to delete",
                         "required": true,
-                        "type": "string"
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "format": "int64",
+                                "type": "integer"
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -121,6 +164,80 @@
                     },
                     "403": {
                         "description": "Body is empty"
+                    }
+                }
+            }
+        },
+        "/movimiento_detalle/postUltimoMovDetalle": {
+            "post": {
+                "tags": [
+                    "movimiento_detalle"
+                ],
+                "description": "post UltimoMovDetalle se encarga de devolver el último movimiento detalle asociado a una denominada cuenta presupuestal",
+                "operationId": "MovimientoDetalleController.PostUltimoMovDetalle",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Valor de la cuenta presupuestal o las cuentas presupuestales de las que quiere recuperar el último movimiento",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.CuentasMovimientoProcesoExterno"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.MovimientoDetalle"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/movimiento_detalle/publicarMovimientosDetalle": {
+            "post": {
+                "tags": [
+                    "movimiento_detalle"
+                ],
+                "description": "post PublicarMovimientosDetalle se encarga de tomar los últimos movimientos detalle asociados a un proceso externo y realizar la publicación de los mismos (actualmente Plan de Adquisiciones)",
+                "operationId": "MovimientoDetalleController.PublicarMovimientosDetalle",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "idMovProcExterno",
+                        "description": "ID del movimiento proceso externo al que se van a realizar las publicaciones",
+                        "required": true,
+                        "schema": {
+                            "format": "int64",
+                            "type": "integer"
+                        },
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.MovimientoDetalle"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "body is empty"
                     }
                 }
             }
@@ -141,7 +258,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/*models.MovimientoDetalle"
+                                "$ref": "#/definitions/models.MovimientoDetalle"
                             }
                         }
                     }
@@ -294,7 +411,10 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.MovimientoProcesoExterno"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.MovimientoProcesoExterno"
+                            }
                         }
                     },
                     "403": {
@@ -322,6 +442,95 @@
                 "responses": {
                     "201": {
                         "description": "{int} models.MovimientoProcesoExterno"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/movimiento_proceso_externo/movimientoFiltroJsonB": {
+            "get": {
+                "tags": [
+                    "movimiento_proceso_externo"
+                ],
+                "description": "get movimientoFiltroJsonB permite obtener el movimiento proceso externo sin hacerle transformaciones al query del jsonb",
+                "operationId": "MovimientoProcesoExternoController.movimientoFiltroJsonB",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "query",
+                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "fields",
+                        "description": "Fields returned. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortby",
+                        "description": "Sorted-by fields. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "order",
+                        "description": "Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Limit the size of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "Start position of result set. Must be an integer",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.MovimientoProcesoExterno"
+                        }
+                    },
+                    "403": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/movimiento_proceso_externo/registrar_movimiento": {
+            "post": {
+                "tags": [
+                    "movimiento_proceso_externo"
+                ],
+                "description": "Registra un movimiento completamente, tanto el de proceso externo como el detalle",
+                "operationId": "MovimientoProcesoExternoController.RegistrarMovimientoOld (deprecated/old/wrong path)",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "map[string]interface{}",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.MovimientoProcesoExternoDetallado"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.RegistrarMovimientoData"
+                        }
                     },
                     "403": {
                         "description": "body is empty"
@@ -423,7 +632,7 @@
                 "tags": [
                     "movimiento_proceso_externo"
                 ],
-                "description": "Registra un movimiento completamente, tanto el de proceso externo como el detalle",
+                "description": "Registra un movimiento completamente, tanto el de proceso externo como el detalle (deprecated/old/wrong path!)",
                 "operationId": "MovimientoProcesoExternoController.RegistrarMovimiento",
                 "parameters": [
                     {
@@ -432,13 +641,16 @@
                         "description": "map[string]interface{}",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/map[string]interface{}"
+                            "$ref": "#/definitions/models.MovimientoProcesoExternoDetallado"
                         }
                     }
                 ],
                 "responses": {
                     "201": {
-                        "description": "{int} models.MovimientoProcesoExterno"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.RegistrarMovimientoData"
+                        }
                     },
                     "403": {
                         "description": "body is empty"
@@ -621,13 +833,25 @@
         }
     },
     "definitions": {
-        "*models.MovimientoDetalle": {
-            "title": "MovimientoDetalle",
-            "type": "object"
-        },
-        "map[string]interface{}": {
-            "title": "map[string]interface{}",
-            "type": "object"
+        "models.CuentasMovimientoProcesoExterno": {
+            "title": "CuentasMovimientoProcesoExterno",
+            "type": "object",
+            "properties": {
+                "Cuen_Pre": {
+                    "type": "string"
+                },
+                "Mov_Proc_Ext": {
+                    "type": "string"
+                },
+                "Saldo": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "Valor": {
+                    "type": "number",
+                    "format": "double"
+                }
+            }
         },
         "models.MovimientoDetalle": {
             "title": "MovimientoDetalle",
@@ -637,6 +861,9 @@
                     "type": "boolean"
                 },
                 "Descripcion": {
+                    "type": "string"
+                },
+                "Detalle": {
                     "type": "string"
                 },
                 "FechaCreacion": {
@@ -654,6 +881,10 @@
                 "MovimientoProcesoExternoId": {
                     "$ref": "#/definitions/models.MovimientoProcesoExterno"
                 },
+                "Saldo": {
+                    "type": "number",
+                    "format": "double"
+                },
                 "Valor": {
                     "type": "number",
                     "format": "double"
@@ -666,6 +897,9 @@
             "properties": {
                 "Activo": {
                     "type": "boolean"
+                },
+                "Detalle": {
+                    "type": "string"
                 },
                 "FechaCreacion": {
                     "type": "string",
@@ -689,6 +923,56 @@
                 },
                 "TipoMovimientoId": {
                     "$ref": "#/definitions/models.TipoMovimiento"
+                }
+            }
+        },
+        "models.MovimientoProcesoExternoDetallado": {
+            "title": "MovimientoProcesoExternoDetallado",
+            "type": "object",
+            "properties": {
+                "Activo": {
+                    "type": "boolean"
+                },
+                "Detalle": {
+                    "type": "string"
+                },
+                "FechaCreacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "FechaModificacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "MovimientoDetalle": {
+                    "$ref": "#/definitions/models.MovimientoDetalle"
+                },
+                "MovimientoProcesoExterno": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "ProcesoExterno": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "TipoMovimientoId": {
+                    "$ref": "#/definitions/models.TipoMovimiento"
+                }
+            }
+        },
+        "models.RegistrarMovimientoData": {
+            "title": "RegistrarMovimientoData",
+            "type": "object",
+            "properties": {
+                "MovimientoDetalle": {
+                    "$ref": "#/definitions/models.MovimientoDetalle"
+                },
+                "MovimientoProcesoExterno": {
+                    "$ref": "#/definitions/models.MovimientoProcesoExterno"
                 }
             }
         },

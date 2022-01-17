@@ -3,12 +3,14 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/udistrital/movimientos_crud/models"
 
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 // TipoMovimientoController operations for TipoMovimiento
@@ -36,14 +38,18 @@ func (c *TipoMovimientoController) Post() {
 	var v models.TipoMovimiento
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if _, err := models.AddTipoMovimiento(&v); err == nil {
+			// logs.Info(fmt.Sprintf("Éxito: %v+", v))
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
+			logs.Error(fmt.Sprintf("Error1: %v+, error: %v+", v, err))
 			c.Data["json"] = err.Error()
 		}
 	} else {
+		logs.Error(fmt.Sprintf("Error2: %v+", v))
 		c.Data["json"] = err.Error()
 	}
+	c.ServeJSON()
 }
 
 // GetOne ...
@@ -62,6 +68,7 @@ func (c *TipoMovimientoController) GetOne() {
 	} else {
 		c.Data["json"] = v
 	}
+	c.ServeJSON()
 }
 
 // GetAll ...
@@ -122,8 +129,12 @@ func (c *TipoMovimientoController) GetAll() {
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
+		if l == nil {
+			l = []interface{}{}
+		}
 		c.Data["json"] = l
 	}
+	c.ServeJSON()
 }
 
 // Put ...
@@ -147,6 +158,7 @@ func (c *TipoMovimientoController) Put() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
+	c.ServeJSON()
 }
 
 // Delete ...
@@ -164,4 +176,5 @@ func (c *TipoMovimientoController) Delete() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
+	c.ServeJSON()
 }

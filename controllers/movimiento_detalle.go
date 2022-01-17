@@ -10,8 +10,10 @@ import (
 	"github.com/astaxie/beego/logs"
 
 	"github.com/astaxie/beego"
+	"github.com/udistrital/movimientos_crud/helpers"
 	movimientoDetalleManager "github.com/udistrital/movimientos_crud/managers/movimientoDetalleManager"
 	"github.com/udistrital/movimientos_crud/models"
+	"github.com/udistrital/utils_oas/errorctrl"
 	"github.com/udistrital/utils_oas/responseformat"
 )
 
@@ -28,12 +30,13 @@ func (c *MovimientoDetalleController) URLMapping() {
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("RegistrarMultiple", c.RegistrarMultiple)
+	c.Mapping("PostUltimoMovDetalle", c.PostUltimoMovDetalle)
 }
 
 // RegistrarMultiple ...
 // @Title RegistrarMultiple
 // @Description Registra multiples movimientos proceso externo y movimientos detalle
-// @Param	body		body 	[]*models.MovimientoDetalle	true		"body for MovimientoDetalle content"
+// @Param	body		body 	[]models.MovimientoDetalle	true		"body for MovimientoDetalle content"
 // @Success 201 {int} responseformat
 // @Failure 403 body is empty
 // @router /registrar_multiple [post]
@@ -54,7 +57,7 @@ func (c *MovimientoDetalleController) RegistrarMultiple() {
 // DeleteMultiple ...
 // @Title DeleteMultiple
 // @Description delete the MovimientoDetalle with transaction
-// @Param	id		path 	string	true		"The id you want to delete"
+// @Param	body		body 	[]int	true		"Array of (int) IDs that you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 Body is empty
 // @router /eliminar_multiple [post]
@@ -73,11 +76,10 @@ func (c *MovimientoDetalleController) DeleteMultiple() {
 	if err = movimientoDetalleManager.EliminarMultipleManager(movimientoDetalleIDS); err != nil {
 		logs.Error(err.Error())
 		panic(err.Error())
-
 	}
 
 	c.Data["json"] = "OK"
-
+	c.ServeJSON()
 }
 
 // Post ...
@@ -99,6 +101,7 @@ func (c *MovimientoDetalleController) Post() {
 	} else {
 		c.Data["json"] = err
 	}
+	c.ServeJSON()
 }
 
 // GetOne ...
@@ -117,6 +120,7 @@ func (c *MovimientoDetalleController) GetOne() {
 	} else {
 		c.Data["json"] = v
 	}
+	c.ServeJSON()
 }
 
 // GetAll ...
@@ -177,8 +181,12 @@ func (c *MovimientoDetalleController) GetAll() {
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
+		if l == nil {
+			l = []interface{}{}
+		}
 		c.Data["json"] = l
 	}
+	c.ServeJSON()
 }
 
 // Put ...
@@ -202,6 +210,7 @@ func (c *MovimientoDetalleController) Put() {
 	} else {
 		c.Data["json"] = err
 	}
+	c.ServeJSON()
 }
 
 // Delete ...
@@ -219,4 +228,102 @@ func (c *MovimientoDetalleController) Delete() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
+	c.ServeJSON()
+}
+
+// PostUltimoMovDetalle ...
+// @Title PostUltimoMovDetalle
+// @Description post UltimoMovDetalle se encarga de devolver el último movimiento detalle asociado a una denominada cuenta presupuestal
+// @Param     body      body   []models.CuentasMovimientoProcesoExterno  true   "Valor de la cuenta presupuestal o las cuentas presupuestales de las que quiere recuperar el último movimiento"
+// @Success   200   {object}   []models.MovimientoDetalle
+// @Failure   403   body is empty
+// @router /postUltimoMovDetalle [post]
+func (c *MovimientoDetalleController) PostUltimoMovDetalle() {
+	defer errorctrl.ErrorControlController(c.Controller, "MovimientoDetalleController")
+	var arrayCuentas []models.CuentasMovimientoProcesoExterno
+
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &arrayCuentas); err != nil {
+		panic(err)
+	}
+
+	if result, err := helpers.GetAllUltimos(arrayCuentas); err != nil {
+		// logs.Debug("error")
+		panic(err)
+	} else {
+		// logs.Debug("Información: ", arrayCuentas, result)
+		if result == nil {
+			c.Data["json"] = []interface{}{}
+		} else {
+			c.Data["json"] = result
+		}
+
+		c.Data["status"] = 200
+	}
+	c.ServeJSON()
+}
+
+// CrearMovimientosDetalle ...
+// @Title CrearMovimientosDetalle
+// @Description post CrearMovimientosDetalle se encarga de devolver crear los movimientos detalle correspondientes a las cuentas recibidas
+// @Param     body      body   []models.CuentasMovimientoProcesoExterno  true   "Cuentas presupuestales con su respectivo movimiento proceso externo y el valor/saldo afectado"
+// @Success   201   {object}   []models.MovimientoDetalle
+// @Failure   403   body is empty
+// @router /crearMovimientosDetalle [post]
+func (c *MovimientoDetalleController) CrearMovimientosDetalle() {
+	defer errorctrl.ErrorControlController(c.Controller, "CrearMovimientosDetalle")
+
+	var arrayCuentas []models.CuentasMovimientoProcesoExterno
+
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &arrayCuentas); err != nil {
+		panic(errorctrl.Error("CrearMovimientosDetalle - json.Unmarshal(c.Ctx.Input.RequestBody, &arrayCuentas)", err, "404"))
+	}
+
+	if result, err := helpers.CrearMovimientosDetalle(arrayCuentas, false); err != nil {
+		// logs.Debug("error")
+		panic(err)
+	} else {
+		// logs.Debug("Información: ", arrayCuentas, result)
+		if result == nil {
+			c.Data["json"] = []interface{}{}
+		} else {
+			c.Data["json"] = result
+		}
+
+		c.Data["status"] = 200
+	}
+	c.ServeJSON()
+}
+
+// PublicarMovimientosDetalle ...
+// @Title PublicarMovimientosDetalle
+// @Description post PublicarMovimientosDetalle se encarga de tomar los últimos movimientos detalle asociados a un proceso externo y realizar la publicación de los mismos (actualmente Plan de Adquisiciones)
+// @Param     idMovProcExterno      body   int  true   "ID del movimiento proceso externo al que se van a realizar las publicaciones"
+// @Success   201   {object}   []models.MovimientoDetalle
+// @Failure   403   body is empty
+// @router /publicarMovimientosDetalle [post]
+func (c *MovimientoDetalleController) PublicarMovimientosDetalle() {
+	defer errorctrl.ErrorControlController(c.Controller, "PublicarMovimientosDetalle")
+
+	var idMovProcExternoRecibida int
+
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &idMovProcExternoRecibida); err != nil {
+		panic(errorctrl.Error("PublicarMovimientosDetalle - json.Unmarshal(c.Ctx.Input.RequestBody, &idMovProcExternoRecibida)", err, "400"))
+	}
+
+	// logs.Debug("idMovProcExternoRecibida: ", idMovProcExternoRecibida)
+
+	if result, err := helpers.PublicarMovimientosDetalle(idMovProcExternoRecibida); err != nil {
+		// logs.Debug("error")
+		panic(err)
+	} else {
+		// logs.Debug("Información: ", arrayCuentas, result)
+		if result == nil {
+			c.Data["json"] = []interface{}{}
+		} else {
+			c.Data["json"] = result
+		}
+
+		c.Data["status"] = 200
+	}
+	c.ServeJSON()
 }
