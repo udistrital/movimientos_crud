@@ -263,22 +263,6 @@ func RegistroMovimientoDetalle(
 		return models.MovimientoDetalle{}, outputError
 	}
 
-	for k, detalle := range nuevoDetalleCuenPre {
-		if k != "RubroId" {
-			switch detalle.(type) {
-			case string:
-				if nuevoDetalleCuenPre[k], err = strconv.Atoi(detalle.(string)); err != nil {
-					logs.Error(err)
-					outputError := errorctrl.Error("RegistroMovimientoDetalle - strconv.Atoi(detalle.(string))", err, "400")
-					return models.MovimientoDetalle{}, outputError
-				}
-			default:
-				logs.Warn("La variable no es de tipo string")
-			}
-
-		}
-	}
-
 	var nuevoDetalleCuenPreCast []byte
 
 	if nuevoDetalleCuenPreCast, err = json.Marshal(nuevoDetalleCuenPre); err != nil {
