@@ -24,7 +24,6 @@ func GetUltimo(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (
 	var filtroJsonB string
 	if datosCuenta.ActividadId != "" && datosCuenta.RubroId != "" && datosCuenta.FuenteFinanciamientoId != "" {
 		var actividadInt int
-		var fuenteInt int
 		var err error
 		if actividadInt, err = strconv.Atoi(datosCuenta.ActividadId); err != nil {
 			logs.Error(err)
@@ -32,28 +31,16 @@ func GetUltimo(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (
 			return models.MovimientoDetalle{}, outputError
 		}
 
-		if fuenteInt, err = strconv.Atoi(datosCuenta.FuenteFinanciamientoId); err != nil {
-			logs.Error(err)
-			outputError = errorctrl.Error("GetUltimo - strconv.Atoi(datosCuenta.FuenteFinanciamientoId)", err, "400")
-			return models.MovimientoDetalle{}, outputError
-		}
-
 		filtroJsonB, _ = utils.Serializar(map[string]interface{}{
 			"RubroId":                datosCuenta.RubroId,
-			"FuenteFinanciamientoId": fuenteInt,
+			"FuenteFinanciamientoId": datosCuenta.FuenteFinanciamientoId,
 			"ActividadId":            actividadInt,
 		})
 	} else if datosCuenta.ActividadId == "" && datosCuenta.RubroId != "" && datosCuenta.FuenteFinanciamientoId != "" {
-		if fuenteInt, err := strconv.Atoi(datosCuenta.FuenteFinanciamientoId); err != nil {
-			logs.Error(err)
-			outputError = errorctrl.Error("GetUltimo - strconv.Atoi(datosCuenta.FuenteFinanciamientoId)", err, "400")
-			return models.MovimientoDetalle{}, outputError
-		} else {
-			filtroJsonB, _ = utils.Serializar(map[string]interface{}{
-				"RubroId":                datosCuenta.RubroId,
-				"FuenteFinanciamientoId": fuenteInt,
-			})
-		}
+		filtroJsonB, _ = utils.Serializar(map[string]interface{}{
+			"RubroId":                datosCuenta.RubroId,
+			"FuenteFinanciamientoId": datosCuenta.FuenteFinanciamientoId,
+		})
 	}
 
 	datosMovProcExterno := cuentaMovimientoDetalle.Mov_Proc_Ext
