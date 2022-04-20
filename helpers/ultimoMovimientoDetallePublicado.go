@@ -20,7 +20,7 @@ func UltimoMovimientoDetallePublicado(estado string, cuenta string) (cuentaRespu
 	// logs.Debug("INFOFILTRO: ", infoFiltro)
 	var stringFiltro = make(map[string]interface{})
 	for k, prop := range infoFiltro {
-		if k == "FuenteFinanciamientoId" || k == "ActividadId" {
+		if k == "ActividadId" {
 			switch prop.(type) {
 			case string:
 				propCast, _ := strconv.ParseFloat(prop.(string), 64)
