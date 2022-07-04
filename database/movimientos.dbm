@@ -5,31 +5,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 -->
 <dbmodel pgmodeler-ver="0.9.2" last-position="488,0" last-zoom="1" max-obj-count="4"
 	 default-owner="postgres">
-<role name="brayanpasa99"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="brayanpasa"
-      superuser="true"
-      createdb="true"
-      createrole="true"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="desarrollooas"
-      superuser="true"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
 <database name="UDPruebaLocal" encoding="UTF8" lc-collate="en_US.UTF-8" lc-ctype="en_US.UTF-8" is-template="false" allow-conns="true">
 	<role name="postgres"/>
 	<tablespace name="pg_default"/>
@@ -39,17 +14,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </schema>
 
 <schema name="movimientos" layer="0" rect-visible="true" fill-color="#84da58">
-	<role name="desarrollooas"/>
 </schema>
 
 <sequence name="movimiento_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
 	<schema name="movimientos"/>
-	<role name="desarrollooas"/>
 </sequence>
 
 <table name="movimiento_proceso_externo" layer="0" collapse-mode="2" max-obj-count="9">
 	<schema name="movimientos"/>
-	<role name="desarrollooas"/>
 	<position x="1160" y="460"/>
 	<column name="id" not-null="true" sequence="movimientos.movimiento_id_seq">
 		<type name="integer" length="0"/>
@@ -82,12 +54,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 
 <sequence name="movimiento_detalle_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
 	<schema name="movimientos"/>
-	<role name="desarrollooas"/>
 </sequence>
 
 <table name="movimiento_detalle" layer="0" collapse-mode="2" max-obj-count="10">
 	<schema name="movimientos"/>
-	<role name="desarrollooas"/>
 	<position x="1900" y="80"/>
 	<column name="id" not-null="true" sequence="movimientos.movimiento_detalle_id_seq">
 		<type name="integer" length="0"/>
@@ -123,12 +93,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 
 <sequence name="tipo_movimiento_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
 	<schema name="movimientos"/>
-	<role name="desarrollooas"/>
 </sequence>
 
 <table name="tipo_movimiento" layer="0" collapse-mode="2" max-obj-count="9">
 	<schema name="movimientos"/>
-	<role name="desarrollooas"/>
 	<position x="580" y="60"/>
 	<column name="id" not-null="true" sequence="movimientos.tipo_movimiento_id_seq">
 		<type name="integer" length="0"/>
