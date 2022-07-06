@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"encoding/json"
-	"strconv"
 
 	"github.com/astaxie/beego/logs"
 	"github.com/udistrital/movimientos_crud/helpers/utils"
@@ -21,15 +20,6 @@ func UltimoMovimientoDetallePublicado(estado string, cuenta string) (cuentaRespu
 	var stringFiltro = make(map[string]interface{})
 	for k, prop := range infoFiltro {
 		if k == "ActividadId" {
-			switch prop.(type) {
-			case string:
-				propCast, _ := strconv.ParseFloat(prop.(string), 64)
-				stringFiltro[k] = propCast
-			default:
-				// logs.Debug(reflect.TypeOf(prop))
-				stringFiltro[k] = prop
-			}
-		} else {
 			stringFiltro[k] = prop
 		}
 	}
