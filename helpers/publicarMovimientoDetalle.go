@@ -12,7 +12,8 @@ import (
 
 // PublicarMovimientosDetalle realiza una copia de los rubros preliminares y los publica nuevamente en otro movimiento externo con estado publicado
 func PublicarMovimientosDetalle(idMovProcExterno int) (movimientosDetalleRespuesta []models.MovimientoDetalle, outputError map[string]interface{}) {
-	defer errorctrl.ErrorControlFunction("PublicarMovimientosDetalle - Unhandled Error!", "500")
+	const funcion = "PublicarMovimientosDetalle - "
+	defer errorctrl.ErrorControlFunction(funcion+"Unhandled Error!", "500")
 	var detalleMovProcExt map[string]interface{}
 	var movimientoProcExtObtenido *models.MovimientoProcesoExterno
 	var err error
@@ -23,11 +24,11 @@ func PublicarMovimientosDetalle(idMovProcExterno int) (movimientosDetalleRespues
 		outputError = errorctrl.Error("PublicarMovimientosDetalle - models.GetMovimientoProcesoExternoById(idMovProcExterno)", err, "400")
 		return []models.MovimientoDetalle{}, outputError
 	} else {
-		if err := json.Unmarshal([]byte(movimientoProcExtObtenido.Detalle), &detalleMovProcExt); err != nil {
-			logs.Error(err)
-			outputError = errorctrl.Error("PublicarMovimientosDetalle - json.Unmarshal([]byte(movimientoProcExtObtenido.Detalle), &detalleMovProcExt)", err, "500")
-			return []models.MovimientoDetalle{}, outputError
-		}
+		//if err := json.Unmarshal([]byte(movimientoProcExtObtenido.Detalle), &detalleMovProcExt); err != nil {
+		//	logs.Error(err)
+		//	outputError = errorctrl.Error("PublicarMovimientosDetalle - json.Unmarshal([]byte(movimientoProcExtObtenido.Detalle), &detalleMovProcExt)", err, "500")
+		//	return []models.MovimientoDetalle{}, outputError
+		//}
 
 		if detalleMovProcExt["Estado"].(string) == "Publicado" {
 			err := "El movimiento ya está en estado publicado, verifique el identificador enviado"
@@ -47,7 +48,7 @@ func PublicarMovimientosDetalle(idMovProcExterno int) (movimientosDetalleRespues
 		return []models.MovimientoDetalle{}, formatErr
 	}
 
-	// logs.Debug("LISTA DE RUBROS: ", listaRubros)
+	logs.Debug("LISTA DE RUBROS: ", listaRubros)
 
 	var ultimosMovimientos []models.MovimientoDetalle
 
@@ -58,23 +59,23 @@ func PublicarMovimientosDetalle(idMovProcExterno int) (movimientosDetalleRespues
 
 	var nuevoMovimientoProcesoExterno *models.MovimientoProcesoExterno = movimientoProcExtObtenido
 
-	if err := json.Unmarshal([]byte(nuevoMovimientoProcesoExterno.Detalle), &detalleMovProcExt); err != nil {
-		logs.Error(err)
-		outputError = errorctrl.Error("PublicarMovimientosDetalle - json.Unmarshal([]byte(nuevoMovimientoProcesoExterno.Detalle), &detalleMovProcExt)", err, "500")
-		return []models.MovimientoDetalle{}, outputError
-	}
+	//if err := json.Unmarshal([]byte(nuevoMovimientoProcesoExterno.Detalle), &detalleMovProcExt); err != nil {
+	//	logs.Error(err)
+	//	outputError = errorctrl.Error("PublicarMovimientosDetalle - json.Unmarshal([]byte(nuevoMovimientoProcesoExterno.Detalle), &detalleMovProcExt)", err, "500")
+	//	return []models.MovimientoDetalle{}, outputError
+	//}
 
 	estadoPublicacion := "Publicado"
 	detalleMovProcExt["Estado"] = estadoPublicacion
 	nuevoMovimientoProcesoExterno.Id = 0
 
-	if detalleMovProcExtActualizado, err := json.Marshal(detalleMovProcExt); err != nil {
-		logs.Error(err)
-		outputError = errorctrl.Error("crearMovimientoDetalle - json.Marshal(detalleMovProcExt)", err, "500")
-		return []models.MovimientoDetalle{}, outputError
-	} else {
-		nuevoMovimientoProcesoExterno.Detalle = string(detalleMovProcExtActualizado)
-	}
+	//if detalleMovProcExtActualizado, err := json.Marshal(detalleMovProcExt); err != nil {
+	//	logs.Error(err)
+	//	outputError = errorctrl.Error("crearMovimientoDetalle - json.Marshal(detalleMovProcExt)", err, "500")
+	//	return []models.MovimientoDetalle{}, outputError
+	//} else {
+	//	//nuevoMovimientoProcesoExterno.Detalle = string(detalleMovProcExtActualizado)
+	//}
 
 	var idMovimientoProcesoExternoInsertado int
 
@@ -93,7 +94,7 @@ func PublicarMovimientosDetalle(idMovProcExterno int) (movimientosDetalleRespues
 		return []models.MovimientoDetalle{}, formatErr
 	}
 
-	// logs.Debug(fmt.Sprintf("cuentasPublicar: %+v", cuentasPublicar))
+	logs.Debug(fmt.Sprintf("cuentasPublicar: %+v", cuentasPublicar))
 
 	var registroCuentas []models.MovimientoDetalle
 
@@ -104,14 +105,15 @@ func PublicarMovimientosDetalle(idMovProcExterno int) (movimientosDetalleRespues
 		movimientosDetalleRespuesta = registroCuentas
 	}
 
-	// logs.Debug(fmt.Sprintf("registroCuentas: %+v", registroCuentas))
+	logs.Debug(fmt.Sprintf("registroCuentas: %+v", registroCuentas))
 
 	return movimientosDetalleRespuesta, nil
 }
 
 // ListaRubros se encarga de traer los rubros asociados a un movimientos proceso externo, para luego hacer la consulta de sus últimos movimiento relacionados
 func ListaRubros(idMovProcExterno int) (detalleCuentasRespuesta []models.CuentasMovimientoProcesoExterno, outputError map[string]interface{}) {
-	defer errorctrl.ErrorControlFunction("ListaRubros - Unhandled Error!", "500")
+	const funcion = "ListaRubros - "
+	defer errorctrl.ErrorControlFunction(funcion+"Unhandled Error!", "500")
 
 	var idMovProcExternoCast string = strconv.Itoa(idMovProcExterno)
 
@@ -202,7 +204,8 @@ func MovimientosDetalleCuentas(
 	cuentasMovimientoDetalleRespuesta []models.CuentasMovimientoProcesoExterno,
 	outputError map[string]interface{},
 ) {
-	defer errorctrl.ErrorControlFunction("MovimientosDetalleCuentas - Unhandled Error!", "500")
+	const funcion = "MovimientosDetalleCuentas - "
+	defer errorctrl.ErrorControlFunction(funcion+"Unhandled Error!", "500")
 
 	idMovProcExternoCast := strconv.Itoa(idMovProcExterno)
 
