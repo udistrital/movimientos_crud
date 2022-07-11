@@ -194,7 +194,7 @@ func CalcularMontos(
 		logs.Error(err)
 	}
 
-	logs.Debug("CONSULTAR CUENTA DETALLE: ", string(detalleTemp))
+	//logs.Debug("CONSULTAR CUENTA DETALLE: ", string(detalleTemp))
 
 	if idMovProcExterno != "" {
 		cuentaSolicitada = models.CuentasMovimientoProcesoExterno{
@@ -202,17 +202,13 @@ func CalcularMontos(
 			Mov_Proc_Ext: idMovProcExterno,
 		}
 
-		logs.Debug("CUENTA: ", cuentaSolicitada)
+		//logs.Debug("CUENTA: ", cuentaSolicitada)
 
 		result, formatError = GetUltimo(cuentaSolicitada)
 		if formatError != nil {
 			// logs.Debug("Entré al error")
 			logs.Warn(formatError)
 		}
-		logs.Debug("result: ", result)
-		logs.Debug("result: ", result)
-		logs.Debug("result: ", result)
-		logs.Debug("result: ", result)
 	}
 
 	if valor != 0 {
