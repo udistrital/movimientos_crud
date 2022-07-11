@@ -27,24 +27,20 @@ func GetUltimo(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (
 			"RubroId":                datosCuenta.RubroId,
 			"FuenteFinanciamientoId": datosCuenta.FuenteFinanciamientoId,
 			"ActividadId":            datosCuenta.ActividadId,
-			"PlanAquisicionesId":     datosCuenta.PlanAquisicionesId,
+			"PlanAdquisicionesId":    datosCuenta.PlanAdquisicionesId,
 		})
+		logs.Debug("filtroJsonB: ", filtroJsonB)
 	} else if datosCuenta.ActividadId == 0 && datosCuenta.RubroId != "" && datosCuenta.FuenteFinanciamientoId != "" {
 		filtroJsonB, _ = utils.Serializar(map[string]interface{}{
 			"RubroId":                datosCuenta.RubroId,
 			"FuenteFinanciamientoId": datosCuenta.FuenteFinanciamientoId,
-			"PlanAquisicionesId":     datosCuenta.PlanAquisicionesId,
+			"PlanAdquisicionesId":    datosCuenta.PlanAdquisicionesId,
 		})
+		logs.Debug("filtroJsonB: ", filtroJsonB)
 	}
-
-	datosMovProcExterno := cuentaMovimientoDetalle.Mov_Proc_Ext
 
 	var query map[string]string = map[string]string{
 		"Detalle__json_contains": filtroJsonB,
-	}
-
-	if datosMovProcExterno != "" {
-		query["MovimientoProcesoExternoId__Id"] = datosMovProcExterno
 	}
 
 	// Se sugiere ordenar por fecha de modificación

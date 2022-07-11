@@ -15,7 +15,7 @@ type Cuen_Pre struct {
 	RubroId                string
 	FuenteFinanciamientoId string
 	ActividadId            int
-	PlanAquisicionesId     int
+	PlanAdquisicionesId    int
 }
 
 type mov_proc_ext_con_hijos struct {
