@@ -83,9 +83,9 @@ Pruebas unitarias
 
 ## Estado CI
 
-| Develop | Release 1.1.1 | Master |
+| Develop | Release 1.1.2 | Master |
 | -- | -- | -- |
-| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/movimientos_crud/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/movimientos_crud) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/movimientos_crud/status.svg?ref=refs/heads/release/1.1.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/movimientos_crud) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/movimientos_crud/status.svg?ref=refs/heads/master)](https://hubci.portaloas.udistrital.edu.co/udistrital/movimientos_crud) |
+| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/movimientos_crud/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/movimientos_crud) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/movimientos_crud/status.svg?ref=refs/heads/release/1.1.2)](https://hubci.portaloas.udistrital.edu.co/udistrital/movimientos_crud) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/movimientos_crud/status.svg?ref=refs/heads/master)](https://hubci.portaloas.udistrital.edu.co/udistrital/movimientos_crud) |
 
 ## Licencia
 
