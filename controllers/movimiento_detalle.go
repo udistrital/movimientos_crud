@@ -343,7 +343,7 @@ func (c *MovimientoDetalleController) InsertarMovimientosDetalle() {
 	defer errorctrl.ErrorControlController(c.Controller, "CrearMovimientosDetalle2")
 
 	var movimientosDetalle []models.MovimientoDetalleInsertar
-	var idRegistrados []int64
+	var movimientosRespuesta []models.MovimientoDetalle
 
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &movimientosDetalle); err != nil {
 		panic(errorctrl.Error("CrearMovimientosDetalle2 - json.Unmarshal(c.Ctx.Input.RequestBody, &movimientosDetalle)", err, "404"))
@@ -368,16 +368,21 @@ func (c *MovimientoDetalleController) InsertarMovimientosDetalle() {
 		if err != nil {
 			logs.Error(err)
 			panic(err)
+		} else {
+			resultCast := int(idInsertado)
+			movimientoDetalleRegistrado, err := models.GetMovimientoDetalleById(resultCast)
+			if err != nil {
+				logs.Error(err)
+				panic(err)
+			}
+			movimientosRespuesta = append(movimientosRespuesta, *movimientoDetalleRegistrado)
 		}
-		idRegistrados = append(idRegistrados, idInsertado)
 	}
 
-	if len(idRegistrados) == 0 {
+	if len(movimientosRespuesta) == 0 {
 		c.Data["json"] = map[string]interface{}{}
 	} else {
-		c.Data["json"] = map[string]interface{}{
-			"Message": "Movimientos Insertados " + strings.Trim(strings.Join(strings.Fields(fmt.Sprint(idRegistrados)), " "), "[]"),
-		}
+		c.Data["json"] = movimientosRespuesta
 	}
 
 	c.ServeJSON()
