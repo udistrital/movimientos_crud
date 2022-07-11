@@ -183,7 +183,7 @@ func CalcularMontos(
 	json.Unmarshal([]byte(detalleCuenPre), &infoFiltro)
 	var stringFiltro = make(map[string]interface{})
 	for k, prop := range infoFiltro {
-		if k == "RubroId" || k == "FuenteFinanciamientoId" || k == "ActividadId" || k == "PlanAquisicionesId" {
+		if k == "RubroId" || k == "FuenteFinanciamientoId" || k == "ActividadId" || k == "PlanAdquisicionesId" {
 			stringFiltro[k] = prop
 		}
 	}
