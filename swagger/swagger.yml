@@ -173,6 +173,30 @@ paths:
           description: '{string} delete success!'
         "403":
           description: Body is empty
+  /movimiento_detalle/insertarMovimientosDetalle:
+    post:
+      tags:
+      - movimiento_detalle
+      description: post InsertarMovimientosDetalle se encarga de devolver crear los
+        movimientos detalle correspondientes a las cuentas recibidas
+      operationId: MovimientoDetalleController.InsertarMovimientosDetalle
+      parameters:
+      - in: body
+        name: body
+        description: Cuentas presupuestales con su respectivo movimiento proceso externo
+          y el valor/saldo afectado
+        required: true
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/models.MovimientoDetalle'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/map[string]interface{}'
+        "403":
+          description: body is empty
   /movimiento_detalle/postUltimoMovDetalle:
     post:
       tags:
@@ -563,6 +587,9 @@ paths:
         "403":
           description: id is empty
 definitions:
+  map[string]interface{}:
+    title: map[string]interface{}
+    type: object
   models.CuentasMovimientoProcesoExterno:
     title: CuentasMovimientoProcesoExterno
     type: object
