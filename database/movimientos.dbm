@@ -3,33 +3,8 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="1482,59" last-zoom="1" max-obj-count="4"
-	 default-schema="public" default-owner="postgres">
-<role name="brayanpasa99"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="brayanpasa"
-      superuser="true"
-      createdb="true"
-      createrole="true"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="desarrollooas"
-      superuser="true"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
+<dbmodel pgmodeler-ver="0.9.2" last-position="488,0" last-zoom="1" max-obj-count="4"
+	 default-owner="postgres">
 <database name="UDPruebaLocal" encoding="UTF8" lc-collate="en_US.UTF-8" lc-ctype="en_US.UTF-8" is-template="false" allow-conns="true">
 	<role name="postgres"/>
 	<tablespace name="pg_default"/>
@@ -39,17 +14,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </schema>
 
 <schema name="movimientos" layer="0" rect-visible="true" fill-color="#84da58">
-	<role name="desarrollooas"/>
 </schema>
 
 <sequence name="movimiento_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
 	<schema name="movimientos"/>
-	<role name="desarrollooas"/>
 </sequence>
 
-<table name="movimiento_proceso_externo" layer="0" collapse-mode="2" max-obj-count="9" z-value="0">
+<table name="movimiento_proceso_externo" layer="0" collapse-mode="2" max-obj-count="9">
 	<schema name="movimientos"/>
-	<role name="desarrollooas"/>
 	<position x="1160" y="460"/>
 	<column name="id" not-null="true" sequence="movimientos.movimiento_id_seq">
 		<type name="integer" length="0"/>
@@ -82,12 +54,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 
 <sequence name="movimiento_detalle_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
 	<schema name="movimientos"/>
-	<role name="desarrollooas"/>
 </sequence>
 
-<table name="movimiento_detalle" layer="0" collapse-mode="2" max-obj-count="10" z-value="0">
+<table name="movimiento_detalle" layer="0" collapse-mode="2" max-obj-count="10">
 	<schema name="movimientos"/>
-	<role name="desarrollooas"/>
 	<position x="1900" y="80"/>
 	<column name="id" not-null="true" sequence="movimientos.movimiento_detalle_id_seq">
 		<type name="integer" length="0"/>
@@ -123,12 +93,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 
 <sequence name="tipo_movimiento_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
 	<schema name="movimientos"/>
-	<role name="desarrollooas"/>
 </sequence>
 
-<table name="tipo_movimiento" layer="0" collapse-mode="2" max-obj-count="9" z-value="0">
+<table name="tipo_movimiento" layer="0" collapse-mode="2" max-obj-count="9">
 	<schema name="movimientos"/>
-	<role name="desarrollooas"/>
 	<position x="580" y="60"/>
 	<column name="id" not-null="true" sequence="movimientos.tipo_movimiento_id_seq">
 		<type name="integer" length="0"/>
@@ -169,7 +137,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		row-amount="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<language name="plpgsql"/>
+	<language name="plpgsql" sql-disabled="true"/>
 	<return-type>
 	<type name="trigger" length="1"/>
 	</return-type>
@@ -196,7 +164,7 @@ END;]]></definition>
 		row-amount="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<language name="plpgsql"/>
+	<language name="plpgsql" sql-disabled="true"/>
 	<return-type>
 	<type name="trigger" length="1"/>
 	</return-type>
@@ -250,23 +218,13 @@ END;]]></definition>
 </constraint>
 
 <relationship name="rel_movimiento_proceso_externo_tipo_movimiento" type="relfk" layer="0"
-	 custom-color="#adb09a"
 	 src-table="movimientos.movimiento_proceso_externo"
 	 dst-table="movimientos.tipo_movimiento" reference-fk="fk_movimiento_tipo_movimiento"
-	 src-required="false" dst-required="true">
-	<label ref-type="name-label">
-		<position x="-9.76221" y="62.3927"/>
-	</label>
-</relationship>
+	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_movimiento_detalle_movimiento_proceso_externo" type="relfk" layer="0"
-	 custom-color="#f9a1c7"
 	 src-table="movimientos.movimiento_detalle"
 	 dst-table="movimientos.movimiento_proceso_externo" reference-fk="fk_movimiento_detalle_movimiento_proceso_externo"
-	 src-required="false" dst-required="true">
-	<label ref-type="name-label">
-		<position x="37.605" y="72.3927"/>
-	</label>
-</relationship>
+	 src-required="false" dst-required="false"/>
 
 </dbmodel>

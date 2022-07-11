@@ -898,9 +898,6 @@
                 "Activo": {
                     "type": "boolean"
                 },
-                "Detalle": {
-                    "type": "string"
-                },
                 "FechaCreacion": {
                     "type": "string",
                     "format": "datetime"

@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"encoding/json"
-	"strconv"
 
 	"github.com/astaxie/beego/logs"
 	"github.com/udistrital/movimientos_crud/helpers/utils"
@@ -22,35 +21,26 @@ func GetUltimo(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (
 	}
 
 	var filtroJsonB string
-	if datosCuenta.ActividadId != "" && datosCuenta.RubroId != "" && datosCuenta.FuenteFinanciamientoId != "" {
-		var actividadInt int
-		var err error
-		if actividadInt, err = strconv.Atoi(datosCuenta.ActividadId); err != nil {
-			logs.Error(err)
-			outputError = errorctrl.Error("GetUltimo - strconv.Atoi(datosCuenta.ActividadId)", err, "400")
-			return models.MovimientoDetalle{}, outputError
-		}
+	if datosCuenta.ActividadId != 0 && datosCuenta.RubroId != "" && datosCuenta.FuenteFinanciamientoId != "" {
 
 		filtroJsonB, _ = utils.Serializar(map[string]interface{}{
 			"RubroId":                datosCuenta.RubroId,
 			"FuenteFinanciamientoId": datosCuenta.FuenteFinanciamientoId,
-			"ActividadId":            actividadInt,
+			"ActividadId":            datosCuenta.ActividadId,
+			"PlanAdquisicionesId":    datosCuenta.PlanAdquisicionesId,
 		})
-	} else if datosCuenta.ActividadId == "" && datosCuenta.RubroId != "" && datosCuenta.FuenteFinanciamientoId != "" {
+		logs.Debug("filtroJsonB: ", filtroJsonB)
+	} else if datosCuenta.ActividadId == 0 && datosCuenta.RubroId != "" && datosCuenta.FuenteFinanciamientoId != "" {
 		filtroJsonB, _ = utils.Serializar(map[string]interface{}{
 			"RubroId":                datosCuenta.RubroId,
 			"FuenteFinanciamientoId": datosCuenta.FuenteFinanciamientoId,
+			"PlanAdquisicionesId":    datosCuenta.PlanAdquisicionesId,
 		})
+		logs.Debug("filtroJsonB: ", filtroJsonB)
 	}
-
-	datosMovProcExterno := cuentaMovimientoDetalle.Mov_Proc_Ext
 
 	var query map[string]string = map[string]string{
 		"Detalle__json_contains": filtroJsonB,
-	}
-
-	if datosMovProcExterno != "" {
-		query["MovimientoProcesoExternoId__Id"] = datosMovProcExterno
 	}
 
 	// Se sugiere ordenar por fecha de modificación
