@@ -39,15 +39,9 @@ func GetUltimo(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (
 		logs.Debug("filtroJsonB: ", filtroJsonB)
 	}
 
-	//datosMovProcExterno := cuentaMovimientoDetalle.Mov_Proc_Ext
-
 	var query map[string]string = map[string]string{
 		"Detalle__json_contains": filtroJsonB,
 	}
-
-	//if datosMovProcExterno != "" {
-	//	query["MovimientoProcesoExternoId__Id"] = datosMovProcExterno
-	//}
 
 	// Se sugiere ordenar por fecha de modificación
 	sortby := []string{
