@@ -38,3 +38,12 @@ type RegistrarMovimientoData struct {
 	MovimientoDetalle        *MovimientoDetalle
 	MovimientoProcesoExterno *MovimientoProcesoExterno
 }
+
+type MovimientoDetalleInsertar struct {
+	MovimientoProcesoExternoId int
+	Valor                      float64
+	Descripcion                string
+	Activo                     bool
+	Saldo                      float64
+	Detalle                    string
+}

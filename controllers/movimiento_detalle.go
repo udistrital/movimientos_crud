@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -31,6 +32,7 @@ func (c *MovimientoDetalleController) URLMapping() {
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("RegistrarMultiple", c.RegistrarMultiple)
 	c.Mapping("PostUltimoMovDetalle", c.PostUltimoMovDetalle)
+	c.Mapping("InsertarMovimientosDetalle", c.InsertarMovimientosDetalle)
 }
 
 // RegistrarMultiple ...
@@ -46,6 +48,8 @@ func (c *MovimientoDetalleController) RegistrarMultiple() {
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err != nil {
 		log.Panicln(err.Error())
 	}
+
+	// logs.Debug(fmt.Sprintf("v: %+v", v))
 
 	ids := movimientoDetalleManager.RegistrarMultipleManager(v)
 
@@ -325,5 +329,56 @@ func (c *MovimientoDetalleController) PublicarMovimientosDetalle() {
 
 		c.Data["status"] = 200
 	}
+	c.ServeJSON()
+}
+
+// InsertarMovimientosDetalle ...
+// @Title InsertarMovimientosDetalle
+// @Description post InsertarMovimientosDetalle se encarga de devolver crear los movimientos detalle correspondientes a las cuentas recibidas
+// @Param     body      body   []models.MovimientoDetalle  true   "Cuentas presupuestales con su respectivo movimiento proceso externo y el valor/saldo afectado"
+// @Success   201   {object}   map[string]interface{}
+// @Failure   403   body is empty
+// @router /insertarMovimientosDetalle [post]
+func (c *MovimientoDetalleController) InsertarMovimientosDetalle() {
+	defer errorctrl.ErrorControlController(c.Controller, "CrearMovimientosDetalle2")
+
+	var movimientosDetalle []models.MovimientoDetalleInsertar
+	var idRegistrados []int64
+
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &movimientosDetalle); err != nil {
+		panic(errorctrl.Error("CrearMovimientosDetalle2 - json.Unmarshal(c.Ctx.Input.RequestBody, &movimientosDetalle)", err, "404"))
+	}
+
+	for _, movimiento := range movimientosDetalle {
+		movimientoProcesoExterno := models.MovimientoProcesoExterno{
+			Id: movimiento.MovimientoProcesoExternoId,
+		}
+
+		movimientoDetalleInsertar := models.MovimientoDetalle{
+			MovimientoProcesoExternoId: &movimientoProcesoExterno,
+			Valor:                      movimiento.Valor,
+			Descripcion:                movimiento.Descripcion,
+			Activo:                     true,
+			Saldo:                      movimiento.Saldo,
+			Detalle:                    movimiento.Detalle,
+		}
+
+		logs.Debug(fmt.Sprintf("movimientoInsertar: %+v", movimientoDetalleInsertar))
+		idInsertado, err := models.AddMovimientoDetalle(&movimientoDetalleInsertar)
+		if err != nil {
+			logs.Error(err)
+			panic(err)
+		}
+		idRegistrados = append(idRegistrados, idInsertado)
+	}
+
+	if len(idRegistrados) == 0 {
+		c.Data["json"] = map[string]interface{}{}
+	} else {
+		c.Data["json"] = map[string]interface{}{
+			"Message": "Movimientos Insertados " + strings.Trim(strings.Join(strings.Fields(fmt.Sprint(idRegistrados)), " "), "[]"),
+		}
+	}
+
 	c.ServeJSON()
 }
