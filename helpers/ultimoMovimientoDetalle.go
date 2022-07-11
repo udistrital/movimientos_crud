@@ -21,17 +21,19 @@ func GetUltimo(cuentaMovimientoDetalle models.CuentasMovimientoProcesoExterno) (
 	}
 
 	var filtroJsonB string
-	if datosCuenta.ActividadId != "" && datosCuenta.RubroId != "" && datosCuenta.FuenteFinanciamientoId != "" {
+	if datosCuenta.ActividadId != 0 && datosCuenta.RubroId != "" && datosCuenta.FuenteFinanciamientoId != "" {
 
 		filtroJsonB, _ = utils.Serializar(map[string]interface{}{
 			"RubroId":                datosCuenta.RubroId,
 			"FuenteFinanciamientoId": datosCuenta.FuenteFinanciamientoId,
 			"ActividadId":            datosCuenta.ActividadId,
+			"PlanAquisicionesId":     datosCuenta.PlanAquisicionesId,
 		})
-	} else if datosCuenta.ActividadId == "" && datosCuenta.RubroId != "" && datosCuenta.FuenteFinanciamientoId != "" {
+	} else if datosCuenta.ActividadId == 0 && datosCuenta.RubroId != "" && datosCuenta.FuenteFinanciamientoId != "" {
 		filtroJsonB, _ = utils.Serializar(map[string]interface{}{
 			"RubroId":                datosCuenta.RubroId,
 			"FuenteFinanciamientoId": datosCuenta.FuenteFinanciamientoId,
+			"PlanAquisicionesId":     datosCuenta.PlanAquisicionesId,
 		})
 	}
 
