@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
 
 	"github.com/astaxie/beego/logs"
@@ -185,14 +184,7 @@ func CalcularMontos(
 	var stringFiltro = make(map[string]interface{})
 	for k, prop := range infoFiltro {
 		if k == "RubroId" || k == "FuenteFinanciamientoId" || k == "ActividadId" || k == "PlanAquisicionesId" {
-			switch prop.(type) {
-			case float64:
-				propCast := fmt.Sprintf("%.0f", prop.(float64))
-				stringFiltro[k] = propCast
-			default:
-				// logs.Debug(reflect.TypeOf(prop))
-				stringFiltro[k] = prop
-			}
+			stringFiltro[k] = prop
 		}
 	}
 
