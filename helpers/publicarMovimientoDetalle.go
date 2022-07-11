@@ -24,12 +24,6 @@ func PublicarMovimientosDetalle(idMovProcExterno int) (movimientosDetalleRespues
 		outputError = errorctrl.Error("PublicarMovimientosDetalle - models.GetMovimientoProcesoExternoById(idMovProcExterno)", err, "400")
 		return []models.MovimientoDetalle{}, outputError
 	} else {
-		//if err := json.Unmarshal([]byte(movimientoProcExtObtenido.Detalle), &detalleMovProcExt); err != nil {
-		//	logs.Error(err)
-		//	outputError = errorctrl.Error("PublicarMovimientosDetalle - json.Unmarshal([]byte(movimientoProcExtObtenido.Detalle), &detalleMovProcExt)", err, "500")
-		//	return []models.MovimientoDetalle{}, outputError
-		//}
-
 		if detalleMovProcExt["Estado"].(string) == "Publicado" {
 			err := "El movimiento ya está en estado publicado, verifique el identificador enviado"
 			outputError := errorctrl.Error("crearMovimientoDetalle - estado[\"Estado\"].(string) == \"Publicado\"", err, "500")
@@ -48,7 +42,7 @@ func PublicarMovimientosDetalle(idMovProcExterno int) (movimientosDetalleRespues
 		return []models.MovimientoDetalle{}, formatErr
 	}
 
-	logs.Debug("LISTA DE RUBROS: ", listaRubros)
+	//logs.Debug("LISTA DE RUBROS: ", listaRubros)
 
 	var ultimosMovimientos []models.MovimientoDetalle
 
@@ -59,23 +53,9 @@ func PublicarMovimientosDetalle(idMovProcExterno int) (movimientosDetalleRespues
 
 	var nuevoMovimientoProcesoExterno *models.MovimientoProcesoExterno = movimientoProcExtObtenido
 
-	//if err := json.Unmarshal([]byte(nuevoMovimientoProcesoExterno.Detalle), &detalleMovProcExt); err != nil {
-	//	logs.Error(err)
-	//	outputError = errorctrl.Error("PublicarMovimientosDetalle - json.Unmarshal([]byte(nuevoMovimientoProcesoExterno.Detalle), &detalleMovProcExt)", err, "500")
-	//	return []models.MovimientoDetalle{}, outputError
-	//}
-
 	estadoPublicacion := "Publicado"
 	detalleMovProcExt["Estado"] = estadoPublicacion
 	nuevoMovimientoProcesoExterno.Id = 0
-
-	//if detalleMovProcExtActualizado, err := json.Marshal(detalleMovProcExt); err != nil {
-	//	logs.Error(err)
-	//	outputError = errorctrl.Error("crearMovimientoDetalle - json.Marshal(detalleMovProcExt)", err, "500")
-	//	return []models.MovimientoDetalle{}, outputError
-	//} else {
-	//	//nuevoMovimientoProcesoExterno.Detalle = string(detalleMovProcExtActualizado)
-	//}
 
 	var idMovimientoProcesoExternoInsertado int
 
@@ -94,8 +74,6 @@ func PublicarMovimientosDetalle(idMovProcExterno int) (movimientosDetalleRespues
 		return []models.MovimientoDetalle{}, formatErr
 	}
 
-	logs.Debug(fmt.Sprintf("cuentasPublicar: %+v", cuentasPublicar))
-
 	var registroCuentas []models.MovimientoDetalle
 
 	if registroCuentas, formatErr = CrearMovimientosDetalle(cuentasPublicar, true); formatErr != nil {
@@ -104,8 +82,6 @@ func PublicarMovimientosDetalle(idMovProcExterno int) (movimientosDetalleRespues
 	} else {
 		movimientosDetalleRespuesta = registroCuentas
 	}
-
-	logs.Debug(fmt.Sprintf("registroCuentas: %+v", registroCuentas))
 
 	return movimientosDetalleRespuesta, nil
 }

@@ -202,7 +202,7 @@ func CalcularMontos(
 		logs.Error(err)
 	}
 
-	logs.Debug("CONSULTAR CUENTA DETALLE: ", string(detalleTemp))
+	//logs.Debug("CONSULTAR CUENTA DETALLE: ", string(detalleTemp))
 
 	if idMovProcExterno != "" {
 		cuentaSolicitada = models.CuentasMovimientoProcesoExterno{
@@ -210,7 +210,7 @@ func CalcularMontos(
 			Mov_Proc_Ext: idMovProcExterno,
 		}
 
-		logs.Debug("CUENTA: ", cuentaSolicitada)
+		//logs.Debug("CUENTA: ", cuentaSolicitada)
 
 		result, formatError = GetUltimo(cuentaSolicitada)
 		if formatError != nil {
@@ -219,10 +219,6 @@ func CalcularMontos(
 		}
 	}
 
-	logs.Debug("Result: ", result == models.MovimientoDetalle{})
-	logs.Debug("RESULT: ", result)
-	logs.Debug("RESULTSaldo: ", result.Saldo)
-
 	if valor != 0 {
 		valorRespuesta = valor
 		saldoRespuesta = result.Saldo + valorRespuesta
@@ -230,7 +226,6 @@ func CalcularMontos(
 		saldoRespuesta = saldo
 		valorRespuesta = saldoRespuesta - result.Saldo
 	}
-	logs.Debug("Saldo respuesta, Valor respuesta ", result.Saldo, valorRespuesta)
 	return saldoRespuesta, valorRespuesta, nil
 
 }
