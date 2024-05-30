@@ -10,6 +10,7 @@ import (
 	"github.com/udistrital/utils_oas/customerror"
 
 	_ "github.com/udistrital/movimientos_crud/routers"
+	"github.com/udistrital/utils_oas/xray"
 )
 
 func main() {
@@ -42,6 +43,7 @@ func main() {
 	// logs.SetLogger(logs.AdapterFile, `{"filename":"/var/log/beego/movimientos_crud/movimientos_crud.log"}`)
 
 	//Prueba de auditoria
+	xray.InitXRay()
 	auditoria.InitMiddleware()
 	apistatus.Init()
 	beego.Run()
