@@ -22,5 +22,5 @@ swagger/**
 !swagger/swagger.json
 !swagger/swagger.yml
 
-git.mod
-git.sum
+go.mod
+go.sum
