@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/url"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/plugins/cors"
@@ -10,12 +12,13 @@ import (
 	"github.com/udistrital/utils_oas/customerror"
 
 	_ "github.com/udistrital/movimientos_crud/routers"
+	"github.com/udistrital/utils_oas/xray"
 )
 
 func main() {
 	orm.RegisterDataBase("default", "postgres", "postgres://"+
 		beego.AppConfig.String("PGuser")+
-		":"+beego.AppConfig.String("PGpass")+
+		":"+url.QueryEscape(beego.AppConfig.String("PGpass"))+
 		"@"+beego.AppConfig.String("PGurls")+
 		":"+beego.AppConfig.String("PGport")+
 		"/"+beego.AppConfig.String("PGdb")+
@@ -42,6 +45,7 @@ func main() {
 	// logs.SetLogger(logs.AdapterFile, `{"filename":"/var/log/beego/movimientos_crud/movimientos_crud.log"}`)
 
 	//Prueba de auditoria
+	xray.InitXRay()
 	auditoria.InitMiddleware()
 	apistatus.Init()
 	beego.Run()
