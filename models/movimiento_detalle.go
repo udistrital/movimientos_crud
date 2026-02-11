@@ -59,10 +59,13 @@ func GetAllMovimientoDetalle(query map[string]string, fields []string, sortby []
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
 		k = strings.Replace(k, "__", ".", -1)
+		fmt.Println("filtro", k)
 		if strings.Contains(k, "isnull") {
 			qs = qs.Filter(k, (v == "true" || v == "1"))
+			fmt.Println("qs:", qs)
 		} else {
 			qs = qs.Filter(k, v)
+			fmt.Println("qs:", qs)
 		}
 	}
 	// order by:
