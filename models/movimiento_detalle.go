@@ -59,7 +59,7 @@ func GetAllMovimientoDetalle(query map[string]string, fields []string, sortby []
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
 		k = strings.Replace(k, ".", "__", -1)
-		k = strings.Replace(k, "__json_contains", "_contains", -1)
+		k = strings.Replace(k, "__json_contains", "__contains", -1)
 		
 		fmt.Println("filtro", k)
 		if strings.Contains(k, "isnull") {
